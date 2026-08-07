@@ -1,0 +1,23 @@
+/**
+ * Shiki renders code with inline colors baked in at highlight time, which
+ * normally means picking one theme — wrong for a site with a light/dark
+ * toggle. Shiki's "dual theme" mode instead emits both a light and dark
+ * color per token as CSS variables; these two rules are the only extra
+ * CSS needed to switch between them based on our existing `.dark` class
+ * (see https://shiki.style/guide/dual-themes).
+ */
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg) !important;
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+.shiki {
+  font-family: var(--font-mono);
+}

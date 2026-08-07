@@ -1,0 +1,82 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@import "../styles/theme.css";
+@import "../styles/typography.css";
+@import "../styles/spacing.css";
+@import "../styles/container.css";
+@import "../styles/animations.css";
+@import "../styles/effects.css";
+@import "../styles/code.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+    outline-color: var(--color-ring);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Headings and anchor targets clear the sticky navbar when jumped to. */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    /* Kill the horizontal jump when a dialog/sheet locks scroll on a page
+       tall enough to have a scrollbar — without this the whole layout
+       shifts sideways every time the cart drawer opens. */
+    scrollbar-gutter: stable;
+  }
+
+  /* One consistent focus treatment for every interactive element, rather
+     than each component inventing its own. Only `:focus-visible`, so
+     mouse users never see a ring they didn't ask for. */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Long words / URLs shouldn't blow out a narrow mobile column. */
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  li {
+    overflow-wrap: break-word;
+  }
+}
+
+/**
+ * Motion accessibility, CSS half.
+ *
+ * `MotionConfig reducedMotion="user"` (components/providers/motion-provider.tsx)
+ * handles every Framer Motion animation. This handles everything CSS
+ * drives that Framer never sees — `animate-float`, `animate-pulse`,
+ * skeleton shimmer, the accordion height keyframes, and all the
+ * `transition-*` utilities on hover states.
+ *
+ * Durations collapse to ~0 rather than `animation: none`, because some
+ * components rely on transition/animation *end* events firing; setting
+ * `none` can prevent them from ever completing.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}

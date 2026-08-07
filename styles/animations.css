@@ -1,0 +1,74 @@
+/**
+ * Global CSS-level animation utilities beyond what tw-animate-css already
+ * provides (animate-in, fade-in-*, slide-in-from-*, zoom-in-*, etc., which
+ * are imported directly in globals.css). These are brand-specific extras
+ * used sparingly for playful accents (hero mascots, hover affordances).
+ */
+@theme {
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-wiggle: wiggle 1s ease-in-out infinite;
+
+  /* A directional light sweep for skeletons. `animate-pulse` (opacity
+     fading in place) is the framework default and reads as "placeholder";
+     a sweep reads as "loading in progress" and is the treatment Linear,
+     Vercel, and Apple's own store use. */
+  --animate-shimmer: shimmer 1.8s ease-in-out infinite;
+
+  /* Radix Accordion sets --radix-accordion-content-height itself; this is
+     the standard CSS-var-driven height animation Radix's own docs
+     recommend — more robust than measuring height in JS for content that
+     size to fit its (unknown, dynamic) children. */
+  --animate-accordion-down: accordion-down 0.25s var(--ease-smooth);
+  --animate-accordion-up: accordion-up 0.25s var(--ease-smooth);
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
