@@ -9,7 +9,7 @@ import { testimonials } from "../constants";
 
 export function Testimonials() {
   return (
-    <Section>
+    <Section id="testimonials">
       <div className="mx-auto max-w-2xl text-center">
         <Badge variant="outline">Testimonials</Badge>
         <h2 className="mt-4 font-display text-display-lg text-foreground">

@@ -61,27 +61,22 @@ export const megaNav: MegaNavItem[] = [
       {
         title: "Shop by pet",
         links: [
-          { label: "Dogs", href: "/shop/dogs", icon: Dog },
-          { label: "Cats", href: "/shop/cats", icon: Cat },
-          { label: "Birds", href: "/shop/birds", icon: Bird },
-          { label: "Small pets", href: "/shop/small-pets", icon: Rabbit },
+          { label: "Dogs", href: "/shop?pet=dogs", icon: Dog },
+          { label: "Cats", href: "/shop?pet=cats", icon: Cat },
+          { label: "Birds", href: "/shop?pet=birds", icon: Bird },
+          { label: "Small pets", href: "/shop?pet=small-pets", icon: Rabbit },
         ],
       },
       {
         title: "Shop by category",
         links: [
-          { label: "Food & treats", href: "/shop/food", icon: Utensils },
-          { label: "Toys & enrichment", href: "/shop/toys", icon: Gamepad2 },
-          { label: "Health & wellness", href: "/shop/health", icon: ShieldCheck },
-          { label: "Beds & furniture", href: "/shop/furniture", icon: Sofa },
+          { label: "Food & treats", href: `/shop?category=${encodeURIComponent("Food & treats")}`, icon: Utensils },
+          { label: "Toys & enrichment", href: `/shop?category=${encodeURIComponent("Toys & enrichment")}`, icon: Gamepad2 },
+          { label: "Health & wellness", href: `/shop?category=${encodeURIComponent("Health & wellness")}`, icon: ShieldCheck },
+          { label: "Beds & furniture", href: `/shop?category=${encodeURIComponent("Beds & furniture")}`, icon: Sofa },
         ],
       },
     ],
-    featured: {
-      label: "New: Winter care essentials",
-      href: "/shop/collections/winter",
-      description: "Everything to keep your pet warm, cozy, and healthy this season.",
-    },
   },
   {
     label: "Services",

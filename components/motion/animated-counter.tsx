@@ -27,6 +27,9 @@ export function AnimatedCounter({ value, prefix = "", suffix = "", className }: 
     if (isInView) motionValue.set(value);
   }, [isInView, value, motionValue]);
 
+  // lets see thepetzu-world mein folder ke andr total we have
+  // o foldder j
+
   useEffect(() => {
     return springValue.on("change", (latest) => {
       if (ref.current) {

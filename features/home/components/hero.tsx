@@ -1,7 +1,8 @@
 "use client";
 
 import { m, useTransform } from "framer-motion";
-import { ArrowRight, ChevronDown, Heart, PawPrint, ShieldCheck, Star, Truck } from "lucide-react";
+import { ArrowRight, ChevronDown, Heart, ShieldCheck, Star, Truck } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { CursorGlow } from "@/components/motion/cursor-glow";
@@ -11,15 +12,26 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useMouseParallax } from "@/hooks/use-mouse-parallax";
+import { PetPicker } from "./pet-picker";
 
 const avatarInitials = ["SM", "JR", "PK", "DF"];
 
 /**
- * The floating illustration is deliberately abstract — layered glass cards
- * and a central icon orb, not a literal pet photo — because a stock/AI pet
- * photo would read as generic or fake next to hand-crafted UI. This is the
- * same move Stripe/Linear/Framer make on their own marketing pages: the
- * "product visual" is built from the design system itself.
+ * The hero photo is the first thing on the page, so it's the LCP element —
+ * loaded with `priority` (skips lazy-loading) and a `sizes` hint matching
+ * its actual rendered width at each breakpoint, so the browser never
+ * downloads a larger source than the layout needs.
+ */
+/**
+ * `-mt-16 pt-16` pulls the section's own box up to the true top of the page
+ * (behind the sticky navbar, which is `top-0` but stays in normal flow) and
+ * pushes the content back down by the same amount — so the hero's gradient
+ * background paints all the way to y=0 and shows through the transparent
+ * navbar, instead of the navbar revealing a flat `<body>` background before
+ * the hero technically begins. `min-h-[calc(100vh-4rem)]` on the Container
+ * below only makes sense paired with this: it's sizing the *content* to fill
+ * the viewport minus the navbar's height, while the section itself spans
+ * the full viewport.
  */
 export function Hero() {
   const { x, y, onPointerMove, onPointerLeave } = useMouseParallax();
@@ -34,10 +46,10 @@ export function Hero() {
   const ringY = useTransform(y, (v) => v * -16);
 
   return (
-    <CursorGlow as="section" className="relative overflow-hidden border-b border-border">
+    <CursorGlow as="section" className="relative -mt-16 overflow-hidden border-b border-border pt-16">
       <FloatingBackground intensity="vivid" />
 
-      <Container className="grid min-h-[calc(100vh-4rem)] grid-cols-1 items-center gap-16 py-20 lg:grid-cols-2 lg:py-0">
+      <Container className="grid min-h-[calc(100vh-4rem)] grid-cols-1 items-center gap-16 py-20 lg:grid-cols-2 lg:py-16">
         <m.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -55,11 +67,13 @@ export function Hero() {
           </h1>
 
           <p className="max-w-lg text-body-lg text-muted-foreground">
-            Vetted products, licensed vets, and a community of pet parents —
+            Vetted products, licensed vets, and a community of pet parents,
             all in one place. Same-day delivery in 85+ cities.
           </p>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <PetPicker />
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:gap-5">
             <Magnetic>
               <Button asChild variant="gradient" size="lg" className="group w-full sm:w-auto">
                 <Link href="/shop">
@@ -68,14 +82,15 @@ export function Hero() {
                 </Link>
               </Button>
             </Magnetic>
-            <Magnetic strength={0.25}>
-              <Button asChild variant="glass" size="lg" className="w-full sm:w-auto">
-                <Link href="/services/vet-booking">Book a vet visit</Link>
-              </Button>
-            </Magnetic>
+            <Button asChild variant="glass" size="lg" className="w-full sm:w-auto">
+              <Link href="/services/vet-booking">Book a vet visit</Link>
+            </Button>
           </div>
 
-          <div className="mt-2 flex items-center gap-3">
+          <Link
+            href="#testimonials"
+            className="mt-2 flex items-center gap-3 rounded-lg transition-opacity hover:opacity-80"
+          >
             <div className="flex -space-x-3">
               {avatarInitials.map((initials) => (
                 <Avatar key={initials} size="sm" className="border-2 border-background">
@@ -93,32 +108,55 @@ export function Hero() {
                 Loved by pet parents everywhere
               </p>
             </div>
-          </div>
+          </Link>
         </m.div>
 
         <m.div
           onPointerMove={onPointerMove}
           onPointerLeave={onPointerLeave}
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
-          className="relative mx-auto hidden aspect-square w-full max-w-lg items-center justify-center lg:flex"
+          initial={{ opacity: 0, scale: 1.45, filter: "blur(16px)" }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          className="relative order-first mx-auto flex aspect-[705/1280] w-full max-w-xs items-center justify-center sm:max-w-sm lg:order-last lg:max-w-md"
         >
           <m.div
             aria-hidden
             style={{ x: ringX, y: ringY }}
-            className="absolute inset-8 rounded-full border border-dashed border-border/70"
+            className="absolute -inset-3 rounded-[2.5rem] bg-primary/25 blur-2xl"
           />
 
           <m.div
             style={{ x: nearX, y: nearY }}
-            className="glass-strong flex size-64 items-center justify-center rounded-full shadow-glow"
+            whileHover={{ scale: 1.04 }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className="glass-strong relative size-full overflow-hidden rounded-[2rem] shadow-glow"
           >
-            <PawPrint className="size-24 text-primary" strokeWidth={1.5} aria-hidden />
+            {/* A static photo needs its own motion to feel alive — this slow, continuous
+                zoom (a "Ken Burns" pan) starts once the entrance settles, independent of
+                the parent's one-time scale-in, so the two animations never fight. */}
+            <m.div
+              className="absolute inset-0"
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.08, 1] }}
+              transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+            >
+              <Image
+                src="/images/petzucutedog.jpeg"
+                alt="A happy golden retriever cared for through PetZu"
+                fill
+                priority
+                sizes="(min-width: 1024px) 28rem, (min-width: 640px) 24rem, 85vw"
+                className="object-cover"
+              />
+            </m.div>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
           </m.div>
 
           <m.div
             style={{ x: farX, y: farY }}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.9 }}
             className="glass absolute left-2 top-6 flex animate-float items-center gap-2 rounded-2xl px-4 py-3 shadow-xl"
           >
             <ShieldCheck className="size-5 text-success" aria-hidden />
@@ -130,6 +168,9 @@ export function Hero() {
 
           <m.div
             style={{ x: midX, y: midY }}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 18, delay: 1.05 }}
             className="glass absolute bottom-10 right-0 flex animate-float items-center gap-2 rounded-2xl px-4 py-3 shadow-xl [animation-delay:1s]"
           >
             <Truck className="size-5 text-info" aria-hidden />
@@ -141,12 +182,15 @@ export function Hero() {
 
           <m.div
             style={{ x: midX, y: farY }}
-            className="glass absolute -right-4 top-1/3 flex animate-float items-center gap-2 rounded-2xl px-4 py-3 shadow-xl [animation-delay:2s]"
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 260, damping: 18, delay: 1.2 }}
+            className="glass absolute right-1 top-1/3 flex animate-float items-center gap-2 rounded-2xl px-4 py-3 shadow-xl sm:-right-4 [animation-delay:2s]"
           >
             <Heart className="size-5 text-destructive" aria-hidden />
-            <div className="flex items-center gap-1">
-              <p className="text-heading-4 font-semibold text-foreground">4.9</p>
-              <Star className="size-3.5 fill-warning text-warning" aria-hidden />
+            <div>
+              <p className="text-body-sm font-semibold text-foreground">Made with love</p>
+              <p className="text-caption text-muted-foreground">Every pet, every time</p>
             </div>
           </m.div>
         </m.div>

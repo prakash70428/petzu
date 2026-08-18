@@ -1,5 +1,5 @@
 import { SearchX } from "lucide-react";
-import { RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { MountRevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import type { Provider } from "../types";
 import { ProviderCard } from "./provider-card";
@@ -30,12 +30,12 @@ export function ProviderGrid({ providers, onClearFilters }: ProviderGridProps) {
   }
 
   return (
-    <RevealGroup className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+    <MountRevealGroup className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
       {providers.map((provider) => (
         <RevealItem key={provider.id}>
           <ProviderCard provider={provider} />
         </RevealItem>
       ))}
-    </RevealGroup>
+    </MountRevealGroup>
   );
 }

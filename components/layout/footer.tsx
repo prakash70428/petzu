@@ -1,15 +1,29 @@
-import { AtSign, Camera, Users } from "lucide-react";
 import Link from "next/link";
+import { FacebookIcon, InstagramIcon, XIcon } from "@/components/icons/social";
 import { footerNav, siteConfig } from "@/constants/site";
+import { cn } from "@/utils/cn";
 import { Container } from "./container";
 import { Logo } from "./logo";
 
-// lucide-react no longer ships brand/wordmark icons, so these are generic
-// stand-ins distinguished by aria-label rather than an exact brand mark.
 const socialLinks = [
-  { label: "Twitter", href: `https://twitter.com/${siteConfig.socials.twitter.replace("@", "")}`, icon: AtSign },
-  { label: "Instagram", href: siteConfig.socials.instagram, icon: Camera },
-  { label: "Facebook", href: siteConfig.socials.facebook, icon: Users },
+  {
+    label: "X",
+    href: `https://x.com/${siteConfig.socials.twitter.replace("@", "")}`,
+    icon: XIcon,
+    hoverClassName: "hover:text-foreground",
+  },
+  {
+    label: "Instagram",
+    href: siteConfig.socials.instagram,
+    icon: InstagramIcon,
+    hoverClassName: "hover:text-[#E1306C]",
+  },
+  {
+    label: "Facebook",
+    href: siteConfig.socials.facebook,
+    icon: FacebookIcon,
+    hoverClassName: "hover:text-[#1877F2]",
+  },
 ];
 
 export function Footer() {
@@ -23,14 +37,14 @@ export function Footer() {
               {siteConfig.description}
             </p>
             <div className="flex items-center gap-3">
-              {socialLinks.map(({ label, href, icon: Icon }) => (
+              {socialLinks.map(({ label, href, icon: Icon, hoverClassName }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  className={cn("text-muted-foreground transition-colors", hoverClassName)}
                 >
                   <Icon className="size-5" />
                 </a>

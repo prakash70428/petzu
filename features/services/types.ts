@@ -1,4 +1,4 @@
-export type ProviderType = "vet" | "groomer";
+export type ProviderType = "vet" | "groomer" | "trainer" | "sitter";
 
 export interface ProviderService {
   id: string;

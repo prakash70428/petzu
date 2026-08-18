@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { EMPTY_FILTERS, type FilterState, type Product, type SortOption } from "../types";
+import { EMPTY_FILTERS, type FilterState, type PetType, type Product, type SortOption } from "../types";
 import { filterProducts, sortProducts } from "../utils";
 import { FiltersPanel } from "./filters-panel";
 import { ProductGrid } from "./product-grid";
@@ -10,6 +10,10 @@ import { Toolbar } from "./toolbar";
 export interface ShopListingProps {
   products: Product[];
   searchQuery?: string;
+  /** Pre-selects the "pet type" filter — how `/shop?pet=dogs` replaces a dedicated `/shop/dogs` route. */
+  initialPetType?: PetType;
+  /** Pre-selects the "category" filter — how `/shop?category=Grooming` replaces a dedicated category route. */
+  initialCategory?: string;
 }
 
 /**
@@ -18,8 +22,12 @@ export interface ShopListingProps {
  * state lives here (client-only, not in the URL) since this is a UI-only
  * store with no backend to make server-driven filtering worthwhile.
  */
-export function ShopListing({ products, searchQuery }: ShopListingProps) {
-  const [filters, setFilters] = useState<FilterState>(EMPTY_FILTERS);
+export function ShopListing({ products, searchQuery, initialPetType, initialCategory }: ShopListingProps) {
+  const [filters, setFilters] = useState<FilterState>({
+    ...EMPTY_FILTERS,
+    petTypes: initialPetType ? [initialPetType] : [],
+    categories: initialCategory ? [initialCategory] : [],
+  });
   const [sort, setSort] = useState<SortOption>("featured");
 
   const visibleProducts = useMemo(() => {

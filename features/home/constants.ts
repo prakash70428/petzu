@@ -56,6 +56,7 @@ export interface ServiceItem {
   icon: LucideIcon;
   title: string;
   description: string;
+  href: string;
 }
 
 export const services: ServiceItem[] = [
@@ -63,31 +64,37 @@ export const services: ServiceItem[] = [
     icon: Stethoscope,
     title: "Vet consultations",
     description: "Book same-day video or in-clinic visits with licensed vets near you.",
+    href: "/services/vet-booking",
   },
   {
     icon: Truck,
     title: "Fast delivery",
     description: "Same-day delivery on food and essentials across 85+ cities.",
+    href: "/shop",
   },
   {
     icon: Scissors,
     title: "Grooming",
-    description: "Professional grooming, at our studio or yours — fully insured groomers.",
+    description: "Professional grooming, at our studio or yours, with fully insured groomers.",
+    href: "/services/grooming",
   },
   {
     icon: GraduationCap,
     title: "Training",
     description: "1:1 and group training programs tailored to every breed and age.",
+    href: "/services/training",
   },
   {
     icon: HomeIcon,
     title: "Pet sitting",
     description: "Trusted, background-checked sitters and walkers when you're away.",
+    href: "/services/sitting",
   },
   {
     icon: ShieldCheck,
     title: "Pet insurance",
     description: "Transparent plans with no fine-print surprises when it matters most.",
+    href: "/services",
   },
 ];
 
@@ -99,11 +106,11 @@ export interface CategoryItem {
 }
 
 export const categories: CategoryItem[] = [
-  { icon: Dog, label: "Dogs", count: "3,200+ products", href: "/shop/dogs" },
-  { icon: Cat, label: "Cats", count: "2,600+ products", href: "/shop/cats" },
-  { icon: Bird, label: "Birds", count: "740+ products", href: "/shop/birds" },
-  { icon: Rabbit, label: "Small pets", count: "510+ products", href: "/shop/small-pets" },
-  { icon: Bone, label: "Aquatics", count: "390+ products", href: "/shop/aquatics" },
+  { icon: Dog, label: "Dogs", count: "3,200+ products", href: "/shop?pet=dogs" },
+  { icon: Cat, label: "Cats", count: "2,600+ products", href: "/shop?pet=cats" },
+  { icon: Bird, label: "Birds", count: "740+ products", href: "/shop?pet=birds" },
+  { icon: Rabbit, label: "Small pets", count: "510+ products", href: "/shop?pet=small-pets" },
+  { icon: Bone, label: "Aquatics", count: "390+ products", href: "/shop?pet=aquatics" },
 ];
 
 export interface Product {
@@ -188,7 +195,7 @@ export const whyPetzu: WhyPetzuItem[] = [
   {
     icon: Heart,
     title: "Built with love for pets",
-    description: "Founded by pet parents, for pet parents — not investors.",
+    description: "Founded by pet parents, for pet parents, not investors.",
   },
   {
     icon: Award,
@@ -215,7 +222,7 @@ export const testimonials: Testimonial[] = [
     name: "Sarah M.",
     role: "Dog mom to Biscuit",
     quote:
-      "The vet booking feature alone is worth it. Had a same-day video call when Biscuit wasn't eating — turned out to be nothing serious, but the peace of mind was everything.",
+      "The vet booking feature alone is worth it. Had a same-day video call when Biscuit wasn't eating. Turned out to be nothing serious, but the peace of mind was everything.",
     rating: 5,
     initials: "SM",
   },
@@ -287,7 +294,7 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
-    title: "5 signs your dog needs a vet visit — not just a Google search",
+    title: "5 signs your dog needs a vet visit, not just a Google search",
     excerpt: "Vets weigh in on the symptoms that separate 'keep an eye on it' from 'come in today.'",
     category: "Vet care",
     readTime: "6 min read",
@@ -295,7 +302,7 @@ export const blogPosts: BlogPost[] = [
   },
   {
     title: "The complete guide to kitten nutrition, month by month",
-    excerpt: "What to feed, how much, and when to transition — a feeding timeline vets actually recommend.",
+    excerpt: "What to feed, how much, and when to transition: a feeding timeline vets actually recommend.",
     category: "Nutrition",
     readTime: "9 min read",
     date: "Jul 21",

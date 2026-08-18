@@ -3,8 +3,7 @@ import { siteConfig } from "@/constants/site";
 import { articles, authors, categories } from "@/features/blog/constants";
 import { slugify } from "@/features/blog/utils";
 import { providers } from "@/features/services/constants";
-import { petTypeLabels, products } from "@/features/shop/constants";
-import type { PetType } from "@/features/shop/types";
+import { products } from "@/features/shop/constants";
 
 /**
  * Generated from the same data the pages render from, rather than a
@@ -26,17 +25,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     entry("/", 1.0, "daily"),
     entry("/shop", 0.9, "daily"),
+    entry("/services", 0.8),
     entry("/services/vet-booking", 0.9),
     entry("/services/grooming", 0.9),
+    entry("/services/training", 0.8),
+    entry("/services/sitting", 0.8),
     entry("/blog", 0.8, "daily"),
+    entry("/guides", 0.6, "monthly"),
+    entry("/community", 0.6, "weekly"),
+    entry("/about", 0.5, "monthly"),
+    entry("/contact", 0.4, "monthly"),
+    entry("/pricing", 0.5, "monthly"),
+    entry("/careers", 0.3, "monthly"),
+    entry("/privacy", 0.2, "yearly"),
+    entry("/terms", 0.2, "yearly"),
     entry("/faq", 0.5, "monthly"),
     entry("/sign-in", 0.3, "yearly"),
     entry("/sign-up", 0.4, "yearly"),
   ];
 
-  const shopCategories = (Object.keys(petTypeLabels) as PetType[]).map((petType) =>
-    entry(`/shop/${petType}`, 0.8),
-  );
+  // Pet-type filters (`/shop?pet=dogs`) are views of /shop's content, not
+  // distinct canonical pages — see the comment in app/(shop)/shop/page.tsx —
+  // so they're intentionally not listed here.
 
   const productRoutes = products.map((product) => entry(`/shop/product/${product.slug}`, 0.7));
 
@@ -56,7 +66,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...staticRoutes,
-    ...shopCategories,
     ...productRoutes,
     ...providerRoutes,
     ...articleRoutes,

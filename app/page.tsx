@@ -20,9 +20,9 @@ export default function Home() {
       <Stats />
       <TrustedBrands />
       <Services />
+      <VetBooking />
       <Categories />
       <FeaturedProducts />
-      <VetBooking />
       <WhyPetzu />
       <Testimonials />
       <Community />

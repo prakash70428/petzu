@@ -18,9 +18,9 @@ export function BlogPreview() {
     <Section>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <Badge variant="outline">From the blog</Badge>
+          <Badge variant="outline">Keep learning</Badge>
           <h2 className="mt-4 font-display text-display-lg text-foreground">
-            Care guides worth reading
+            More than a community, a library too
           </h2>
         </div>
         <Link

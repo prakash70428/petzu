@@ -18,8 +18,9 @@ export function Community() {
             Fresh from the community
           </h2>
           <p className="mt-3 max-w-lg text-body-lg text-muted-foreground">
-            Real advice from 340,000+ pet parents swapping tips, wins, and the
-            occasional 2am panic post.
+            The reviews above come from real bookings. This is where those same
+            pet parents keep talking: 340,000+ people swapping tips, wins, and
+            the occasional 2am panic post.
           </p>
         </div>
         <Button asChild variant="outline" size="lg" className="shrink-0">

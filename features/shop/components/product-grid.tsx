@@ -1,5 +1,5 @@
 import { PackageSearch } from "lucide-react";
-import { RevealGroup, RevealItem } from "@/components/motion/reveal";
+import { MountRevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import type { Product } from "../types";
 import { ProductCard } from "./product-card";
@@ -30,12 +30,12 @@ export function ProductGrid({ products, onClearFilters }: ProductGridProps) {
   }
 
   return (
-    <RevealGroup className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
+    <MountRevealGroup className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
       {products.map((product, index) => (
         <RevealItem key={product.id}>
           <ProductCard product={product} index={index} />
         </RevealItem>
       ))}
-    </RevealGroup>
+    </MountRevealGroup>
   );
 }

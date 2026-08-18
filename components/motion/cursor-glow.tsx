@@ -17,7 +17,7 @@ export interface CursorGlowProps extends HTMLAttributes<HTMLDivElement> {
  * native cursor affordances; a scoped ambient glow reads as premium
  * atmosphere, closer to how Linear/Stripe use spotlight effects.
  */
-export function CursorGlow({ as: Tag = "div", size = 560, className, children, ...props }: CursorGlowProps) {
+export function CursorGlow({ as: Tag = "div", size = 360, className, children, ...props }: CursorGlowProps) {
   const left = useMotionValue(-9999);
   const top = useMotionValue(-9999);
   const springLeft = useSpring(left, { stiffness: 150, damping: 22 });
@@ -44,7 +44,7 @@ export function CursorGlow({ as: Tag = "div", size = 560, className, children, .
     >
       <m.div
         aria-hidden
-        className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-primary/25 via-info/15 to-transparent blur-3xl"
+        className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-primary/20 via-warning/10 to-transparent blur-2xl"
         style={{ left: springLeft, top: springTop, width: size, height: size }}
       />
       {children}

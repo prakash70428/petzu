@@ -62,3 +62,19 @@ export function RevealGroup({
 export function RevealItem(props: HTMLMotionProps<"div">) {
   return <m.div variants={staggerItem} {...props} />;
 }
+
+/**
+ * Like `RevealGroup`, but animates in on mount instead of on scroll-into-view.
+ *
+ * `RevealGroup` uses `whileInView` with `once: true` — correct for static
+ * marketing sections, wrong for a list that re-mounts from client-side state
+ * changes (e.g. clearing a filter). In that case the user is already looking
+ * at the list; waiting for a fresh IntersectionObserver hit before revealing
+ * means the new items can stay stuck at `opacity: 0` if the grid isn't
+ * freshly scrolled into view at that exact moment. `RevealItem` still works
+ * as the child here — variants propagate from a parent's `animate` state the
+ * same way they do from `whileInView`.
+ */
+export function MountRevealGroup(props: HTMLMotionProps<"div">) {
+  return <m.div initial="hidden" animate="visible" variants={staggerContainer} {...props} />;
+}

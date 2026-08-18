@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { Section } from "@/components/layout/section";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { cardVariants } from "@/components/ui/card";
+import { cn } from "@/utils/cn";
 import { services } from "../constants";
 
 export function Services() {
@@ -13,7 +15,7 @@ export function Services() {
           Care that goes beyond the cart
         </h2>
         <p className="mt-4 text-body-lg text-muted-foreground">
-          From same-day vet visits to grooming at your door — everything your
+          From same-day vet visits to grooming at your door, everything your
           pet needs, handled.
         </p>
       </div>
@@ -23,7 +25,10 @@ export function Services() {
           const Icon = service.icon;
           return (
             <RevealItem key={service.title}>
-              <Card interactive className="group h-full p-card-lg">
+              <Link
+                href={service.href}
+                className={cn(cardVariants({ interactive: true }), "group block h-full p-card-lg")}
+              >
                 <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-200 ease-premium group-hover:bg-primary group-hover:text-primary-foreground">
                   <Icon className="size-6" aria-hidden />
                 </div>
@@ -33,7 +38,7 @@ export function Services() {
                 <p className="mt-2 text-body-sm text-muted-foreground">
                   {service.description}
                 </p>
-              </Card>
+              </Link>
             </RevealItem>
           );
         })}
