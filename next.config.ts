@@ -32,6 +32,11 @@ const nextConfig: NextConfig = {
   // Trailing-slash-free canonical URLs, matching what sitemap.ts emits.
   trailingSlash: false,
 
+  // Prisma's query engine ships a native binary that webpack can't bundle
+  // correctly — this tells Next to require() it at runtime instead of
+  // trying to trace/bundle it into the serverless function.
+  serverExternalPackages: ["@prisma/client"],
+
   /**
    * The single biggest bundle win available here.
    *

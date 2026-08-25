@@ -11,7 +11,8 @@ export type DashboardIconKey =
   | "scissors"
   | "bell"
   | "user"
-  | "settings";
+  | "settings"
+  | "message";
 
 export interface DashboardPet {
   id: string;

@@ -1,0 +1,287 @@
+// Prisma schema for thepetzu-world's backend foundation.
+//
+// This file grows incrementally, one phase at a time, alongside the
+// "Additional Scope" build (see PHASE-2-0-FOUNDATION.md at the repo root).
+// Phase 0 only introduces `Customer` and `Interaction` — every later phase
+// (Consent, Knowledge-base, Chatbot, CRM, Comms, WhatsApp, Feedback,
+// Data Portability) adds its own models here without touching these two.
+//
+// Datasource is MongoDB Atlas. Unlike Postgres, Mongo has no schema
+// migration history — `npm run db:push` syncs this file straight to the
+// database's collections/validators (see "How it works" in
+// PHASE-2-0-FOUNDATION.md for what that means for deploys).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+/// The bridge between the app's existing (fake, localStorage-only) client
+/// session and a real, persisted identity. See "Customer identity bridge"
+/// in PHASE-2-0-FOUNDATION.md for why `email` — not a session cookie — is
+/// the key, and the trust limitation that comes with it.
+model Customer {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  interactions      Interaction[]
+  consents          Consent[]
+  chatConversations ChatConversation[]
+  notes             Note[]
+  customerTags      CustomerTag[]
+  messageLogs       MessageLog[]
+  feedback          Feedback[]
+
+  @@map("customers")
+}
+
+/// A single unified activity timeline per customer. Every later phase
+/// (consent changes, chat messages, comms sent, feedback filed, staff
+/// notes) writes here via `recordInteraction()` instead of each phase
+/// inventing its own audit trail — this is what makes Phase 4 (CRM) a
+/// read-only UI over data that's already been accumulating since Phase 1.
+model Interaction {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String          @db.ObjectId
+  customer   Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  type       InteractionType
+  summary    String
+  /// Arbitrary structured detail (e.g. { channel, templateKey } for a sent
+  /// message) — kept loose on purpose since each interaction type carries
+  /// different shape, and this table is read-only display, never queried
+  /// by these fields. Mongo stores this natively as a nested document.
+  metadata   Json?
+  createdAt  DateTime        @default(now())
+
+  @@index([customerId, createdAt])
+  @@map("interactions")
+}
+
+enum InteractionType {
+  CONSENT_CHANGED
+  CHAT_MESSAGE
+  EMAIL_SENT
+  SMS_SENT
+  WHATSAPP_MESSAGE
+  FEEDBACK_SUBMITTED
+  COMPLAINT_FILED
+  NOTE_ADDED
+}
+
+/// One row per (customer, channel, purpose) combination. Absence of a row
+/// means "not granted" — consent is never assumed true by default, only by
+/// an explicit write here. This is what Phase 5 (Automated Communication)
+/// and Phase 6 (WhatsApp) check before sending anything; WhatsApp Business
+/// Platform specifically requires documented opt-in before a business can
+/// message a customer outside a user-initiated session window, so this
+/// isn't just good practice, it's a hard platform requirement.
+model Consent {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String         @db.ObjectId
+  customer   Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  channel    ConsentChannel
+  purpose    ConsentPurpose
+  granted    Boolean
+  /// Where this consent decision was captured — lets Phase 4 (CRM) show
+  /// staff *how* a customer opted in/out, not just the current state.
+  source     String
+  updatedAt  DateTime       @updatedAt
+
+  @@unique([customerId, channel, purpose])
+  @@map("consents")
+}
+
+enum ConsentChannel {
+  EMAIL
+  SMS
+  WHATSAPP
+}
+
+enum ConsentPurpose {
+  MARKETING
+  TRANSACTIONAL
+  SUPPORT
+}
+
+/// A Q&A entry staff maintain directly (not the public /faq page's static
+/// content — see PHASE-2-2-KNOWLEDGE-BASE.md for why those stay separate).
+/// This is what Phase 3's chatbot retrieves from to ground its answers, and
+/// what Phase 7's feedback triage can point customers at before escalating.
+model KnowledgeArticle {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  category  String
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("knowledge_articles")
+}
+
+/// One thread per conversation. `channel` defaults to WEB (the chat widget
+/// built in Phase 3); Phase 6 reuses this exact model for WhatsApp threads
+/// by setting channel: WHATSAPP instead of inventing a parallel table — a
+/// conversation is a conversation regardless of where it started.
+///
+/// `whatsappPhone` exists because WhatsApp only ever gives us a phone
+/// number, never an email — and this app's whole identity bridge (see
+/// PHASE-2-0-FOUNDATION.md) is keyed by email. A WhatsApp message from a
+/// number that doesn't match any `Customer.phone` on file still needs
+/// somewhere to reply to, so the conversation carries the raw number
+/// independently of whether `customerId` could be resolved. See "The
+/// phone-only identity gap" in PHASE-2-6-WHATSAPP.md.
+model ChatConversation {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  customerId    String?     @db.ObjectId
+  customer      Customer?   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  channel       ChatChannel @default(WEB)
+  whatsappPhone String?
+  startedAt     DateTime    @default(now())
+
+  messages ChatMessage[]
+
+  @@index([customerId, startedAt])
+  @@index([whatsappPhone])
+  @@map("chat_conversations")
+}
+
+model ChatMessage {
+  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  conversationId String           @db.ObjectId
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           ChatRole
+  content        String
+  createdAt      DateTime         @default(now())
+
+  @@index([conversationId, createdAt])
+  @@map("chat_messages")
+}
+
+enum ChatChannel {
+  WEB
+  WHATSAPP
+}
+
+enum ChatRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+/// A free-text note staff attach to a customer's timeline — the one
+/// interaction type that a human writes directly rather than the system
+/// logging automatically. Also appended to `Interaction` (type NOTE_ADDED)
+/// so it shows inline with everything else in the timeline; this table is
+/// the durable copy the CRM detail page reads from directly.
+model Note {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  customerId  String   @db.ObjectId
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  authorEmail String
+  body        String
+  createdAt   DateTime @default(now())
+
+  @@index([customerId, createdAt])
+  @@map("notes")
+}
+
+model Tag {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+
+  customerTags CustomerTag[]
+
+  @@map("tags")
+}
+
+/// Join row for the customer↔tag many-to-many. A separate `id` (rather than
+/// a composite `@@id`) matches every other join-shaped model in this schema
+/// (e.g. `Consent`'s `@@unique([customerId, channel, purpose])`) — MongoDB
+/// via Prisma works with this shape consistently everywhere else, so no
+/// reason for this one table to do it differently.
+model CustomerTag {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String   @db.ObjectId
+  tagId      String   @db.ObjectId
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tag        Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, tagId])
+  @@map("customer_tags")
+}
+
+/// One row per send attempt. `SKIPPED_NO_CONSENT` is a distinct status from
+/// `FAILED` on purpose — a message that was never attempted because consent
+/// was missing is a completely different situation from one the provider
+/// rejected, and staff (Phase 4's CRM) need to be able to tell those apart
+/// at a glance. See "Why every purpose is consent-gated, no exceptions" in
+/// PHASE-2-5-COMMS.md for why even TRANSACTIONAL sends can land here.
+model MessageLog {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  customerId  String         @db.ObjectId
+  customer    Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  channel     ConsentChannel
+  purpose     ConsentPurpose
+  templateKey String
+  status      MessageStatus  @default(QUEUED)
+  /// The sending provider's own message/request id — Resend, MSG91, or
+  /// Meta's WhatsApp Cloud API — kept so a delivery-status webhook (Phase 6)
+  /// can look a send back up by it.
+  providerId  String?
+  error       String?
+  sentAt      DateTime?
+  createdAt   DateTime       @default(now())
+
+  @@index([customerId, createdAt])
+  @@map("message_logs")
+}
+
+enum MessageStatus {
+  QUEUED
+  SENT
+  FAILED
+  SKIPPED_NO_CONSENT
+}
+
+/// A customer-submitted feedback or complaint, triaged by staff.
+/// `customerId` is optional — same shape as `ChatConversation` — so a
+/// future public contact form (not signed in) can still create one; the
+/// dashboard submission form built in this phase always has one, since it
+/// sits behind `useRequireAuth()`.
+model Feedback {
+  id         String         @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String?        @db.ObjectId
+  customer   Customer?      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  type       FeedbackType
+  subject    String
+  body       String
+  /// 1–5, only meaningful for `FEEDBACK` — a complaint isn't rated.
+  rating     Int?
+  status     FeedbackStatus @default(OPEN)
+  createdAt  DateTime       @default(now())
+  resolvedAt DateTime?
+
+  @@index([status, createdAt])
+  @@index([customerId, createdAt])
+  @@map("feedback")
+}
+
+enum FeedbackType {
+  FEEDBACK
+  COMPLAINT
+}
+
+enum FeedbackStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}

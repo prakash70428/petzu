@@ -5,6 +5,7 @@ import {
   Cat,
   Dog,
   LayoutDashboard,
+  MessageSquare,
   Package,
   Rabbit,
   Scissors,
@@ -37,6 +38,7 @@ export const dashboardIcons: Record<DashboardIconKey, LucideIcon> = {
   bell: Bell,
   user: User,
   settings: Settings,
+  message: MessageSquare,
 };
 
 export const dashboardNav: (NavItem & { iconKey: DashboardIconKey })[] = [
@@ -45,6 +47,7 @@ export const dashboardNav: (NavItem & { iconKey: DashboardIconKey })[] = [
   { label: "Orders", href: "/dashboard/orders", iconKey: "package" },
   { label: "Appointments", href: "/dashboard/appointments", iconKey: "calendar" },
   { label: "Notifications", href: "/dashboard/notifications", iconKey: "bell" },
+  { label: "Feedback", href: "/dashboard/feedback", iconKey: "message" },
   { label: "Profile", href: "/dashboard/profile", iconKey: "user" },
   { label: "Settings", href: "/dashboard/settings", iconKey: "settings" },
 ];

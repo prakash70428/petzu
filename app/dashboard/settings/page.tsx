@@ -8,29 +8,19 @@ import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FormField } from "@/components/ui/form-field";
-import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/features/auth/components";
 import { passwordChangeSchema } from "@/features/auth/schemas";
 import { logout } from "@/features/auth/store";
+import { useAccountActions } from "@/features/account/hooks";
+import { useConsent } from "@/features/consent/hooks";
 import { PageHeader } from "@/features/dashboard/components";
 import { useForm } from "@/hooks/use-form";
 import { toast } from "@/hooks/use-toast";
 
-const notificationPrefs = [
-  { id: "order-updates", label: "Order updates", description: "Shipping and delivery notifications." },
-  { id: "appointment-reminders", label: "Appointment reminders", description: "Reminders 24 hours before a visit." },
-  { id: "product-recommendations", label: "Product recommendations", description: "Occasional picks for your pets." },
-  { id: "community-replies", label: "Community replies", description: "When someone replies to your posts." },
-];
-
 export default function SettingsPage() {
   const router = useRouter();
-  const [prefs, setPrefs] = useState<Record<string, boolean>>({
-    "order-updates": true,
-    "appointment-reminders": true,
-    "product-recommendations": false,
-    "community-replies": true,
-  });
+  const consent = useConsent();
+  const account = useAccountActions();
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const passwordForm = useForm({
@@ -42,9 +32,13 @@ export default function SettingsPage() {
     },
   });
 
-  function handleDeleteAccount() {
+  async function handleDeleteAccount() {
+    const succeeded = await account.deleteAccount();
+    if (!succeeded) return;
+
+    setDeleteOpen(false);
     logout();
-    toast({ title: "Account deleted", description: "Your demo account has been cleared.", variant: "default" });
+    toast({ title: "Account deleted", description: "Your PetZu account and its data have been removed.", variant: "default" });
     router.push("/");
   }
 
@@ -97,31 +91,71 @@ export default function SettingsPage() {
         </Card>
 
         <Card className="p-card-lg">
-          <h2 className="font-semibold text-foreground">Email notifications</h2>
-          <div className="mt-4 flex flex-col gap-4">
-            {notificationPrefs.map((pref) => (
-              <div key={pref.id} className="flex items-start gap-2.5">
-                <Checkbox
-                  id={pref.id}
-                  className="mt-0.5"
-                  checked={prefs[pref.id]}
-                  onCheckedChange={(checked) => setPrefs((prev) => ({ ...prev, [pref.id]: checked === true }))}
-                />
-                <div>
-                  <Label htmlFor={pref.id} className="cursor-pointer">
-                    {pref.label}
-                  </Label>
-                  <p className="text-caption text-muted-foreground">{pref.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h2 className="font-semibold text-foreground">Communication preferences</h2>
+          <p className="mt-1 text-caption text-muted-foreground">
+            Choose what we can contact you about, and on which channel. Nothing is sent unless you turn it on here.
+          </p>
+
+          {consent.loading ? (
+            <p className="mt-4 text-caption text-muted-foreground">Loading your preferences...</p>
+          ) : (
+            <div className="mt-5 overflow-x-auto">
+              <table className="w-full min-w-[480px] border-collapse">
+                <thead>
+                  <tr>
+                    <th className="pb-2 text-left text-caption font-medium text-muted-foreground">Purpose</th>
+                    {consent.channels.map((channel) => (
+                      <th key={channel.id} className="w-20 pb-2 text-center text-caption font-medium text-muted-foreground">
+                        {channel.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {consent.purposes.map((purpose) => (
+                    <tr key={purpose.id} className="border-t border-border">
+                      <td className="py-3 pr-4">
+                        <p className="text-foreground">{purpose.label}</p>
+                        <p className="text-caption text-muted-foreground">{purpose.description}</p>
+                      </td>
+                      {consent.channels.map((channel) => {
+                        const id = `consent-${channel.id}-${purpose.id}`;
+                        return (
+                          <td key={channel.id} className="text-center align-middle">
+                            <Checkbox
+                              id={id}
+                              aria-label={`${channel.label} for ${purpose.label}`}
+                              checked={consent.isGranted(channel.id, purpose.id)}
+                              disabled={consent.isPending(channel.id, purpose.id)}
+                              onCheckedChange={(checked) => consent.toggle(channel.id, purpose.id, checked === true)}
+                            />
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Card>
+
+        <Card className="p-card-lg">
+          <h2 className="font-semibold text-foreground">Your data</h2>
+          <p className="mt-1 text-caption text-muted-foreground">
+            Download a copy of your profile, consent settings, chat history, messages we&apos;ve sent you, and
+            feedback you&apos;ve submitted.
+          </p>
+          <Button variant="outline" className="mt-4" onClick={account.exportData} disabled={account.exporting}>
+            {account.exporting ? "Preparing export..." : "Export my data"}
+          </Button>
         </Card>
 
         <Card className="border-destructive/30 p-card-lg">
           <h2 className="font-semibold text-foreground">Danger zone</h2>
           <Alert variant="destructive" title="Delete account" className="mt-4">
-            This permanently removes your account, saved pets, and order history. This can&apos;t be undone.
+            This permanently deletes your PetZu account — profile, consent settings, chat history, message history,
+            and feedback. This can&apos;t be undone.
           </Alert>
           <Button variant="destructive" className="mt-4" onClick={() => setDeleteOpen(true)}>
             Delete account
@@ -133,15 +167,16 @@ export default function SettingsPage() {
         <DialogHeader>
           <DialogTitle>Delete your account?</DialogTitle>
           <DialogDescription>
-            This clears your demo session and all locally stored data. You can sign back in at any time.
+            This permanently deletes your account and everything linked to it. This can&apos;t be undone — consider
+            exporting your data first.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setDeleteOpen(false)}>
+          <Button variant="outline" onClick={() => setDeleteOpen(false)} disabled={account.deleting}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={handleDeleteAccount}>
-            Yes, delete it
+          <Button variant="destructive" onClick={handleDeleteAccount} disabled={account.deleting}>
+            {account.deleting ? "Deleting..." : "Yes, delete it"}
           </Button>
         </DialogFooter>
       </Dialog>

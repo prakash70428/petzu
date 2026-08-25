@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Toaster } from "@/components/ui/toaster";
+import { ChatWidget } from "@/features/chatbot/components/chat-widget";
 import { MotionProvider } from "./motion-provider";
 import { ThemeProvider } from "./theme-provider";
 
@@ -13,6 +14,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <MotionProvider>
         {children}
         <Toaster />
+        <ChatWidget />
       </MotionProvider>
     </ThemeProvider>
   );
