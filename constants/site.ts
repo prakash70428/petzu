@@ -24,7 +24,7 @@ export const siteConfig = {
   shortName: "PetZu",
   description:
     "The PetZu World is a modern platform for pet lovers — discover products, care guides, and a community built around your pets.",
-  url: "https://thepetzu.world",
+  url: "https://thepetzu.com",
   locale: "en_US",
   keywords: [
     "PetZu",
