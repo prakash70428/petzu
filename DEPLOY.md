@@ -1,75 +1,77 @@
 # Deploying The PetZu World
 
-The app is a standard Next.js 16 SSR app with **no backend, no database, and no environment
-variables** — every "backend" in this project (cart, wishlist, auth session, dashboard data) is
-localStorage-backed by design (see ARCHITECTURE.md / AUTH.md). That makes hosting close to
-zero-config.
+A Next.js 16 (App Router) app on **Vercel**, with a **MongoDB Atlas** database
+reached through **Prisma**. The public marketing/shop pages are statically
+prerendered; the database backs the API routes under `app/api/**` (chatbot,
+CRM, feedback, knowledge base, consent, customer records).
 
-## Recommended: Vercel
+> **Cart, wishlist and the signed-in session are still browser `localStorage`**
+> by design — there is no real authentication yet, so there is nothing to key
+> server-side data to. See `AUTH.md` §8 for what changes when real sessions
+> land. Everything else persists to MongoDB.
 
-Vercel is the natural fit here — it's built by the Next.js team, auto-detects the framework, and
-its free tier comfortably covers a project this size (no serverless function usage beyond what
-Next's own SSR needs, no cron jobs, no external API calls).
+## Hosting: Vercel
+
+Vercel auto-detects Next.js. The `vercel-build` script (`prisma generate &&
+next build`) regenerates the Prisma client on every deploy, so a schema
+change ships just by pushing to `main`.
 
 ### 1. Push to GitHub
 
 ```bash
-git remote -v          # confirm there isn't already a remote
-git push -u origin main
-```
-
-If there's no remote yet, create an empty GitHub repo first, then:
-
-```bash
-git remote add origin https://github.com/<you>/thepetzu-world.git
 git push -u origin main
 ```
 
 ### 2. Import into Vercel
 
 1. [vercel.com/new](https://vercel.com/new) → **Import Git Repository** → select the repo.
-2. Framework preset: **Next.js** (auto-detected, no changes needed).
-3. Build command / output: leave as default (`next build`, `.next`).
-4. **Environment variables: none required.** Leave that section empty.
-5. Click **Deploy**.
+2. Framework preset: **Next.js** (auto-detected).
+3. Add the environment variables below.
+4. **Deploy.** Every push to `main` redeploys production automatically.
 
-That's it — Vercel builds and serves it. No `vercel.json` needed: the security headers this app
-sets (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`) are
-already defined in `next.config.ts`'s `headers()` function, which Vercel respects natively.
+### 3. Environment variables
 
-### 3. Connect the custom domain
+Set these in **Vercel → Project → Settings → Environment Variables** (all
+environments). Full annotated list in [.env.example](.env.example).
 
-`constants/site.ts` has `siteConfig.url` set to `https://thepetzu.world` — if you own that domain
-(or whichever one you're actually using):
+| Variable | Required | What it does |
+|---|---|---|
+| `DATABASE_URL` | **Yes** | MongoDB Atlas SRV connection string, including the database name (`…mongodb.net/petzu?retryWrites=true&w=majority`). Without it every `app/api/**` route 500s. |
+| `ADMIN_EMAILS` | For the admin area | Comma-separated allowlist of emails that may open `/dashboard/admin/**` and write through staff routes. See `lib/auth/is-staff.ts`. |
+| `ANTHROPIC_API_KEY` | For live chatbot replies | Without it the chat widget still works end to end but replies "not configured". |
+| `RESEND_API_KEY` / `RESEND_FROM_EMAIL` | For real emails | Without it, sends log to `MessageLog` as `QUEUED` instead of going out. |
+| `MSG91_AUTH_KEY` / `MSG91_SENDER_ID` | For SMS | India SMS needs a DLT-registered template — illustrative until then. |
+| `WHATSAPP_*` | For WhatsApp Business | See `PHASE-2-6-WHATSAPP.md`. |
 
-1. Vercel project → **Settings → Domains** → add the domain.
-2. Point its DNS at Vercel (an `A`/`CNAME` record, or transfer nameservers — Vercel's domain
-   screen gives you the exact records to add wherever the domain is registered).
-3. Once DNS propagates, Vercel issues an SSL certificate automatically.
+Every integration degrades gracefully when its key is absent — only
+`DATABASE_URL` is load-bearing.
 
-If the real domain differs from `thepetzu.world`, update `siteConfig.url` in
-[constants/site.ts](constants/site.ts) before deploying — it feeds the canonical URLs in
-`app/sitemap.ts`, `app/robots.ts`, and every page's Open Graph metadata.
+## Database: MongoDB Atlas
 
-### 4. Every future push auto-deploys
-
-Once connected, Vercel builds a preview deployment for every branch/PR and promotes `main` to
-production automatically on merge — no CI config to write.
-
-## Before the first deploy
-
-Run the full verification script locally once, so nothing surprises the Vercel build:
+One-time setup (and how to give the client access) is in
+**[DATABASE.md](DATABASE.md)**. In short:
 
 ```bash
-npm run verify
+# after DATABASE_URL is set locally in .env
+npx prisma db push   # sync prisma/schema.prisma → Atlas collections + indexes
+npm run db:seed      # load the knowledge base from the static FAQ content
 ```
 
-This runs typecheck → lint → tests → build in sequence (see `package.json`). If it's clean
-locally, it'll be clean on Vercel.
+`prisma db push` (not `migrate`) is correct here: MongoDB has no migration
+history — the schema file is pushed straight to the database.
 
-## Alternatives (if not Vercel)
+## The custom domain
 
-Any platform that runs a standard Node.js Next.js SSR server works the same way — Netlify,
-Railway, Render, or a plain VPS with `npm run build && npm run start`. The only Vercel-specific
-convenience is zero-config header/redirect handling; everywhere else, `next.config.ts` already
-carries that configuration itself, so nothing extra is required there either.
+`constants/site.ts` → `siteConfig.url` is `https://thepetzu.com`.
+
+- Vercel → **Settings → Domains** → `thepetzu.com` + `www.thepetzu.com` (www 307-redirects to the apex).
+- DNS at GoDaddy: `A @ → 216.198.79.1`, `CNAME www → <project>.vercel-dns.com`. Email records (MX/SPF/DKIM/DMARC) are untouched.
+- SSL is issued automatically once DNS resolves.
+
+## Before a release
+
+```bash
+npm run verify   # typecheck → lint → test → build, in sequence
+```
+
+If that's clean locally it'll be clean on Vercel.
