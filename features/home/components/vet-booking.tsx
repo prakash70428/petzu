@@ -45,10 +45,10 @@ export function VetBooking() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Avatar size="lg">
-                  <AvatarFallback>DR</AvatarFallback>
+                  <AvatarFallback>AG</AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-semibold text-foreground">Dr. Reyes</p>
+                  <p className="font-semibold text-foreground">Dr Anoop Goyal</p>
                   <p className="text-caption text-muted-foreground">
                     Small animal vet · 4.9★
                   </p>
