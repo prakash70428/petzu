@@ -21,7 +21,7 @@ export function Services() {
         </p>
       </div>
 
-      <RevealGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <RevealGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => {
           const Icon = service.icon;
           return (
@@ -33,19 +33,16 @@ export function Services() {
                 <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-200 ease-premium group-hover:bg-primary group-hover:text-primary-foreground">
                   <Icon className="size-6" aria-hidden />
                 </div>
-                <h3 className="mt-5 text-heading-4 font-semibold text-foreground">
+                <h3 className="mt-5 flex items-center gap-1.5 text-heading-4 font-semibold text-foreground">
                   {service.title}
+                  <ArrowRight
+                    className="size-4 text-primary opacity-0 transition-all duration-200 -translate-x-1 group-hover:translate-x-0 group-hover:opacity-100"
+                    aria-hidden
+                  />
                 </h3>
                 <p className="mt-2 text-body-sm text-muted-foreground">
                   {service.description}
                 </p>
-                <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-body-sm font-medium text-primary">
-                  {service.cta}
-                  <ArrowRight
-                    className="size-4 transition-transform duration-200 group-hover:translate-x-1"
-                    aria-hidden
-                  />
-                </span>
               </Link>
             </RevealItem>
           );

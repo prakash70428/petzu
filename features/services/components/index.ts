@@ -1,4 +1,5 @@
 export * from "./map-placeholder";
+export * from "./service-info-page";
 export * from "./provider-card";
 export * from "./provider-filters";
 export * from "./provider-grid";

@@ -1,19 +1,23 @@
 import {
   Award,
+  Bath,
   Bird,
   Bone,
   Cat,
   Clock,
   Dog,
+  Flower2,
   Gamepad2,
+  GraduationCap,
   Heart,
   Home as HomeIcon,
-  Lightbulb,
   type LucideIcon,
+  Palmtree,
+  PartyPopper,
+  PawPrint,
   Rabbit,
   ShieldCheck,
   ShoppingBag,
-  Sparkles,
   Stethoscope,
   Truck,
   Users,
@@ -57,39 +61,75 @@ export interface ServiceItem {
   icon: LucideIcon;
   title: string;
   description: string;
-  /** Short label for the card's call-to-action link. */
-  cta: string;
   href: string;
 }
 
 export const services: ServiceItem[] = [
   {
-    icon: Lightbulb,
-    title: "Get Expert Pet Advice",
-    description: "Personalised guidance for your pet's everyday needs.",
-    cta: "Expert Advice",
-    href: "/guides",
-  },
-  {
     icon: Stethoscope,
-    title: "Consult a Vet",
-    description: "Trusted veterinary care, when your pet needs it.",
-    cta: "Consult a Vet",
+    title: "Vet Care",
+    description: "Book trusted video consultations or clinic visits with qualified vets near you.",
     href: "/services/vet-booking",
   },
   {
     icon: ShoppingBag,
-    title: "Shop Trusted Pet Essentials",
-    description: "Carefully selected products for happier, healthier pets.",
-    cta: "Shop Essentials",
+    title: "Pet Essentials",
+    description: "Get trusted food, treats and everyday pet essentials delivered to your doorstep.",
     href: "/shop",
   },
   {
-    icon: Sparkles,
-    title: "Plan Spa, Stays & Getaways",
-    description: "From grooming and pampering to trusted stays and pet-friendly holidays.",
-    cta: "Spa & Getaways",
+    icon: Bath,
+    title: "Grooming & Spa",
+    description: "Book professional grooming and spa care with trusted PetZu partners.",
     href: "/services/grooming",
+  },
+  {
+    icon: Truck,
+    title: "Fast Delivery",
+    description: "Pet food, treats and everyday essentials delivered quickly to your doorstep.",
+    href: "/services/delivery",
+  },
+  {
+    icon: PawPrint,
+    title: "Pet Adoption",
+    description: "Find a pet to welcome home and give them the loving family they deserve.",
+    href: "/services/adoption",
+  },
+  {
+    icon: Palmtree,
+    title: "Pet Holidays",
+    description: "Trusted stays, boarding and pet-friendly getaways for your pet.",
+    href: "/services/holidays",
+  },
+  {
+    icon: PartyPopper,
+    title: "Pet Celebrations",
+    description: "Make birthdays and special moments memorable with celebrations made for pets.",
+    href: "/services/celebrations",
+  },
+  {
+    icon: Flower2,
+    title: "The Last Journey",
+    description: "Compassionate support to help you say goodbye with dignity, care and love.",
+    href: "/services/the-last-journey",
+  },
+  {
+    icon: GraduationCap,
+    title: "Training",
+    description: "Personalised 1:1 and group training for every breed, age and stage.",
+    href: "/services/training",
+  },
+  {
+    icon: HomeIcon,
+    title: "Pet Sitting",
+    description: "Trusted, verified sitters and walkers to care for your pet when you're away.",
+    href: "/services/sitting",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Pet Insurance",
+    description: "Simple, reliable protection for your pet — with fewer worries and no surprises.",
+    href: "/services/insurance",
   },
 ];
 
