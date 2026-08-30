@@ -16,8 +16,8 @@ export function Services() {
           Care that goes beyond the cart
         </h2>
         <p className="mt-4 text-body-lg text-muted-foreground">
-          Advice, vet visits, everyday essentials, and pampering — the whole
-          of pet care, in one place.
+          From expert advice and veterinary care to grooming, trusted
+          products and holidays — everything your pet needs, in one place.
         </p>
       </div>
 
