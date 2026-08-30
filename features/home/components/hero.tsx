@@ -61,14 +61,15 @@ export function Hero() {
             Trusted by 128,000+ pet parents
           </Badge>
 
-          <h1 className="font-display text-display-xl leading-[1.05] text-foreground sm:text-display-2xl">
-            Everything your pet needs,{" "}
+          <h1 className="font-display text-display-lg leading-[1.08] text-foreground sm:text-display-xl lg:text-display-2xl lg:leading-[1.05]">
+            Your pet&apos;s whole world,{" "}
             <span className="text-gradient-brand">delivered with care.</span>
           </h1>
 
-          <p className="max-w-lg text-body-lg text-muted-foreground">
-            Vetted products, licensed vets, and a community of pet parents,
-            all in one place. Same-day delivery in 85+ cities.
+          <p className="max-w-lg text-body text-muted-foreground sm:text-body-lg">
+            Everything for happier, healthier pets — trusted products,
+            expert vet guidance and a community of pet parents. Delivered
+            quickly across major cities.
           </p>
 
           <PetPicker />
@@ -175,8 +176,8 @@ export function Hero() {
           >
             <Truck className="size-5 text-info" aria-hidden />
             <div>
-              <p className="text-body-sm font-semibold text-foreground">Same-day delivery</p>
-              <p className="text-caption text-muted-foreground">85+ cities</p>
+              <p className="text-body-sm font-semibold text-foreground">Fast delivery</p>
+              <p className="text-caption text-muted-foreground">Across major cities</p>
             </div>
           </m.div>
 

@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Section } from "@/components/layout/section";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
@@ -15,19 +16,19 @@ export function Services() {
           Care that goes beyond the cart
         </h2>
         <p className="mt-4 text-body-lg text-muted-foreground">
-          From same-day vet visits to grooming at your door, everything your
-          pet needs, handled.
+          Advice, vet visits, everyday essentials, and pampering — the whole
+          of pet care, in one place.
         </p>
       </div>
 
-      <RevealGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <RevealGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {services.map((service) => {
           const Icon = service.icon;
           return (
             <RevealItem key={service.title}>
               <Link
                 href={service.href}
-                className={cn(cardVariants({ interactive: true }), "group block h-full p-card-lg")}
+                className={cn(cardVariants({ interactive: true }), "group flex h-full flex-col p-card-lg")}
               >
                 <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-200 ease-premium group-hover:bg-primary group-hover:text-primary-foreground">
                   <Icon className="size-6" aria-hidden />
@@ -38,6 +39,13 @@ export function Services() {
                 <p className="mt-2 text-body-sm text-muted-foreground">
                   {service.description}
                 </p>
+                <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-body-sm font-medium text-primary">
+                  {service.cta}
+                  <ArrowRight
+                    className="size-4 transition-transform duration-200 group-hover:translate-x-1"
+                    aria-hidden
+                  />
+                </span>
               </Link>
             </RevealItem>
           );

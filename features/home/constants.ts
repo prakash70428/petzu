@@ -6,13 +6,14 @@ import {
   Clock,
   Dog,
   Gamepad2,
-  GraduationCap,
   Heart,
   Home as HomeIcon,
+  Lightbulb,
   type LucideIcon,
   Rabbit,
-  Scissors,
   ShieldCheck,
+  ShoppingBag,
+  Sparkles,
   Stethoscope,
   Truck,
   Users,
@@ -33,9 +34,9 @@ export interface Stat {
 
 export const stats: Stat[] = [
   { label: "Pets cared for", value: 128000, suffix: "+" },
-  { label: "Verified vets", value: 2400, suffix: "+" },
-  { label: "Cities covered", value: 85 },
-  { label: "5-star reviews", value: 34000, suffix: "+" },
+  { label: "Verified vets", value: 500, suffix: "+" },
+  { label: "Cities covered", value: 6 },
+  { label: "5-star reviews", value: 2000, suffix: "+" },
 ];
 
 /** Presented as text wordmarks rather than logo images — no real partner
@@ -56,45 +57,39 @@ export interface ServiceItem {
   icon: LucideIcon;
   title: string;
   description: string;
+  /** Short label for the card's call-to-action link. */
+  cta: string;
   href: string;
 }
 
 export const services: ServiceItem[] = [
   {
+    icon: Lightbulb,
+    title: "Get Expert Pet Advice",
+    description: "Personalised guidance for your pet's everyday needs.",
+    cta: "Expert Advice",
+    href: "/guides",
+  },
+  {
     icon: Stethoscope,
-    title: "Vet consultations",
-    description: "Book same-day video or in-clinic visits with licensed vets near you.",
+    title: "Consult a Vet",
+    description: "Trusted veterinary care, when your pet needs it.",
+    cta: "Consult a Vet",
     href: "/services/vet-booking",
   },
   {
-    icon: Truck,
-    title: "Fast delivery",
-    description: "Same-day delivery on food and essentials across 85+ cities.",
+    icon: ShoppingBag,
+    title: "Shop Trusted Pet Essentials",
+    description: "Carefully selected products for happier, healthier pets.",
+    cta: "Shop Essentials",
     href: "/shop",
   },
   {
-    icon: Scissors,
-    title: "Grooming",
-    description: "Professional grooming, at our studio or yours, with fully insured groomers.",
+    icon: Sparkles,
+    title: "Plan Spa, Stays & Getaways",
+    description: "From grooming and pampering to trusted stays and pet-friendly holidays.",
+    cta: "Spa & Getaways",
     href: "/services/grooming",
-  },
-  {
-    icon: GraduationCap,
-    title: "Training",
-    description: "1:1 and group training programs tailored to every breed and age.",
-    href: "/services/training",
-  },
-  {
-    icon: HomeIcon,
-    title: "Pet sitting",
-    description: "Trusted, background-checked sitters and walkers when you're away.",
-    href: "/services/sitting",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Pet insurance",
-    description: "Transparent plans with no fine-print surprises when it matters most.",
-    href: "/services",
   },
 ];
 
