@@ -21,16 +21,19 @@ export function FeaturedProducts() {
     <Section>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <Badge variant="outline">Featured</Badge>
+          <Badge variant="outline">PetZu Picks</Badge>
           <h2 className="mt-4 font-display text-display-lg text-foreground">
-            Loved by pets, picked by vets
+            Loved by pets. Trusted by pet parents.
           </h2>
+          <p className="mt-3 max-w-md text-body-lg text-muted-foreground">
+            Carefully chosen products for happier, healthier pets.
+          </p>
         </div>
         <Link
           href="/shop"
-          className="inline-flex items-center gap-1 text-body-sm font-medium text-primary transition-colors hover:underline"
+          className="inline-flex shrink-0 items-center gap-1 text-body-sm font-medium text-primary transition-colors hover:underline"
         >
-          View all products
+          Explore PetZu Picks
           <ArrowUpRight className="size-4" aria-hidden />
         </Link>
       </div>

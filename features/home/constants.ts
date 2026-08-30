@@ -167,7 +167,7 @@ export const featuredProducts: Product[] = [
     originalPrice: 119,
     rating: 4.8,
     reviewCount: 1204,
-    badge: "Bestseller",
+    badge: "PetZu Pick",
     icon: HomeIcon,
   },
   {
