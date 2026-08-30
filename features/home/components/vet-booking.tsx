@@ -16,11 +16,11 @@ export function VetBooking() {
         <Reveal>
           <Badge variant="outline">Vet booking</Badge>
           <h2 className="mt-4 font-display text-display-lg text-foreground">
-            See a vet today, not next week.
+            See a vet today. Because your pet shouldn&apos;t have to wait.
           </h2>
           <p className="mt-4 text-body-lg text-muted-foreground">
-            Skip the waiting room. Book a licensed vet for a video or
-            in-clinic visit in under two minutes.
+            Trusted veterinary care, when you need it. Book a video
+            consultation or clinic visit in minutes.
           </p>
           <ul className="mt-6 flex flex-col gap-3">
             {vetBookingFeatures.map((feature) => (
@@ -35,7 +35,7 @@ export function VetBooking() {
           </ul>
           <Magnetic className="mt-8 inline-block">
             <Button asChild size="lg" variant="gradient">
-              <Link href="/services/vet-booking">Book an appointment</Link>
+              <Link href="/services/vet-booking">Book a Vet</Link>
             </Button>
           </Magnetic>
         </Reveal>
@@ -70,8 +70,8 @@ export function VetBooking() {
           <div className="glass absolute -bottom-6 -left-6 flex animate-float items-center gap-2 rounded-2xl px-4 py-3 shadow-xl [animation-delay:1s]">
             <Stethoscope className="size-5 text-primary" aria-hidden />
             <div>
-              <p className="text-body-sm font-semibold text-foreground">2,400+ vets</p>
-              <p className="text-caption text-muted-foreground">Licensed & verified</p>
+              <p className="text-body-sm font-semibold text-foreground">500+ vets</p>
+              <p className="text-caption text-muted-foreground">Trusted & verified</p>
             </div>
           </div>
         </Reveal>

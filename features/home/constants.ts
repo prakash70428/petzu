@@ -200,9 +200,9 @@ export const featuredProducts: Product[] = [
 
 export const vetBookingFeatures: string[] = [
   "Same-day appointments, 7 days a week",
-  "100% licensed & background-checked vets",
-  "Video consults or in-clinic visits",
-  "Digital health records, always in sync",
+  "Trusted, verified veterinarians",
+  "Video or in-clinic consultations",
+  "Your pet's health records, all in one place",
 ];
 
 export interface WhyPetzuItem {
