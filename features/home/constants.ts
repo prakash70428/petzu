@@ -7,7 +7,6 @@ import {
   Clock,
   Dog,
   Flower2,
-  Gamepad2,
   GraduationCap,
   Heart,
   Home as HomeIcon,
@@ -21,7 +20,6 @@ import {
   Stethoscope,
   Truck,
   Users,
-  Utensils,
 } from "lucide-react";
 
 /**
@@ -133,6 +131,34 @@ export const services: ServiceItem[] = [
   },
 ];
 
+export interface GalleryItem {
+  image: string;
+  alt: string;
+  caption: string;
+  href: string;
+}
+
+export const lifestyleGallery: GalleryItem[] = [
+  {
+    image: "/images/img6.jpeg",
+    alt: "A golden retriever beside a full set of at-home grooming tools",
+    caption: "Grooming kit, sorted",
+    href: `/shop?category=${encodeURIComponent("Health & wellness")}`,
+  },
+  {
+    image: "/images/img3.jpeg",
+    alt: "A golden retriever sitting next to treat pouches and a bowl of food",
+    caption: "Treats they'll actually sit for",
+    href: `/shop?category=${encodeURIComponent("Food & treats")}`,
+  },
+  {
+    image: "/images/img2.jpeg",
+    alt: "A golden retriever with a lineup of pet bath and coat-care products",
+    caption: "Bath-time essentials",
+    href: "/shop",
+  },
+];
+
 export interface CategoryItem {
   icon: LucideIcon;
   label: string;
@@ -156,7 +182,9 @@ export interface Product {
   rating: number;
   reviewCount: number;
   badge?: string;
-  icon: LucideIcon;
+  /** Lifestyle photo in /public/images. */
+  image: string;
+  imageAlt: string;
 }
 
 export const featuredProducts: Product[] = [
@@ -168,7 +196,8 @@ export const featuredProducts: Product[] = [
     rating: 4.8,
     reviewCount: 1204,
     badge: "PetZu Pick",
-    icon: HomeIcon,
+    image: "/images/img1.jpeg",
+    imageAlt: "A golden retriever resting on an orthopedic memory foam bed at home",
   },
   {
     name: "Grain-Free Salmon Recipe",
@@ -177,7 +206,8 @@ export const featuredProducts: Product[] = [
     rating: 4.9,
     reviewCount: 2310,
     badge: "Vet recommended",
-    icon: Utensils,
+    image: "/images/img7.jpeg",
+    imageAlt: "A golden retriever eating from a bowl of grain-free food by the fireplace",
   },
   {
     name: "Interactive Puzzle Feeder",
@@ -185,7 +215,8 @@ export const featuredProducts: Product[] = [
     price: 28,
     rating: 4.7,
     reviewCount: 856,
-    icon: Gamepad2,
+    image: "/images/img5.jpeg",
+    imageAlt: "A golden retriever playing with an enrichment toy on a bolster bed",
   },
   {
     name: "Adjustable Step-In Harness",
@@ -194,7 +225,8 @@ export const featuredProducts: Product[] = [
     rating: 4.6,
     reviewCount: 512,
     badge: "New",
-    icon: ShieldCheck,
+    image: "/images/img4.jpeg",
+    imageAlt: "A golden retriever on a rug with a walking lead and everyday gear",
   },
 ];
 

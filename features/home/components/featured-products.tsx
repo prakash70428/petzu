@@ -1,4 +1,5 @@
 import { ArrowUpRight, Heart, ShoppingCart, Star } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/layout/section";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
@@ -8,13 +9,6 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/utils/cn";
 import { formatPrice } from "@/utils/currency";
 import { featuredProducts } from "../constants";
-
-const tileGradients = [
-  "from-primary/25 via-primary/10 to-transparent",
-  "from-info/25 via-info/10 to-transparent",
-  "from-success/25 via-success/10 to-transparent",
-  "from-warning/25 via-warning/10 to-transparent",
-];
 
 export function FeaturedProducts() {
   return (
@@ -39,82 +33,76 @@ export function FeaturedProducts() {
       </div>
 
       <RevealGroup className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {featuredProducts.map((product, index) => {
-          const Icon = product.icon;
-          return (
-            <RevealItem key={product.name}>
-              <Card interactive className="group flex h-full flex-col overflow-hidden p-0">
-                <div
-                  className={cn(
-                    "relative flex aspect-square items-center justify-center bg-gradient-to-br",
-                    tileGradients[index % tileGradients.length],
-                  )}
+        {featuredProducts.map((product) => (
+          <RevealItem key={product.name}>
+            <Card interactive className="group flex h-full flex-col overflow-hidden p-0">
+              <div className="relative aspect-square overflow-hidden bg-muted">
+                {product.badge && (
+                  <Badge variant="primary" className="absolute left-3 top-3 z-10">
+                    {product.badge}
+                  </Badge>
+                )}
+                <button
+                  type="button"
+                  aria-label="Add to wishlist"
+                  className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full bg-background/80 text-muted-foreground opacity-0 backdrop-blur-sm transition-all duration-200 ease-premium group-hover:opacity-100 hover:text-destructive"
                 >
-                  {product.badge && (
-                    <Badge variant="primary" className="absolute left-3 top-3">
-                      {product.badge}
-                    </Badge>
-                  )}
-                  <button
-                    type="button"
-                    aria-label="Add to wishlist"
-                    className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-background/80 text-muted-foreground opacity-0 backdrop-blur-sm transition-all duration-200 ease-premium group-hover:opacity-100 hover:text-destructive"
-                  >
-                    <Heart className="size-4" />
-                  </button>
-                  <Icon
-                    className="size-16 text-foreground/70 transition-transform duration-300 ease-premium group-hover:scale-110"
-                    strokeWidth={1.25}
-                    aria-hidden
-                  />
-                </div>
+                  <Heart className="size-4" />
+                </button>
+                <Image
+                  src={product.image}
+                  alt={product.imageAlt}
+                  fill
+                  sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw"
+                  className="object-cover transition-transform duration-300 ease-premium group-hover:scale-105"
+                />
+              </div>
 
-                <div className="flex flex-1 flex-col gap-2 p-card">
-                  <p className="text-caption text-muted-foreground">{product.category}</p>
-                  <h3 className="text-body font-semibold text-foreground">{product.name}</h3>
-                  <div className="flex items-center gap-1.5">
-                    <div className="flex items-center gap-0.5" aria-hidden>
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={cn(
-                            "size-3.5",
-                            i < Math.round(product.rating)
-                              ? "fill-warning text-warning"
-                              : "text-muted-foreground/30",
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-caption text-muted-foreground">
-                      ({product.reviewCount})
-                    </span>
+              <div className="flex flex-1 flex-col gap-2 p-card">
+                <p className="text-caption text-muted-foreground">{product.category}</p>
+                <h3 className="text-body font-semibold text-foreground">{product.name}</h3>
+                <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-0.5" aria-hidden>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className={cn(
+                          "size-3.5",
+                          i < Math.round(product.rating)
+                            ? "fill-warning text-warning"
+                            : "text-muted-foreground/30",
+                        )}
+                      />
+                    ))}
                   </div>
-                  <div className="mt-auto flex items-center justify-between pt-2">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-heading-4 font-semibold text-foreground">
-                        {formatPrice(product.price)}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-caption text-muted-foreground line-through">
-                          {formatPrice(product.originalPrice)}
-                        </span>
-                      )}
-                    </div>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      aria-label={`Add ${product.name} to cart`}
-                      className="transition-transform duration-200 ease-premium hover:border-primary hover:bg-primary hover:text-primary-foreground group-hover:scale-105"
-                    >
-                      <ShoppingCart className="size-4" />
-                    </Button>
-                  </div>
+                  <span className="text-caption text-muted-foreground">
+                    ({product.reviewCount})
+                  </span>
                 </div>
-              </Card>
-            </RevealItem>
-          );
-        })}
+                <div className="mt-auto flex items-center justify-between pt-2">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-heading-4 font-semibold text-foreground">
+                      {formatPrice(product.price)}
+                    </span>
+                    {product.originalPrice && (
+                      <span className="text-caption text-muted-foreground line-through">
+                        {formatPrice(product.originalPrice)}
+                      </span>
+                    )}
+                  </div>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    aria-label={`Add ${product.name} to cart`}
+                    className="transition-transform duration-200 ease-premium hover:border-primary hover:bg-primary hover:text-primary-foreground group-hover:scale-105"
+                  >
+                    <ShoppingCart className="size-4" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </RevealItem>
+        ))}
       </RevealGroup>
     </Section>
   );

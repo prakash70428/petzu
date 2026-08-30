@@ -6,6 +6,7 @@ export * from "./categories";
 export * from "./featured-products";
 export * from "./vet-booking";
 export * from "./why-petzu";
+export * from "./lifestyle-gallery";
 export * from "./testimonials";
 export * from "./community";
 export * from "./blog-preview";

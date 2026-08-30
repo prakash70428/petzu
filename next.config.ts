@@ -52,10 +52,9 @@ const nextConfig: NextConfig = {
 
   images: {
     // Modern formats first; the browser picks the best it supports.
-    // No `remotePatterns` yet because every visual is currently
-    // system-rendered (gradients + icons) rather than a hosted image —
-    // this is here so the config is correct the moment real product
-    // photography lands.
+    // Product/lifestyle photography is served from /public (see
+    // features/home/constants.ts); no `remotePatterns` until images move
+    // to a CDN or headless CMS.
     formats: ["image/avif", "image/webp"],
   },
 

@@ -4,6 +4,7 @@ import {
   Community,
   FeaturedProducts,
   Hero,
+  LifestyleGallery,
   Newsletter,
   Services,
   Stats,
@@ -24,6 +25,7 @@ export default function Home() {
       <Categories />
       <FeaturedProducts />
       <WhyPetzu />
+      <LifestyleGallery />
       <Testimonials />
       <Community />
       <BlogPreview />
