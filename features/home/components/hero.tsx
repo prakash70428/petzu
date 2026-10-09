@@ -1,7 +1,7 @@
 "use client";
 
 import { m, useTransform } from "framer-motion";
-import { ArrowRight, ChevronDown, Heart, ShieldCheck, Star, Truck } from "lucide-react";
+import { ArrowRight, ChevronDown, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/layout/container";
@@ -36,10 +36,6 @@ const avatarInitials = ["SM", "JR", "PK", "DF"];
 export function Hero() {
   const { x, y, onPointerMove, onPointerLeave } = useMouseParallax();
 
-  const farX = useTransform(x, (v) => v * 40);
-  const farY = useTransform(y, (v) => v * 40);
-  const midX = useTransform(x, (v) => v * 24);
-  const midY = useTransform(y, (v) => v * 24);
   const nearX = useTransform(x, (v) => v * 12);
   const nearY = useTransform(y, (v) => v * 12);
   const ringX = useTransform(x, (v) => v * -16);
@@ -58,7 +54,7 @@ export function Hero() {
         >
           <Badge variant="secondary" className="glass gap-1.5">
             <span className="size-1.5 rounded-full bg-success" aria-hidden />
-            Trusted by 128,000+ pet parents
+            Vet-verified products · Fast delivery
           </Badge>
 
           <h1 className="font-display text-display-lg leading-[1.08] text-foreground sm:text-display-xl lg:text-display-2xl lg:leading-[1.05]">
@@ -153,47 +149,6 @@ export function Hero() {
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
           </m.div>
 
-          <m.div
-            style={{ x: farX, y: farY }}
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.9 }}
-            className="glass absolute left-2 top-6 flex animate-float items-center gap-2 rounded-2xl px-4 py-3 shadow-xl"
-          >
-            <ShieldCheck className="size-5 text-success" aria-hidden />
-            <div>
-              <p className="text-body-sm font-semibold text-foreground">Vet verified</p>
-              <p className="text-caption text-muted-foreground">Every product checked</p>
-            </div>
-          </m.div>
-
-          <m.div
-            style={{ x: midX, y: midY }}
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 18, delay: 1.05 }}
-            className="glass absolute bottom-10 right-0 flex animate-float items-center gap-2 rounded-2xl px-4 py-3 shadow-xl [animation-delay:1s]"
-          >
-            <Truck className="size-5 text-info" aria-hidden />
-            <div>
-              <p className="text-body-sm font-semibold text-foreground">Fast delivery</p>
-              <p className="text-caption text-muted-foreground">Across major cities</p>
-            </div>
-          </m.div>
-
-          <m.div
-            style={{ x: midX, y: farY }}
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 18, delay: 1.2 }}
-            className="glass absolute right-1 top-1/3 flex animate-float items-center gap-2 rounded-2xl px-4 py-3 shadow-xl sm:-right-4 [animation-delay:2s]"
-          >
-            <Heart className="size-5 text-destructive" aria-hidden />
-            <div>
-              <p className="text-body-sm font-semibold text-foreground">Made with love</p>
-              <p className="text-caption text-muted-foreground">Every pet, every time</p>
-            </div>
-          </m.div>
         </m.div>
       </Container>
 

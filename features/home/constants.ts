@@ -85,7 +85,7 @@ export const services: ServiceItem[] = [
     icon: Truck,
     title: "Fast Delivery",
     description: "Pet food, treats and everyday essentials delivered quickly to your doorstep.",
-    href: "/services/delivery",
+    href: "/shop",
   },
   {
     icon: PawPrint,

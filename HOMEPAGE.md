@@ -91,7 +91,7 @@ specifically:
   "real" than one that's just printed on the page.
 - **Marquee** (trusted brands) implies scale and continuity — logos that
   never stop moving suggest an ever-growing list, not eight logos, once.
-- **Idle float** on hero/vet-booking floating cards keeps those elements
+- **Idle float** on the vet-booking floating cards keeps those elements
   from looking like flat, static screenshots — small, slow, looping motion
   is what separates "illustration" from "photograph of a UI."
 
@@ -123,8 +123,8 @@ Five compounding decisions, each small, together read as "expensive":
 | Component | Animation | Why Framer Motion (not CSS) |
 |---|---|---|
 | `Hero` left column | `initial`/`animate` fade+slide on mount | One-shot entrance tied to component mount, cleaner as a declarative prop than a CSS animation-fill-mode dance |
-| `Hero` illustration column | `useMouseParallax` → `useTransform` per layer (4 depths) | Continuous, input-driven values — impossible with CSS alone |
-| `Hero` floating cards | `animate-float` (CSS, via `--animate-float` token) + Framer `style={{x,y}}` for parallax offset | Split responsibility: CSS handles the idle loop, Framer handles the pointer-driven offset on the *same* element |
+| `Hero` illustration column | `useMouseParallax` → `useTransform` per layer (photo + glow ring) | Continuous, input-driven values — impossible with CSS alone |
+| `Hero` photo (no overlay cards) | Floating info cards were removed per client feedback | Static/idle chips layered over a cursor-reactive photo read as confusing; the trust message moved to the hero badge instead |
 | `Hero` scroll cue | `animate={{ y: [0,8,0] }}`, `repeat: Infinity` | Simple, cheap, purely decorative loop — no reason to hand-write a keyframe for one element |
 | `MegaMenu` panel | `AnimatePresence` + `initial/animate/exit` (opacity + y) | Needs to animate *out* before unmounting — CSS `display:none` can't do that |
 | `Navbar` mobile menu | `AnimatePresence` + height/opacity | Same exit-before-unmount requirement |
