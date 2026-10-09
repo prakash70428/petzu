@@ -1,9 +1,10 @@
 "use client";
 
-import { m, useTransform } from "framer-motion";
+import { AnimatePresence, m, useTransform } from "framer-motion";
 import { ArrowRight, ChevronDown, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { Container } from "@/components/layout/container";
 import { CursorGlow } from "@/components/motion/cursor-glow";
 import { FloatingBackground } from "@/components/motion/floating-background";
@@ -11,10 +12,15 @@ import { Magnetic } from "@/components/motion/magnetic";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PetOnboardingDialog, PetSwitcher } from "@/features/pet-profile/components";
+import { OTHER_BREED, speciesConfig } from "@/features/pet-profile/constants";
+import { dismissOnboarding, usePetProfileState } from "@/features/pet-profile/store";
+import { formatPetAge, possessive } from "@/features/pet-profile/utils";
 import { useMouseParallax } from "@/hooks/use-mouse-parallax";
-import { PetPicker } from "./pet-picker";
 
 const avatarInitials = ["SM", "JR", "PK", "DF"];
+
+const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
 
 /**
  * The hero photo is the first thing on the page, so it's the LCP element —
@@ -32,9 +38,23 @@ const avatarInitials = ["SM", "JR", "PK", "DF"];
  * below only makes sense paired with this: it's sizing the *content* to fill
  * the viewport minus the navbar's height, while the section itself spans
  * the full viewport.
+ *
+ * The hero re-skins itself (photo, headline, copy, shop link) for the active
+ * pet profile or the animal being browsed. SSR always renders the dog
+ * version, since saved profiles only exist in localStorage; the client
+ * swaps in the saved pet right after hydration.
  */
 export function Hero() {
   const { x, y, onPointerMove, onPointerLeave } = useMouseParallax();
+  const profile = usePetProfileState();
+  const [addPetOpen, setAddPetOpen] = useState(false);
+
+  const activePet = profile.pets.find((pet) => pet.id === profile.activeId) ?? null;
+  const config = speciesConfig[activePet?.species ?? profile.browsingSpecies];
+  const activePetAge = activePet ? formatPetAge(activePet.birthday) : null;
+  // Derived, not effect-driven: the first-visit prompt is simply "open" for
+  // anyone with no saved pets who hasn't skipped it yet.
+  const firstVisit = profile.hydrated && profile.pets.length === 0 && !profile.onboardingDismissed;
 
   const nearX = useTransform(x, (v) => v * 12);
   const nearY = useTransform(y, (v) => v * 12);
@@ -54,26 +74,34 @@ export function Hero() {
         >
           <Badge variant="secondary" className="glass gap-1.5">
             <span className="size-1.5 rounded-full bg-success" aria-hidden />
-            Vetted products · Verified vets
+            {activePet
+              ? [activePet.breed === OTHER_BREED ? capitalize(config.singular) : activePet.breed, activePetAge]
+                  .filter(Boolean)
+                  .join(" · ")
+              : "Vetted products · Verified vets"}
           </Badge>
 
           <h1 className="font-display text-display-lg leading-[1.08] text-foreground sm:text-display-xl lg:text-display-2xl lg:leading-[1.05]">
-            Your pet&apos;s whole world,{" "}
+            {activePet ? possessive(activePet.name) : `Your ${config.singular}'s`} whole world,{" "}
             <span className="text-gradient-brand">cared for in one place.</span>
           </h1>
 
           <p className="max-w-lg text-body text-muted-foreground sm:text-body-lg">
-            Everything for happier, healthier pets: trusted products,
-            expert vet guidance and a community of pet parents.
+            {config.heroCopy}
           </p>
 
-          <PetPicker />
+          <PetSwitcher
+            pets={profile.pets}
+            activeId={profile.activeId}
+            browsingSpecies={profile.browsingSpecies}
+            onAddPet={() => setAddPetOpen(true)}
+          />
 
           <div className="flex flex-col gap-4 sm:flex-row sm:gap-5">
             <Magnetic>
               <Button asChild variant="gradient" size="lg" className="group w-full sm:w-auto">
-                <Link href="/shop">
-                  Start shopping
+                <Link href={`/shop?pet=${config.shopPetType}`}>
+                  Shop for {activePet ? activePet.name : config.label.toLowerCase()}
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
               </Button>
@@ -130,24 +158,34 @@ export function Hero() {
             {/* A static photo needs its own motion to feel alive — this slow, continuous
                 zoom (a "Ken Burns" pan) starts once the entrance settles, independent of
                 the parent's one-time scale-in, so the two animations never fight. */}
-            <m.div
-              className="absolute inset-0"
-              initial={{ scale: 1 }}
-              animate={{ scale: [1, 1.08, 1] }}
-              transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
-            >
-              <Image
-                src="/images/petzucutedog.jpeg"
-                alt="A happy golden retriever cared for through PetZu"
-                fill
-                priority
-                sizes="(min-width: 1024px) 28rem, (min-width: 640px) 24rem, 85vw"
-                className="object-cover"
-              />
-            </m.div>
+            <AnimatePresence initial={false}>
+              <m.div
+                key={config.image}
+                className="absolute inset-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                <m.div
+                  className="absolute inset-0"
+                  initial={{ scale: 1 }}
+                  animate={{ scale: [1, 1.08, 1] }}
+                  transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+                >
+                  <Image
+                    src={config.image}
+                    alt={config.imageAlt}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 28rem, (min-width: 640px) 24rem, 85vw"
+                    className="object-cover"
+                  />
+                </m.div>
+              </m.div>
+            </AnimatePresence>
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
           </m.div>
-
         </m.div>
       </Container>
 
@@ -166,6 +204,13 @@ export function Hero() {
           <ChevronDown className="size-4" aria-hidden />
         </m.div>
       </m.div>
+
+      <PetOnboardingDialog
+        open={addPetOpen || firstVisit}
+        onOpenChange={setAddPetOpen}
+        firstVisit={firstVisit}
+        onSkip={dismissOnboarding}
+      />
     </CursorGlow>
   );
 }

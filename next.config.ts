@@ -53,9 +53,11 @@ const nextConfig: NextConfig = {
   images: {
     // Modern formats first; the browser picks the best it supports.
     // Product/lifestyle photography is served from /public (see
-    // features/home/constants.ts); no `remotePatterns` until images move
-    // to a CDN or headless CMS.
+    // features/home/constants.ts). The one remote source is Unsplash, for
+    // the cat/bird/fish hero photos in features/pet-profile/constants.ts
+    // until the client supplies their own.
     formats: ["image/avif", "image/webp"],
+    remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
   },
 
   async headers() {

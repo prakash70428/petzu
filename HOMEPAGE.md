@@ -263,3 +263,29 @@ fully tick forward here even though their logic is correct and verified
 functionally (state changes, DOM structure, ARIA attributes all update as
 expected). Worth a quick look in a normal, focused browser tab to see the
 motion itself.
+
+## 11. Pet personalisation
+
+The homepage re-skins itself per animal so it stops reading as a dog-only
+site (client feedback, Oct 2026).
+
+- **First visit:** a two-step dialog asks which animal (dogs, cats, birds,
+  fish), then name, breed and an optional birthday. "Skip for now" is
+  remembered, so it never asks twice.
+- **Hero:** photo, headline ("Mochi's whole world"), copy, badge (breed and
+  age) and the shop button all follow the active pet, or the animal being
+  browsed if no pet is saved.
+- **Multi-pet homes:** saved pets appear as chips in the hero; tapping one
+  switches the site to that pet. "Add a pet" adds another.
+- **Where it lives:** `features/pet-profile/`. Config per animal (photo,
+  copy, breed list, shop filter) is in `constants.ts`; profiles persist in
+  `localStorage` via `store.ts`, the same pattern as cart and wishlist.
+
+Not done yet, and why:
+
+- **Family sharing** needs real accounts and a backend; profiles are
+  per-device until then. `store.ts` is the one module to swap.
+- **Breed-specific photos** need a photo per breed. The config can take
+  them once the client supplies images.
+- **Cat, bird and fish photos** are Unsplash placeholders (hotlinked, free
+  licence) until the client provides their own.
