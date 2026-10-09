@@ -9,7 +9,7 @@ export function SocialAuthButtons() {
   function handleClick(provider: string) {
     toast({
       title: "Not available in this demo",
-      description: `${provider} sign-in requires a backend — this milestone is frontend only.`,
+      description: `${provider} sign-in requires a backend: this milestone is frontend only.`,
       variant: "info",
     });
   }

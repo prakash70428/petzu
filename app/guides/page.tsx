@@ -29,7 +29,7 @@ export default function GuidesPage() {
       <div className="mt-6 max-w-2xl">
         <h1 className="font-display text-display-lg text-foreground">Care guides</h1>
         <p className="mt-2 text-body-lg text-muted-foreground">
-          Vet-reviewed advice on nutrition, training, grooming, and everything in between —
+          Vet-reviewed advice on nutrition, training, grooming, and everything in between:
           the same guides linked from the blog, gathered in one place.
         </p>
       </div>

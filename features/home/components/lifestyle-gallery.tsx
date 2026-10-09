@@ -19,7 +19,7 @@ export function LifestyleGallery() {
           Made for the way you actually live with your pet
         </h2>
         <p className="mt-4 text-body-lg text-muted-foreground">
-          Not staged pack shots — the products PetZu stocks, in the homes and
+          Not staged pack shots: the products PetZu stocks, in the homes and
           hands of the pet parents who use them.
         </p>
       </div>

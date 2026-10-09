@@ -154,7 +154,7 @@ export default function SettingsPage() {
         <Card className="border-destructive/30 p-card-lg">
           <h2 className="font-semibold text-foreground">Danger zone</h2>
           <Alert variant="destructive" title="Delete account" className="mt-4">
-            This permanently deletes your PetZu account — profile, consent settings, chat history, message history,
+            This permanently deletes your PetZu account: profile, consent settings, chat history, message history,
             and feedback. This can&apos;t be undone.
           </Alert>
           <Button variant="destructive" className="mt-4" onClick={() => setDeleteOpen(true)}>
@@ -167,7 +167,7 @@ export default function SettingsPage() {
         <DialogHeader>
           <DialogTitle>Delete your account?</DialogTitle>
           <DialogDescription>
-            This permanently deletes your account and everything linked to it. This can&apos;t be undone — consider
+            This permanently deletes your account and everything linked to it. This can&apos;t be undone, so consider
             exporting your data first.
           </DialogDescription>
         </DialogHeader>

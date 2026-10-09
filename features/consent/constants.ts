@@ -12,7 +12,7 @@ export const consentPurposes: { id: ConsentPurpose; label: string; description: 
   {
     id: "TRANSACTIONAL",
     label: "Order & appointment updates",
-    description: "Confirmations, shipping status, reminders — about something you already booked or bought.",
+    description: "Confirmations, shipping updates and reminders about something you already booked or bought.",
   },
   {
     id: "SUPPORT",

@@ -38,7 +38,7 @@ export async function generateMetadata({ searchParams }: ShopPageProps): Promise
     return buildMetadata({
       title: "Shop",
       path: "/shop",
-      description: "Vetted products for dogs, cats, birds, and small pets — delivered fast.",
+      description: "Vetted products for dogs, cats, birds, and small pets.",
     });
   }
   return buildMetadata({
@@ -47,7 +47,7 @@ export async function generateMetadata({ searchParams }: ShopPageProps): Promise
     // content, not a distinct page, so it shouldn't compete with /shop for
     // search ranking (see app/sitemap.ts, which only lists /shop).
     path: "/shop",
-    description: `Shop ${title.toLowerCase()} — vetted products, delivered fast.`,
+    description: `Shop ${title.toLowerCase()}: vetted products for your pet.`,
   });
 }
 
@@ -101,14 +101,14 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
         <div className="mt-6">
           <h1 className="font-display text-display-lg text-foreground">{label}</h1>
           <p className="mt-2 max-w-xl text-body-lg text-muted-foreground">
-            Vetted {label.toLowerCase()} for every pet — delivered fast.
+            Vetted {label.toLowerCase()} for every pet.
           </p>
         </div>
       ) : (
         <div className="mt-6">
           <h1 className="font-display text-display-lg text-foreground">Shop all products</h1>
           <p className="mt-2 max-w-xl text-body-lg text-muted-foreground">
-            Vetted products for dogs, cats, birds, and small pets — delivered fast.
+            Vetted products for dogs, cats, birds, and small pets.
           </p>
         </div>
       )}

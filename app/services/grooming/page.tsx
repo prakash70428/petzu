@@ -16,7 +16,7 @@ import { getProvidersByType } from "@/features/services/utils";
 export const metadata: Metadata = buildMetadata({
   title: "Book a groomer",
   path: "/services/grooming",
-  description: "Professional pet grooming — in-studio or mobile, booked in minutes.",
+  description: "Professional pet grooming: in-studio or mobile, booked in minutes.",
 });
 
 export default function GroomingPage() {
@@ -39,7 +39,7 @@ export default function GroomingPage() {
       <div className="mt-6">
         <h1 className="font-display text-display-lg text-foreground">Book a groomer</h1>
         <p className="mt-2 max-w-xl text-body-lg text-muted-foreground">
-          Professional grooming — in-studio or mobile, booked in minutes.
+          Professional grooming: in-studio or mobile, booked in minutes.
         </p>
       </div>
 

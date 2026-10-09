@@ -33,7 +33,7 @@ const sections = [
   },
   {
     title: "Contact",
-    body: "Questions about this policy can be sent through the contact page — we read every message.",
+    body: "Questions about this policy can be sent through the contact page: we read every message.",
   },
 ];
 

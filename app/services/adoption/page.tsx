@@ -16,7 +16,7 @@ export default function AdoptionPage() {
       name="Pet Adoption"
       headline="Find a pet to welcome home"
       intro="We work with vetted shelters and rescues to match pets with the right
-        family — with honest histories, real support, and no adoption fees going
+        family, with honest histories, real support, and no adoption fees going
         anywhere but the animal's care."
       highlights={[
         {
@@ -35,7 +35,7 @@ export default function AdoptionPage() {
           icon: HeartHandshake,
           title: "Support after adoption",
           description:
-            "Vet advice, food guidance and a settling-in checklist for the first few weeks — included.",
+            "Vet advice, food guidance and a settling-in checklist for the first few weeks, all included.",
         },
       ]}
       cta={{

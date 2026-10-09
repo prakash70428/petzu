@@ -7,7 +7,7 @@ export const metadata: Metadata = buildMetadata({
   title: "Pet Insurance",
   path: "/services/insurance",
   description:
-    "Simple, reliable protection for your pet — with fewer worries and no surprises.",
+    "Simple, reliable protection for your pet, with fewer worries and no surprises.",
 });
 
 export default function InsurancePage() {
@@ -16,14 +16,14 @@ export default function InsurancePage() {
       name="Pet Insurance"
       headline="Cover that makes sense"
       intro="Compare plans from insurers we've vetted, in plain language. Know what's
-        covered, what isn't, and what you'll actually pay — before you sign
+        covered, what isn't, and what you'll actually pay, before you sign
         anything."
       highlights={[
         {
           icon: FileText,
           title: "Plain-language plans",
           description:
-            "Exclusions, waiting periods and payout limits laid out side by side — no fine-print traps.",
+            "Exclusions, waiting periods and payout limits laid out side by side: no fine-print traps.",
         },
         {
           icon: Wallet,

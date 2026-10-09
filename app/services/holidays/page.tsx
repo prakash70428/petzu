@@ -28,13 +28,13 @@ export default function HolidaysPage() {
           icon: BedDouble,
           title: "Home stays or boarding",
           description:
-            "Pick a quiet home with a single family or a professional boarding facility — whatever suits your pet.",
+            "Pick a quiet home with a single family or a professional boarding facility, whatever suits your pet.",
         },
         {
           icon: MapPin,
           title: "Pet-friendly getaways",
           description:
-            "Curated stays that genuinely welcome pets — not the ones that merely tolerate them.",
+            "Curated stays that genuinely welcome pets, not the ones that merely tolerate them.",
         },
       ]}
       cta={{

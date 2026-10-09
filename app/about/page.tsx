@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Heart, ShieldCheck, Truck, Users } from "lucide-react";
+import { Heart, ShieldCheck, Stethoscope, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/layout/section";
@@ -20,9 +20,9 @@ const values = [
     description: "Every product and provider on PetZu is reviewed before it reaches you. No pay-to-rank shelf space.",
   },
   {
-    icon: Truck,
+    icon: Stethoscope,
     title: "Care that shows up",
-    description: "Same-day delivery, same-day vet visits. Pet emergencies don't wait, so neither do we.",
+    description: "Same-day vet visits, because pet emergencies don't wait and neither do we.",
   },
   {
     icon: Users,

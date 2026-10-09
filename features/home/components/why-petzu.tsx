@@ -8,12 +8,12 @@ export function WhyPetzu() {
     <Section className="bg-secondary/40">
       <div className="mx-auto max-w-2xl text-center">
         <Badge variant="outline">Why PetZu</Badge>
-        <h2 className="mt-4 font-display text-display-lg text-foreground">
-          Built different, on purpose
+        <h2 className="mt-4 text-balance font-display text-display-lg text-foreground">
+          Made by pet parents, for pet parents
         </h2>
       </div>
 
-      <RevealGroup className="mt-14 grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+      <RevealGroup className="mt-14 grid grid-cols-1 gap-x-10 gap-y-10 md:grid-cols-3">
         {whyPetzu.map((item) => {
           const Icon = item.icon;
           return (
@@ -22,8 +22,8 @@ export function WhyPetzu() {
                 <Icon className="size-5" aria-hidden />
               </div>
               <div>
-                <h3 className="font-semibold text-foreground">{item.title}</h3>
-                <p className="mt-1 text-body-sm text-muted-foreground">
+                <h3 className="text-heading-4 font-semibold text-foreground">{item.title}</h3>
+                <p className="mt-1 text-body text-foreground/75">
                   {item.description}
                 </p>
               </div>

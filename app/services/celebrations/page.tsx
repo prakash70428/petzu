@@ -15,14 +15,14 @@ export default function CelebrationsPage() {
     <ServiceInfoPage
       name="Pet Celebrations"
       headline="Make the moment count"
-      intro="Gotcha days, birthdays, homecomings — mark them with treats, gifts and
+      intro="Gotcha days, birthdays, homecomings: mark them with treats, gifts and
         keepsakes put together for pets and the people who love them."
       highlights={[
         {
           icon: Cake,
           title: "Vet-safe treats & cakes",
           description:
-            "Celebration bakes and treat boxes made with pet-safe ingredients — no xylitol, no chocolate, no guesswork.",
+            "Celebration bakes and treat boxes made with pet-safe ingredients: no xylitol, no chocolate, no guesswork.",
         },
         {
           icon: Gift,

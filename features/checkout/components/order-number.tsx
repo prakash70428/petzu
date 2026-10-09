@@ -28,5 +28,5 @@ function getServerSnapshot() {
 
 export function OrderNumber() {
   const orderNumber = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  return <span className="font-mono font-semibold text-foreground">{orderNumber ?? "—"}</span>;
+  return <span className="font-mono font-semibold text-foreground">{orderNumber ?? "-"}</span>;
 }

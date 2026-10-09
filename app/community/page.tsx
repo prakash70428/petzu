@@ -18,7 +18,7 @@ const guidelines = [
   {
     icon: ShieldCheck,
     title: "No sales pitches",
-    description: "Recommendations from real experience only — no affiliate links, no disguised ads.",
+    description: "Recommendations from real experience only: no affiliate links, no disguised ads.",
   },
   {
     icon: MessageSquare,
@@ -28,7 +28,7 @@ const guidelines = [
   {
     icon: PawPrint,
     title: "Every pet welcome",
-    description: "Dogs, cats, birds, rabbits, fish — if you're caring for it, you belong here.",
+    description: "Dogs, cats, birds, rabbits, fish: if you're caring for it, you belong here.",
   },
 ];
 
@@ -82,7 +82,7 @@ export default function CommunityPage() {
       <div className="mt-16 flex flex-col items-center gap-4 rounded-2xl bg-secondary/40 p-card-lg text-center">
         <h2 className="text-heading-4 font-semibold text-foreground">Have something to share?</h2>
         <p className="max-w-md text-body-sm text-muted-foreground">
-          Sign in and head to your dashboard to post — or start with the care guides for common questions.
+          Sign in and head to your dashboard to post, or start with the care guides for common questions.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Button asChild>

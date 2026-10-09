@@ -1,5 +1,4 @@
 import {
-  Award,
   Bath,
   Bird,
   Bone,
@@ -8,7 +7,6 @@ import {
   Dog,
   Flower2,
   GraduationCap,
-  Heart,
   Home as HomeIcon,
   type LucideIcon,
   Palmtree,
@@ -18,7 +16,6 @@ import {
   ShieldCheck,
   ShoppingBag,
   Stethoscope,
-  Truck,
   Users,
 } from "lucide-react";
 
@@ -72,7 +69,7 @@ export const services: ServiceItem[] = [
   {
     icon: ShoppingBag,
     title: "Pet Essentials",
-    description: "Get trusted food, treats and everyday pet essentials delivered to your doorstep.",
+    description: "Find trusted food, treats and everyday essentials picked for your pet.",
     href: "/shop",
   },
   {
@@ -80,12 +77,6 @@ export const services: ServiceItem[] = [
     title: "Grooming & Spa",
     description: "Book professional grooming and spa care with trusted PetZu partners.",
     href: "/services/grooming",
-  },
-  {
-    icon: Truck,
-    title: "Fast Delivery",
-    description: "Pet food, treats and everyday essentials delivered quickly to your doorstep.",
-    href: "/shop",
   },
   {
     icon: PawPrint,
@@ -126,7 +117,7 @@ export const services: ServiceItem[] = [
   {
     icon: ShieldCheck,
     title: "Pet Insurance",
-    description: "Simple, reliable protection for your pet — with fewer worries and no surprises.",
+    description: "Simple, reliable protection for your pet, with fewer worries and no surprises.",
     href: "/services/insurance",
   },
 ];
@@ -247,32 +238,17 @@ export const whyPetzu: WhyPetzuItem[] = [
   {
     icon: ShieldCheck,
     title: "Vetted & verified",
-    description: "Every product, vet, and sitter is screened before it reaches you.",
+    description: "Every product, vet and sitter is screened before it reaches you.",
   },
   {
     icon: Clock,
-    title: "24/7 support",
+    title: "Real people on support",
     description: "Real humans (and a few very good dogs) on call around the clock.",
-  },
-  {
-    icon: Truck,
-    title: "Fast, reliable delivery",
-    description: "Same-day in most cities, tracked door to door.",
-  },
-  {
-    icon: Heart,
-    title: "Built with love for pets",
-    description: "Founded by pet parents, for pet parents, not investors.",
-  },
-  {
-    icon: Award,
-    title: "Award-winning care",
-    description: "Recognized three years running for customer satisfaction.",
   },
   {
     icon: Users,
     title: "A real community",
-    description: "Hundreds of thousands of pet parents swapping advice daily.",
+    description: "Pet parents swapping honest advice every day.",
   },
 ];
 
@@ -297,7 +273,7 @@ export const testimonials: Testimonial[] = [
     name: "James R.",
     role: "Cat dad to Luna & Mochi",
     quote:
-      "Delivery is genuinely fast, and the food recommendations actually match what my vet suggested. Cancelled two other subscriptions after switching.",
+      "The food recommendations actually match what my vet suggested, and the care guides answered questions I didn't know to ask.",
     rating: 5,
     initials: "JR",
   },

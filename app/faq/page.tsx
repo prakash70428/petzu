@@ -8,7 +8,7 @@ import { faqCategories } from "@/features/blog/constants";
 export const metadata: Metadata = buildMetadata({
   title: "FAQ",
   path: "/faq",
-  description: "Answers to common questions about PetZu — orders, vet booking, grooming, and more.",
+  description: "Answers to common questions about PetZu: orders, vet booking, grooming, and more.",
 });
 
 export default function FaqPage() {

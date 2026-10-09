@@ -130,7 +130,7 @@ export const mockNotifications: DashboardNotification[] = [
   {
     id: "note-1",
     title: "Your order has shipped",
-    description: "PZ-471822 is on its way — expected in 2 days.",
+    description: "PZ-471822 is on its way: expected in 2 days.",
     createdAt: "2026-08-03T14:20:00Z",
     read: false,
     category: "Order",

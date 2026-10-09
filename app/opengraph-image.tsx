@@ -48,11 +48,11 @@ export default function OpengraphImage() {
         </div>
 
         <div style={{ display: "flex", fontSize: 76, fontWeight: 700, lineHeight: 1.1, marginTop: 40 }}>
-          Your pet&apos;s whole world, delivered with care.
+          Your pet&apos;s whole world, cared for in one place.
         </div>
 
         <div style={{ display: "flex", fontSize: 30, marginTop: 28, opacity: 0.9 }}>
-          Trusted products · Expert vet care · Fast delivery
+          Trusted products · Expert vet care · Pet-parent community
         </div>
       </div>
     ),

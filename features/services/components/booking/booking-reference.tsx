@@ -26,5 +26,5 @@ function getServerSnapshot() {
 
 export function BookingReference() {
   const reference = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  return <span className="font-mono font-semibold text-foreground">{reference ?? "—"}</span>;
+  return <span className="font-mono font-semibold text-foreground">{reference ?? "-"}</span>;
 }

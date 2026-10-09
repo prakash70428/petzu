@@ -19,7 +19,7 @@ export function MapPlaceholder({ providers }: { providers: Provider[] }) {
     >
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-transparent to-background/70" />
       <p className="glass absolute left-4 top-4 rounded-full px-3 py-1 text-caption text-muted-foreground">
-        Illustrative map — not to scale
+        Illustrative map, not to scale
       </p>
 
       {providers.map((provider) => {

@@ -54,18 +54,17 @@ export function Hero() {
         >
           <Badge variant="secondary" className="glass gap-1.5">
             <span className="size-1.5 rounded-full bg-success" aria-hidden />
-            Vet-verified products · Fast delivery
+            Vetted products · Verified vets
           </Badge>
 
           <h1 className="font-display text-display-lg leading-[1.08] text-foreground sm:text-display-xl lg:text-display-2xl lg:leading-[1.05]">
             Your pet&apos;s whole world,{" "}
-            <span className="text-gradient-brand">delivered with care.</span>
+            <span className="text-gradient-brand">cared for in one place.</span>
           </h1>
 
           <p className="max-w-lg text-body text-muted-foreground sm:text-body-lg">
-            Everything for happier, healthier pets — trusted products,
-            expert vet guidance and a community of pet parents. Delivered
-            quickly across major cities.
+            Everything for happier, healthier pets: trusted products,
+            expert vet guidance and a community of pet parents.
           </p>
 
           <PetPicker />

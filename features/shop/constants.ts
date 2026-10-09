@@ -110,7 +110,7 @@ export const products: Product[] = [
     badge: "Vet recommended",
     iconKey: "utensils",
     description:
-      "Real salmon as the first ingredient, no fillers — formulated with a vet nutritionist for sensitive stomachs.",
+      "Real salmon as the first ingredient, no fillers: formulated with a vet nutritionist for sensitive stomachs.",
     details: [
       { title: "Ingredients", content: "Salmon, sweet potato, peas, salmon oil (omega-3 & 6), no corn, wheat, or soy." },
       shippingReturns,
@@ -129,7 +129,7 @@ export const products: Product[] = [
     reviewCount: 856,
     iconKey: "gamepad",
     description:
-      "Slows down fast eaters and keeps busy minds occupied — adjustable difficulty, dishwasher-safe.",
+      "Slows down fast eaters and keeps busy minds occupied: adjustable difficulty, dishwasher-safe.",
     details: [
       { title: "Care instructions", content: "Top-rack dishwasher safe. Air dry before refilling." },
       shippingReturns,
@@ -149,9 +149,9 @@ export const products: Product[] = [
     badge: "New",
     iconKey: "shield",
     description:
-      "No-pull, step-in design with reflective stitching — on in under 10 seconds, even with a wiggly dog.",
+      "No-pull, step-in design with reflective stitching: on in under 10 seconds, even with a wiggly dog.",
     details: [
-      { title: "Sizing", content: "Adjustable chest strap, 5 sizes from XS to XL — see size guide for chest measurement." },
+      { title: "Sizing", content: "Adjustable chest strap, 5 sizes from XS to XL: see size guide for chest measurement." },
       shippingReturns,
     ],
     inStock: true,
@@ -170,7 +170,7 @@ export const products: Product[] = [
     badge: "Bestseller",
     iconKey: "package",
     description:
-      "Automatically rakes and seals waste into a sealed compartment — odor control that actually works.",
+      "Automatically rakes and seals waste into a sealed compartment: odor control that actually works.",
     details: [
       { title: "What's included", content: "Base unit, waste tray, 1 month of odor-control liners, power adapter." },
       shippingReturns,
@@ -194,7 +194,7 @@ export const products: Product[] = [
     iconKey: "utensils",
     description: "Single-source protein pâté, high moisture content to support hydration and urinary health.",
     details: [
-      { title: "Ingredients", content: "Chicken, chicken broth, chicken liver, taurine — no by-products or artificial preservatives." },
+      { title: "Ingredients", content: "Chicken, chicken broth, chicken liver, taurine: no by-products or artificial preservatives." },
       shippingReturns,
     ],
     inStock: true,
@@ -210,7 +210,7 @@ export const products: Product[] = [
     rating: 4.5,
     reviewCount: 340,
     iconKey: "gamepad",
-    description: "A wand toy built for real chase instinct — replaceable feather attachments included.",
+    description: "A wand toy built for real chase instinct: replaceable feather attachments included.",
     details: [
       { title: "What's included", content: "1 wand, 3 replaceable feather/fabric attachments." },
       shippingReturns,
@@ -284,7 +284,7 @@ export const products: Product[] = [
     reviewCount: 540,
     badge: "Bestseller",
     iconKey: "leaf",
-    description: "Sun-cured, second-cut timothy hay — the everyday staple for rabbits, guinea pigs, and chinchillas.",
+    description: "Sun-cured, second-cut timothy hay: the everyday staple for rabbits, guinea pigs, and chinchillas.",
     details: [
       { title: "What's included", content: "6 compressed bales, ~1.5 lb each, resealable bag." },
       shippingReturns,
@@ -304,7 +304,7 @@ export const products: Product[] = [
     iconKey: "gamepad",
     description: "All-natural wood tunnel and chew set that supports dental health while satisfying the urge to gnaw.",
     details: [
-      { title: "Materials", content: "Untreated apple wood — safe for chewing, no glues or dyes." },
+      { title: "Materials", content: "Untreated apple wood: safe for chewing, no glues or dyes." },
       shippingReturns,
     ],
     inStock: true,
@@ -375,7 +375,7 @@ export const products: Product[] = [
     rating: 4.4,
     reviewCount: 150,
     iconKey: "leaf",
-    description: "Three low-maintenance live plant species plus root tabs — an easy way to start a planted tank.",
+    description: "Three low-maintenance live plant species plus root tabs: an easy way to start a planted tank.",
     details: [
       { title: "What's included", content: "3 potted live plants (anubias, java fern, amazon sword), 5 root tabs." },
       shippingReturns,

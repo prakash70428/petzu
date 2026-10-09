@@ -17,7 +17,7 @@ export function Services() {
         </h2>
         <p className="mt-4 text-body-lg text-muted-foreground">
           From expert advice and veterinary care to grooming, trusted
-          products and holidays — everything your pet needs, in one place.
+          products and holidays: everything your pet needs, in one place.
         </p>
       </div>
 

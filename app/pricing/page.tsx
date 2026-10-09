@@ -9,19 +9,19 @@ import { buildMetadata } from "@/constants/seo";
 export const metadata: Metadata = buildMetadata({
   title: "Pricing",
   path: "/pricing",
-  description: "How pricing works on PetZu — no subscriptions, no hidden fees.",
+  description: "How pricing works on PetZu: no subscriptions, no hidden fees.",
 });
 
 const items = [
   {
     icon: Truck,
     title: "Free shipping over ₹999",
-    description: "Every order — no membership required. Below that, flat ₹99 shipping.",
+    description: "On every order, no membership required. Below that, flat ₹99 shipping.",
   },
   {
     icon: Check,
     title: "Pay per booking, not per month",
-    description: "Vet, groomer, trainer, and sitter prices are set by each provider — see the exact price before you book, no PetZu markup.",
+    description: "Vet, groomer, trainer, and sitter prices are set by each provider: see the exact price before you book, no PetZu markup.",
   },
   {
     icon: Users,

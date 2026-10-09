@@ -89,7 +89,7 @@ export function ProviderDetail({ provider }: { provider: Provider }) {
         <p className="mt-2 text-body-sm text-muted-foreground">
           {provider.acceptsNewPatients
             ? "Currently accepting new patients."
-            : "Not currently accepting new patients — waitlist only."}
+            : "Not currently accepting new patients: waitlist only."}
         </p>
         {provider.acceptsNewPatients ? (
           <Button asChild size="lg" variant="gradient" className="mt-6 w-full">

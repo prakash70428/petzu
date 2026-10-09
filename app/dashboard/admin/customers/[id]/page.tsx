@@ -47,7 +47,7 @@ export default function CustomerDetailPage() {
             <dl className="mt-3 flex flex-col gap-1.5 text-body-sm">
               <div className="flex justify-between gap-2">
                 <dt className="text-muted-foreground">Phone</dt>
-                <dd className="text-foreground">{customer.phone ?? "—"}</dd>
+                <dd className="text-foreground">{customer.phone ?? "-"}</dd>
               </div>
               <div className="flex justify-between gap-2">
                 <dt className="text-muted-foreground">Customer since</dt>
@@ -98,7 +98,7 @@ export default function CustomerDetailPage() {
               ) : (
                 grantedConsents.map((consent) => (
                   <p key={consent.id} className="text-body-sm text-foreground">
-                    {consentLabel[consent.channel]} — {purposeLabel[consent.purpose]}
+                    {consentLabel[consent.channel]} - {purposeLabel[consent.purpose]}
                   </p>
                 ))
               )}

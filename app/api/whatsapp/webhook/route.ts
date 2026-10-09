@@ -122,7 +122,7 @@ async function handleInboundMessage(message: InboundWhatsAppMessage) {
   // the "not configured" message — still worth sending back over WhatsApp
   // so a real tester sees *something*, rather than silently doing nothing.
   if (!getAnthropicClient()) {
-    console.warn("ANTHROPIC_API_KEY not set — sent the fallback message instead of a real reply.");
+    console.warn("ANTHROPIC_API_KEY not set: sent the fallback message instead of a real reply.");
   }
 
   try {

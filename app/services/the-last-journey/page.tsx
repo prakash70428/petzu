@@ -16,7 +16,7 @@ export default function TheLastJourneyPage() {
       name="The Last Journey"
       headline="Saying goodbye, with care"
       intro="When it's time, you shouldn't have to arrange everything alone. We help
-        with gentle in-home care, respectful aftercare, and someone to talk to —
+        with gentle in-home care, respectful aftercare, and someone to talk to,
         so your pet's last day is calm and their memory is honoured."
       highlights={[
         {
@@ -40,7 +40,7 @@ export default function TheLastJourneyPage() {
       ]}
       cta={{
         heading: "Talk to someone",
-        body: "Reach out whenever you need to — to plan ahead, or if today is the day. We'll take it at your pace.",
+        body: "Reach out whenever you need to, whether to plan ahead or because today is the day. We'll take it at your pace.",
         actionLabel: "Contact our care team",
         actionHref: "/contact",
       }}

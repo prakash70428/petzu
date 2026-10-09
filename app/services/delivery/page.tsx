@@ -14,7 +14,7 @@ export default function DeliveryPage() {
   return (
     <ServiceInfoPage
       name="Fast Delivery"
-      headline="Pet essentials, at your door — fast"
+      headline="Pet essentials, at your door, fast"
       intro="Order food, treats, litter and everyday supplies and have them delivered
         quickly across the cities we serve. No last-minute pet-store runs."
       highlights={[
@@ -28,7 +28,7 @@ export default function DeliveryPage() {
           icon: PackageCheck,
           title: "Only what we'd give our own pets",
           description:
-            "Every item is vet-checked and quality-screened before it's listed — no grey-market stock.",
+            "Every item is vet-checked and quality-screened before it's listed: no grey-market stock.",
         },
         {
           icon: MapPin,

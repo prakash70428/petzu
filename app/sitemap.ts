@@ -30,7 +30,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/services/grooming", 0.9),
     entry("/services/training", 0.8),
     entry("/services/sitting", 0.8),
-    entry("/services/delivery", 0.7),
     entry("/services/adoption", 0.7),
     entry("/services/holidays", 0.7),
     entry("/services/celebrations", 0.6),

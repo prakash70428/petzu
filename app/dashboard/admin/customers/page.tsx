@@ -14,7 +14,7 @@ export default function CustomersAdminPage() {
 
   return (
     <>
-      <PageHeader title="Customers" description="Every customer with a real record — profile, consent, chat history, and notes." />
+      <PageHeader title="Customers" description="Every customer with a real record: profile, consent, chat history, and notes." />
 
       <Input
         value={query}

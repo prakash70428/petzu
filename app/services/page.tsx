@@ -18,7 +18,7 @@ export const metadata: Metadata = buildMetadata({
   title: "Services",
   path: "/services",
   description:
-    "Vet care, grooming, training, sitting, adoption, holidays and more — every way PetZu helps you care for your pet, in one place.",
+    "Vet care, grooming, training, sitting, adoption, holidays and more: every way PetZu helps you care for your pet, in one place.",
 });
 
 /** The four services backed by a live provider-booking flow — used to show a
@@ -45,7 +45,7 @@ export default function ServicesHubPage() {
         <h1 className="font-display text-display-lg text-foreground">Services</h1>
         <p className="mt-4 text-body-lg text-muted-foreground">
           From expert advice and veterinary care to grooming, trusted products
-          and holidays — everything your pet needs, in one place.
+          and holidays: everything your pet needs, in one place.
         </p>
       </div>
 

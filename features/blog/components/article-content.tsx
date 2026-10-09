@@ -70,7 +70,7 @@ export function ArticleContent({ content }: { content: ContentBlock[] }) {
                   <p className="text-body-lg italic text-foreground">&ldquo;{block.text}&rdquo;</p>
                   {block.attribution && (
                     <cite className="mt-2 block text-body-sm not-italic text-muted-foreground">
-                      — {block.attribution}
+                      - {block.attribution}
                     </cite>
                   )}
                 </div>

@@ -17,7 +17,7 @@ export default function BlogPage() {
         <div>
           <h1 className="font-display text-display-lg text-foreground">The PetZu Blog</h1>
           <p className="mt-2 max-w-xl text-body-lg text-muted-foreground">
-            Vet-reviewed care guides, nutrition advice, and training tips — written by people who
+            Vet-reviewed care guides, nutrition advice, and training tips, written by people who
             actually know pets.
           </p>
         </div>

@@ -21,7 +21,7 @@ const values = [
   {
     icon: Sparkles,
     title: "Small team, real ownership",
-    description: "We stay small on purpose — every hire owns a real slice of the product, not a sliver of a process.",
+    description: "We stay small on purpose: every hire owns a real slice of the product, not a sliver of a process.",
   },
 ];
 

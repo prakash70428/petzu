@@ -84,7 +84,7 @@ export function CheckoutForm() {
             <Lock className="size-3.5 text-muted-foreground" aria-hidden />
           </div>
           <p className="text-caption text-muted-foreground">
-            Demo checkout — no real payment is processed.
+            Demo checkout: no real payment is processed.
           </p>
           <FormField label="Card number" htmlFor="card-number">
             <Input id="card-number" required inputMode="numeric" placeholder="4242 4242 4242 4242" />

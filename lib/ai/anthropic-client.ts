@@ -23,4 +23,4 @@ export const CHAT_MODEL = process.env.ANTHROPIC_CHAT_MODEL ?? "claude-sonnet-5";
 
 /** Shared between the web chat widget (app/api/chat) and the WhatsApp webhook (app/api/whatsapp/webhook) — both fall back to this when `getAnthropicClient()` returns null. */
 export const CHATBOT_NOT_CONFIGURED_MESSAGE =
-  "The chatbot isn't fully set up yet — an administrator needs to add an ANTHROPIC_API_KEY. In the meantime, please reach out to PetZu support directly.";
+  "The chatbot isn't fully set up yet: an administrator needs to add an ANTHROPIC_API_KEY. In the meantime, please reach out to PetZu support directly.";

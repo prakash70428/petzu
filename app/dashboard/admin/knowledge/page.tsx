@@ -147,7 +147,7 @@ export default function KnowledgeAdminPage() {
 
         <div className="flex flex-col gap-3">
           {articles.length === 0 ? (
-            <p className="text-body-sm text-muted-foreground">No articles yet — add one above.</p>
+            <p className="text-body-sm text-muted-foreground">No articles yet: add one above.</p>
           ) : (
             articles.map((article) => (
               <ArticleRow key={article.id} article={article} saving={saving} onUpdate={update} onDelete={remove} />
