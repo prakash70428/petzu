@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EMPTY_FILTERS, type FilterState, type Provider, type SortOption } from "../types";
 import { filterProviders, sortProviders } from "../utils";
+import { NearbyMap } from "./nearby-map";
 import { ProviderFilters } from "./provider-filters";
 import { ProviderGrid } from "./provider-grid";
 import { ProviderSearch } from "./provider-search";
@@ -25,10 +26,16 @@ const MapPlaceholder = dynamic(
 export interface ProviderListingProps {
   providers: Provider[];
   availableSpecialties: string[];
+  /**
+   * When set, a real "Near me" Google map of this search term (e.g.
+   * "veterinary clinic") sits above the results, replacing the
+   * illustrative map toggle.
+   */
+  nearby?: { searchTerm: string; label: string };
 }
 
 /** The interactive engine both the vet and groomer listing pages share — search, filters, sort, and list/map view, all client-only. */
-export function ProviderListing({ providers, availableSpecialties }: ProviderListingProps) {
+export function ProviderListing({ providers, availableSpecialties, nearby }: ProviderListingProps) {
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<FilterState>(EMPTY_FILTERS);
   const [sort, setSort] = useState<SortOption>("recommended");
@@ -52,6 +59,8 @@ export function ProviderListing({ providers, availableSpecialties }: ProviderLis
         </aside>
 
         <div className="flex flex-col gap-6">
+          {nearby && <NearbyMap searchTerm={nearby.searchTerm} label={nearby.label} />}
+
           <ProviderToolbar
             resultCount={visibleProviders.length}
             availableSpecialties={availableSpecialties}
@@ -59,11 +68,11 @@ export function ProviderListing({ providers, availableSpecialties }: ProviderLis
             onFiltersChange={setFilters}
             sort={sort}
             onSortChange={setSort}
-            view={view}
-            onViewChange={setView}
+            view={nearby ? undefined : view}
+            onViewChange={nearby ? undefined : setView}
           />
 
-          {view === "map" ? (
+          {!nearby && view === "map" ? (
             <MapPlaceholder providers={visibleProviders} />
           ) : (
             <ProviderGrid

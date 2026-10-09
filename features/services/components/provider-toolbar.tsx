@@ -17,8 +17,9 @@ export interface ProviderToolbarProps {
   onFiltersChange: (filters: FilterState) => void;
   sort: SortOption;
   onSortChange: (sort: SortOption) => void;
-  view: "list" | "map";
-  onViewChange: (view: "list" | "map") => void;
+  /** Omit both to hide the list/map toggle (pages that always show a map). */
+  view?: "list" | "map";
+  onViewChange?: (view: "list" | "map") => void;
 }
 
 export function ProviderToolbar({
@@ -41,6 +42,7 @@ export function ProviderToolbar({
       </p>
 
       <div className="flex items-center gap-2">
+        {onViewChange && (
         <div className="hidden items-center gap-1 rounded-md border border-border p-1 sm:flex">
           <button
             type="button"
@@ -67,6 +69,7 @@ export function ProviderToolbar({
             <MapIcon className="size-4" />
           </button>
         </div>
+        )}
 
         <Sheet
           open={mobileFiltersOpen}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useSession } from "@/features/auth/store";
 import { toast } from "@/hooks/use-toast";
 import { fetchConversation, streamChatReply } from "./services/chat-service";
 import type { ChatMessage } from "./types";
@@ -10,26 +9,34 @@ function localId(prefix: string) {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+export interface ChatIdentity {
+  email: string;
+  name?: string;
+  /**
+   * Only signed-in members get their past conversation reloaded. A guest
+   * typed an email we can't verify, so showing "their" history would let
+   * anyone read someone else's chat by typing that person's email.
+   */
+  loadHistory: boolean;
+}
+
 /**
  * Loads any existing conversation on mount and exposes `sendMessage()`,
  * which appends the user's message immediately (optimistic) and streams the
  * assistant's reply in as it arrives, growing one message's content in
  * place rather than waiting for the full response.
  */
-export function useChat() {
-  const { user } = useSession();
-  const email = user?.email;
-
+export function useChat({ email, name, loadHistory }: ChatIdentity) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [conversationId, setConversationId] = useState<string>();
   // Starts true; only ever flipped from a .then/.catch/.finally callback,
   // never from a bare effect-body call — see features/consent/hooks.ts for
   // why this codebase's lint config requires that shape.
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(loadHistory);
   const [sending, setSending] = useState(false);
 
   useEffect(() => {
-    if (!email) return;
+    if (!loadHistory) return;
     let cancelled = false;
 
     fetchConversation(email)
@@ -48,7 +55,7 @@ export function useChat() {
     return () => {
       cancelled = true;
     };
-  }, [email]);
+  }, [email, loadHistory]);
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -65,7 +72,7 @@ export function useChat() {
       let assistantStarted = false;
 
       try {
-        await streamChatReply({ email, message: trimmed, conversationId }, (event) => {
+        await streamChatReply({ email, name, message: trimmed, conversationId }, (event) => {
           if (event.type === "init") {
             setConversationId(event.conversationId);
           } else if (event.type === "delta") {
@@ -87,7 +94,7 @@ export function useChat() {
         setSending(false);
       }
     },
-    [email, conversationId, sending],
+    [email, name, conversationId, sending],
   );
 
   return { messages, loading, sending, sendMessage, ready: Boolean(email) };

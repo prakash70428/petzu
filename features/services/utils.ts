@@ -200,3 +200,36 @@ export function buildIcsDataUrl(input: IcsInput): string {
   const content = lines.join("\r\n");
   return `data:text/calendar;charset=utf-8,${encodeURIComponent(content)}`;
 }
+
+export interface Coords {
+  lat: number;
+  lng: number;
+}
+
+/**
+ * With an embed key (`NEXT_PUBLIC_GOOGLE_MAPS_EMBED_KEY`), uses the official Maps Embed
+ * API (search mode). Without one it falls back to Google's keyless
+ * `output=embed` URL, which works today but isn't an official API, so a
+ * key should be added before launch.
+ */
+export function buildMapEmbedUrl(
+  searchTerm: string,
+  location: { coords?: Coords; area?: string },
+  embedKey?: string,
+): string | null {
+  const { coords, area } = location;
+  if (!coords && !area) return null;
+  const center = coords ? `${coords.lat.toFixed(4)},${coords.lng.toFixed(4)}` : null;
+
+  if (embedKey) {
+    const params = new URLSearchParams({ key: embedKey, q: center ? searchTerm : `${searchTerm} in ${area}` });
+    if (center) {
+      params.set("center", center);
+      params.set("zoom", "13");
+    }
+    return `https://www.google.com/maps/embed/v1/search?${params.toString()}`;
+  }
+
+  const query = center ? `${searchTerm} near ${center}` : `${searchTerm} in ${area}`;
+  return `https://maps.google.com/maps?${new URLSearchParams({ q: query, z: "13", output: "embed" }).toString()}`;
+}

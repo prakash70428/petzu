@@ -18,10 +18,11 @@ const securityHeaders = [
   // Send the origin (not the full path) on cross-origin requests, so
   // internal URLs never leak into third-party referer logs.
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  // Explicitly drop powerful APIs the app never uses.
+  // Explicitly drop powerful APIs the app never uses. Geolocation is
+  // allowed for this origin only, for the vet page's "Near me" map.
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    value: "camera=(), microphone=(), geolocation=(self), interest-cohort=()",
   },
 ];
 

@@ -44,7 +44,11 @@ export default function VetBookingPage() {
       </div>
 
       <div className="mt-10">
-        <ProviderListing providers={vets} availableSpecialties={specialtiesByType.vet} />
+        <ProviderListing
+          providers={vets}
+          availableSpecialties={specialtiesByType.vet}
+          nearby={{ searchTerm: "veterinary clinic", label: "vet clinics" }}
+        />
       </div>
     </Section>
   );

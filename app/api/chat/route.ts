@@ -14,6 +14,7 @@ const MAX_HISTORY_MESSAGES = 20;
 
 const sendMessageSchema = z.object({
   email: z.string().email(),
+  name: z.string().trim().min(1).max(80).optional(),
   message: z.string().min(1).max(2000),
   conversationId: z.string().optional(),
 });
@@ -49,8 +50,15 @@ export async function POST(request: Request) {
     return fail(parsed.error.issues[0]?.message ?? "Invalid request body");
   }
 
-  const { email, message, conversationId } = parsed.data;
-  const customer = await getOrCreateCustomer(email);
+  const { email, name, message, conversationId } = parsed.data;
+  const existing = await getOrCreateCustomer(email);
+  // The email is unverified (guests type it into the widget), so a name is
+  // only ever filled in, never overwritten: typing someone else's email
+  // must not rename their customer record.
+  const customer =
+    name && !existing.name
+      ? await prisma.customer.update({ where: { id: existing.id }, data: { name } })
+      : existing;
 
   const conversation = conversationId
     ? await prisma.chatConversation.findFirst({ where: { id: conversationId, customerId: customer.id } })

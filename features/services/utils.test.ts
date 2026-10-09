@@ -3,6 +3,7 @@ import { providers } from "./constants";
 import {
   applyTimeToDate,
   buildIcsDataUrl,
+  buildMapEmbedUrl,
   getMonthMatrix,
   getTimeSlotsForDate,
   isDateAvailable,
@@ -113,5 +114,32 @@ describe("provider data integrity", () => {
 
   it("gives every provider at least one bookable service", () => {
     expect(providers.every((p) => p.services.length > 0)).toBe(true);
+  });
+});
+
+describe("buildMapEmbedUrl", () => {
+  const coords = { lat: 12.971599, lng: 77.594566 };
+
+  it("returns null until a location or area is known", () => {
+    expect(buildMapEmbedUrl("veterinary clinic", {})).toBeNull();
+  });
+
+  it("uses the keyless embed around the visitor's coordinates", () => {
+    const url = new URL(buildMapEmbedUrl("veterinary clinic", { coords })!);
+    expect(url.origin).toBe("https://maps.google.com");
+    expect(url.searchParams.get("q")).toBe("veterinary clinic near 12.9716,77.5946");
+    expect(url.searchParams.get("output")).toBe("embed");
+  });
+
+  it("searches a typed area when there are no coordinates", () => {
+    const url = new URL(buildMapEmbedUrl("veterinary clinic", { area: "Indiranagar" })!);
+    expect(url.searchParams.get("q")).toBe("veterinary clinic in Indiranagar");
+  });
+
+  it("switches to the official Embed API when a key is configured", () => {
+    const url = new URL(buildMapEmbedUrl("veterinary clinic", { coords }, "test-key")!);
+    expect(url.pathname).toBe("/maps/embed/v1/search");
+    expect(url.searchParams.get("key")).toBe("test-key");
+    expect(url.searchParams.get("center")).toBe("12.9716,77.5946");
   });
 });

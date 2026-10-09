@@ -15,7 +15,7 @@ export function fetchConversation(email: string) {
  * raw `Response.body` reader instead.
  */
 export async function streamChatReply(
-  payload: { email: string; message: string; conversationId?: string },
+  payload: { email: string; name?: string; message: string; conversationId?: string },
   onEvent: (event: ChatStreamEvent) => void,
 ) {
   const response = await fetch("/api/chat", {
