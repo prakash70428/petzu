@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ClipboardCheck, HeartHandshake, Users } from "lucide-react";
 import { buildMetadata } from "@/constants/seo";
 import { ServiceInfoPage } from "@/features/services/components";
 
@@ -18,31 +17,30 @@ export default function AdoptionPage() {
       intro="We work with vetted shelters and rescues to match pets with the right
         family, with honest histories, real support, and no adoption fees going
         anywhere but the animal's care."
-      highlights={[
-        {
-          icon: Users,
-          title: "Vetted shelters & rescues",
-          description:
-            "Every partner is checked for animal-welfare standards before a single listing goes live.",
-        },
-        {
-          icon: ClipboardCheck,
-          title: "Honest profiles",
-          description:
-            "Temperament, medical history and care needs up front, so there are no surprises after you bring them home.",
-        },
-        {
-          icon: HeartHandshake,
-          title: "Support after adoption",
-          description:
-            "Vet advice, food guidance and a settling-in checklist for the first few weeks, all included.",
-        },
-      ]}
-      cta={{
-        heading: "Tell us who you're looking for",
-        body: "Share your home, other pets and what you're hoping for, and our team will help you find a match.",
-        actionLabel: "Talk to our adoption team",
-        actionHref: "/contact",
+      action={{ label: "Talk to our adoption team", href: "/contact" }}
+      body={{
+        variant: "steps",
+        title: "How adoption works",
+        points: [
+          {
+            title: "Tell us about your home",
+            description: "Your space, your routine, other pets, and who you're hoping to meet.",
+          },
+          {
+            title: "Meet your match",
+            description:
+              "Honest profiles from vetted shelters: temperament, medical history and care needs, before you visit.",
+          },
+          {
+            title: "Bring them home",
+            description:
+              "Vet advice, food guidance and a settling-in checklist for the first few weeks, all included.",
+          },
+        ],
+      }}
+      closing={{
+        heading: "Ready to meet someone new?",
+        body: "Tell us who you're looking for and our team will help you find the right match.",
       }}
       note="Adoption listings are rolling out city by city with our shelter partners. Reach out and we'll tell you what's available near you."
     />

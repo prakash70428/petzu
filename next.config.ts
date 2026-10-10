@@ -64,7 +64,11 @@ const nextConfig: NextConfig = {
   // The standalone pricing page was folded into a note on /services
   // (there are no tiers to compare), so old links land there instead.
   async redirects() {
-    return [{ source: "/pricing", destination: "/services", permanent: true }];
+    return [
+      { source: "/pricing", destination: "/services", permanent: true },
+      // PetZu runs no delivery service; the old page now points at the shop.
+      { source: "/services/delivery", destination: "/shop", permanent: true },
+    ];
   },
 
   async headers() {
