@@ -289,3 +289,16 @@ Not done yet, and why:
   them once the client supplies images.
 - **Cat, bird and fish photos** are Unsplash placeholders (hotlinked, free
   licence) until the client provides their own.
+
+## 12. Client revisions (Oct 2026): what changed since sections 1 to 10
+
+Sections 1 to 10 describe the original build. Since then, on client feedback:
+
+- **Stats and Trusted Brands were removed.** PetZu is new: "128,000+ pets
+  cared for", "500+ vets" and partner-brand logos weren't true yet, and
+  unverifiable claims are a legal risk. Mentions of them above are historical.
+- **Services are grouped by a pet's life stage** (Welcome home, Health &
+  care, Life together, Saying goodbye) via `ServiceStages`, shared with the
+  /services hub, instead of a grid of identical cards.
+- **Zuzu's photo** (the client's dog, `petzucutedog.jpeg`) appears only on
+  /about; the hero uses stock photos per animal.

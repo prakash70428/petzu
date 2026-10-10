@@ -1,6 +1,4 @@
 export * from "./hero";
-export * from "./trusted-brands";
-export * from "./stats";
 export * from "./services";
 export * from "./categories";
 export * from "./featured-products";

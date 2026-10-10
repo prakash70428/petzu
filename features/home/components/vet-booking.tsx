@@ -70,8 +70,8 @@ export function VetBooking() {
           <div className="glass absolute -bottom-6 -left-6 flex animate-float items-center gap-2 rounded-2xl px-4 py-3 shadow-xl [animation-delay:1s]">
             <Stethoscope className="size-5 text-primary" aria-hidden />
             <div>
-              <p className="text-body-sm font-semibold text-foreground">500+ vets</p>
-              <p className="text-caption text-muted-foreground">Trusted & verified</p>
+              <p className="text-body-sm font-semibold text-foreground">Licensed vets</p>
+              <p className="text-caption text-muted-foreground">Checked before they join</p>
             </div>
           </div>
         </Reveal>

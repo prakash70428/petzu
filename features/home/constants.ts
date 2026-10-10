@@ -25,31 +25,18 @@ import {
  * in later means editing this file, not hunting through JSX.
  */
 
-export interface Stat {
-  label: string;
-  value: number;
-  suffix?: string;
-}
+export type ServiceStageKey = "welcome" | "care" | "life" | "goodbye";
 
-export const stats: Stat[] = [
-  { label: "Pets cared for", value: 128000, suffix: "+" },
-  { label: "Verified vets", value: 500, suffix: "+" },
-  { label: "Cities covered", value: 6 },
-  { label: "5-star reviews", value: 2000, suffix: "+" },
-];
-
-/** Presented as text wordmarks rather than logo images — no real partner
- * logo assets exist yet, and a fake/placeholder logo image reads worse
- * than an honest typographic treatment. */
-export const trustedBrands: string[] = [
-  "Whisker & Co.",
-  "Pawfect Supply",
-  "Nordic Vet Group",
-  "TrailPaws",
-  "Bloom Pet Care",
-  "Furlong Foods",
-  "Companion Health",
-  "The Kennel Club",
+/**
+ * Services follow a pet's life, from the day they come home to saying
+ * goodbye (client feedback: The Last Journey sat in the middle of the grid,
+ * adoption should come first). The order here is the order shown everywhere.
+ */
+export const serviceStages: { key: ServiceStageKey; title: string }[] = [
+  { key: "welcome", title: "Welcome home" },
+  { key: "care", title: "Health & care" },
+  { key: "life", title: "Life together" },
+  { key: "goodbye", title: "Saying goodbye" },
 ];
 
 export interface ServiceItem {
@@ -57,68 +44,79 @@ export interface ServiceItem {
   title: string;
   description: string;
   href: string;
+  stage: ServiceStageKey;
 }
 
 export const services: ServiceItem[] = [
   {
-    icon: Stethoscope,
-    title: "Vet Care",
-    description: "Book trusted video consultations or clinic visits with qualified vets near you.",
-    href: "/services/vet-booking",
+    icon: PawPrint,
+    title: "Pet Adoption",
+    description: "Find a pet to welcome home and give them the loving family they deserve.",
+    href: "/services/adoption",
+    stage: "welcome",
   },
   {
     icon: ShoppingBag,
     title: "Pet Essentials",
     description: "Find trusted food, treats and everyday essentials picked for your pet.",
     href: "/shop",
+    stage: "welcome",
+  },
+  {
+    icon: Stethoscope,
+    title: "Vet Care",
+    description: "Book trusted video consultations or clinic visits with qualified vets near you.",
+    href: "/services/vet-booking",
+    stage: "care",
   },
   {
     icon: Bath,
     title: "Grooming & Spa",
     description: "Book professional grooming and spa care with trusted PetZu partners.",
     href: "/services/grooming",
-  },
-  {
-    icon: PawPrint,
-    title: "Pet Adoption",
-    description: "Find a pet to welcome home and give them the loving family they deserve.",
-    href: "/services/adoption",
-  },
-  {
-    icon: Palmtree,
-    title: "Pet Holidays",
-    description: "Trusted stays, boarding and pet-friendly getaways for your pet.",
-    href: "/services/holidays",
-  },
-  {
-    icon: PartyPopper,
-    title: "Pet Celebrations",
-    description: "Make birthdays and special moments memorable with celebrations made for pets.",
-    href: "/services/celebrations",
-  },
-  {
-    icon: Flower2,
-    title: "The Last Journey",
-    description: "Compassionate support to help you say goodbye with dignity, care and love.",
-    href: "/services/the-last-journey",
-  },
-  {
-    icon: GraduationCap,
-    title: "Training",
-    description: "Personalised 1:1 and group training for every breed, age and stage.",
-    href: "/services/training",
-  },
-  {
-    icon: HomeIcon,
-    title: "Pet Sitting",
-    description: "Trusted, verified sitters and walkers to care for your pet when you're away.",
-    href: "/services/sitting",
+    stage: "care",
   },
   {
     icon: ShieldCheck,
     title: "Pet Insurance",
     description: "Simple, reliable protection for your pet, with fewer worries and no surprises.",
     href: "/services/insurance",
+    stage: "care",
+  },
+  {
+    icon: Palmtree,
+    title: "Pet Holidays",
+    description: "Trusted stays, boarding and pet-friendly getaways for your pet.",
+    href: "/services/holidays",
+    stage: "life",
+  },
+  {
+    icon: PartyPopper,
+    title: "Pet Celebrations",
+    description: "Make birthdays and special moments memorable with celebrations made for pets.",
+    href: "/services/celebrations",
+    stage: "life",
+  },
+  {
+    icon: GraduationCap,
+    title: "Training",
+    description: "Personalised 1:1 and group training for every breed, age and stage.",
+    href: "/services/training",
+    stage: "life",
+  },
+  {
+    icon: HomeIcon,
+    title: "Pet Sitting",
+    description: "Trusted, verified sitters and walkers to care for your pet when you're away.",
+    href: "/services/sitting",
+    stage: "life",
+  },
+  {
+    icon: Flower2,
+    title: "The Last Journey",
+    description: "Compassionate support to help you say goodbye with dignity, care and love.",
+    href: "/services/the-last-journey",
+    stage: "goodbye",
   },
 ];
 
