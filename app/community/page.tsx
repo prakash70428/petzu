@@ -3,7 +3,6 @@ import { MessageSquare, PawPrint, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Section } from "@/components/layout/section";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { buildMetadata } from "@/constants/seo";
 import { testimonials } from "@/features/home/constants";
@@ -44,13 +43,12 @@ export default function CommunityPage() {
       </Breadcrumb>
 
       <div className="mt-6 max-w-2xl">
-        <Badge variant="outline">Community</Badge>
-        <h1 className="mt-4 font-display text-display-lg text-foreground">
-          128,000+ pet parents, comparing notes
+        <h1 className="font-display text-display-lg text-foreground">
+          Is this vet actually good? Is this food even any good?
         </h1>
         <p className="mt-4 text-body-lg text-muted-foreground">
-          The community started as a place to ask &ldquo;is this vet actually good?&rdquo; without wading through
-          fake reviews. It&apos;s grown into where people share what&apos;s actually worked for their pets.
+          That&apos;s what our community started out asking. It&apos;s where pet parents compare notes on vets,
+          food and everything in between, and share what has actually worked for their pets.
         </p>
       </div>
 

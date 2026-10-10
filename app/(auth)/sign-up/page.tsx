@@ -27,7 +27,7 @@ export default function SignUpPage() {
   return (
     <AuthShell
       title="Create your account"
-      subtitle="Join 128,000+ pet parents on PetZu."
+      subtitle="Join the PetZu community of pet parents."
       footer={
         <>
           Already have an account?{" "}
