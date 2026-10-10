@@ -7,6 +7,36 @@ export const sortOptions: { value: SortOption; label: string }[] = [
   { value: "price-asc", label: "Price: Low to High" },
 ];
 
+/**
+ * "Patients" only makes sense for vets; a pet sitter has bookings, a groomer
+ * has clients. Every availability string goes through this table.
+ */
+export const availabilityCopy: Record<Provider["type"], { filter: string; open: string; closed: string }> = {
+  vet: {
+    filter: "Accepting new patients",
+    open: "Currently accepting new patients.",
+    closed: "Not currently accepting new patients: waitlist only.",
+  },
+  groomer: {
+    filter: "Taking new clients",
+    open: "Currently taking new clients.",
+    closed: "Fully booked right now: waitlist only.",
+  },
+  trainer: {
+    filter: "Taking new clients",
+    open: "Currently taking new clients.",
+    closed: "Fully booked right now: waitlist only.",
+  },
+  sitter: {
+    filter: "Available for new bookings",
+    open: "Currently available for new bookings.",
+    closed: "Fully booked right now: waitlist only.",
+  },
+};
+
+/** Below this many providers, search and filters are clutter: everything already fits on screen. */
+export const MIN_PROVIDERS_FOR_FILTERS = 5;
+
 export const specialtiesByType: Record<Provider["type"], string[]> = {
   vet: [
     "Wellness exams",

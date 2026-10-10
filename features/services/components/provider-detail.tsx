@@ -1,5 +1,6 @@
 import { BadgeCheck, Globe2, MapPin } from "lucide-react";
 import Link from "next/link";
+import { availabilityCopy } from "../constants";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -88,8 +89,8 @@ export function ProviderDetail({ provider }: { provider: Provider }) {
         <p className="text-heading-2 font-semibold text-foreground">{formatPrice(startingPrice)}</p>
         <p className="mt-2 text-body-sm text-muted-foreground">
           {provider.acceptsNewPatients
-            ? "Currently accepting new patients."
-            : "Not currently accepting new patients: waitlist only."}
+            ? availabilityCopy[provider.type].open
+            : availabilityCopy[provider.type].closed}
         </p>
         {provider.acceptsNewPatients ? (
           <Button asChild size="lg" variant="gradient" className="mt-6 w-full">

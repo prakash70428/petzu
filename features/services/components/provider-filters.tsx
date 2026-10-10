@@ -11,9 +11,11 @@ export interface ProviderFiltersProps {
   availableSpecialties: string[];
   filters: FilterState;
   onChange: (filters: FilterState) => void;
+  /** Wording for the availability checkbox, e.g. "Accepting new patients" for vets. */
+  availabilityLabel: string;
 }
 
-export function ProviderFilters({ availableSpecialties, filters, onChange }: ProviderFiltersProps) {
+export function ProviderFilters({ availableSpecialties, filters, onChange, availabilityLabel }: ProviderFiltersProps) {
   const hasActiveFilters =
     filters.specialties.length > 0 || filters.minRating !== null || filters.availableOnly;
 
@@ -78,7 +80,7 @@ export function ProviderFilters({ availableSpecialties, filters, onChange }: Pro
           onCheckedChange={(checked) => onChange({ ...filters, availableOnly: checked === true })}
         />
         <Label htmlFor="accepting" className="cursor-pointer font-normal text-muted-foreground">
-          Accepting new patients
+          {availabilityLabel}
         </Label>
       </div>
     </div>

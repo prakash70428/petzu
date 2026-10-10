@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EMPTY_FILTERS, type FilterState, type Provider, type SortOption } from "../types";
+import { availabilityCopy, MIN_PROVIDERS_FOR_FILTERS } from "../constants";
 import { filterProviders, sortProviders } from "../utils";
 import { NearbyMap } from "./nearby-map";
 import { ProviderFilters } from "./provider-filters";
@@ -34,7 +35,7 @@ export interface ProviderListingProps {
   nearby?: { searchTerm: string; label: string };
 }
 
-/** The interactive engine both the vet and groomer listing pages share — search, filters, sort, and list/map view, all client-only. */
+/** The interactive engine the vet, groomer, trainer and sitter listing pages share: search, filters, sort, and list/map view, all client-only. */
 export function ProviderListing({ providers, availableSpecialties, nearby }: ProviderListingProps) {
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<FilterState>(EMPTY_FILTERS);
@@ -45,18 +46,25 @@ export function ProviderListing({ providers, availableSpecialties, nearby }: Pro
     return sortProviders(filterProviders(providers, filters, query), sort);
   }, [providers, filters, sort, query]);
 
+  // A short list fits on one screen; search and filters there are just noise.
+  const showFilters = providers.length >= MIN_PROVIDERS_FOR_FILTERS;
+  const availabilityLabel = availabilityCopy[providers[0]?.type ?? "vet"].filter;
+
   return (
     <div className="flex flex-col gap-6">
-      <ProviderSearch providers={providers} value={query} onChange={setQuery} />
+      {showFilters && <ProviderSearch providers={providers} value={query} onChange={setQuery} />}
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[16rem_1fr]">
-        <aside className="hidden lg:block">
-          <ProviderFilters
-            availableSpecialties={availableSpecialties}
-            filters={filters}
-            onChange={setFilters}
-          />
-        </aside>
+      <div className={showFilters ? "grid grid-cols-1 gap-10 lg:grid-cols-[16rem_1fr]" : "flex flex-col"}>
+        {showFilters && (
+          <aside className="hidden lg:block">
+            <ProviderFilters
+              availableSpecialties={availableSpecialties}
+              filters={filters}
+              onChange={setFilters}
+              availabilityLabel={availabilityLabel}
+            />
+          </aside>
+        )}
 
         <div className="flex flex-col gap-6">
           {nearby && <NearbyMap searchTerm={nearby.searchTerm} label={nearby.label} />}
@@ -70,6 +78,8 @@ export function ProviderListing({ providers, availableSpecialties, nearby }: Pro
             onSortChange={setSort}
             view={nearby ? undefined : view}
             onViewChange={nearby ? undefined : setView}
+            availabilityLabel={availabilityLabel}
+            showFilters={showFilters}
           />
 
           {!nearby && view === "map" ? (

@@ -17,6 +17,10 @@ export interface ProviderToolbarProps {
   onFiltersChange: (filters: FilterState) => void;
   sort: SortOption;
   onSortChange: (sort: SortOption) => void;
+  /** Wording for the availability filter (see availabilityCopy). */
+  availabilityLabel: string;
+  /** False hides the mobile Filters button (short lists don't need one). */
+  showFilters?: boolean;
   /** Omit both to hide the list/map toggle (pages that always show a map). */
   view?: "list" | "map";
   onViewChange?: (view: "list" | "map") => void;
@@ -31,6 +35,8 @@ export function ProviderToolbar({
   onSortChange,
   view,
   onViewChange,
+  availabilityLabel,
+  showFilters = true,
 }: ProviderToolbarProps) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -71,6 +77,7 @@ export function ProviderToolbar({
         </div>
         )}
 
+        {showFilters && (
         <Sheet
           open={mobileFiltersOpen}
           onOpenChange={setMobileFiltersOpen}
@@ -90,9 +97,11 @@ export function ProviderToolbar({
               availableSpecialties={availableSpecialties}
               filters={filters}
               onChange={onFiltersChange}
+              availabilityLabel={availabilityLabel}
             />
           </SheetBody>
         </Sheet>
+        )}
 
         <Select value={sort} onValueChange={(next) => onSortChange(next as SortOption)}>
           <SelectTrigger className="w-[11rem]">
