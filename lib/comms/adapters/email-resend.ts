@@ -1,12 +1,13 @@
 import { Resend } from "resend";
+import { emailFromFor } from "../sender-identity";
 import { AdapterNotConfiguredError, type Adapter } from "../types";
 
-export const sendEmail: Adapter = async ({ to, subject, body }) => {
+export const sendEmail: Adapter = async ({ to, subject, body, purpose }) => {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new AdapterNotConfiguredError("RESEND_API_KEY is not set");
 
   const resend = new Resend(apiKey);
-  const from = process.env.RESEND_FROM_EMAIL ?? "PetZu <onboarding@resend.dev>";
+  const from = emailFromFor(purpose);
 
   const result = await resend.emails.send({ from, to, subject: subject ?? "Message from PetZu", text: body });
 

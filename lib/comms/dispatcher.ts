@@ -78,6 +78,7 @@ export async function sendMessage(input: SendMessageInput): Promise<MessageLog> 
     const adapter = adapters[input.channel];
     const result = await adapter({
       to,
+      purpose: input.purpose,
       subject: rendered.subject,
       body: rendered.body,
       whatsappTemplateName: rendered.whatsappTemplateName,
