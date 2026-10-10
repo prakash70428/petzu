@@ -20,8 +20,7 @@ export const OTHER_BREED = "Mixed / not sure";
 
 /**
  * Everything the homepage needs to re-skin itself per animal lives here.
- * Dogs use the client's own photography; cats, birds and fish use
- * Unsplash photos (free licence, hotlinked as Unsplash asks) until the
+ * All four animals use Unsplash photos (free licence, hotlinked as Unsplash asks) until the
  * client supplies their own. Swapping one in is a one-line change to `image`.
  */
 export const speciesConfig: Record<Species, SpeciesConfig> = {
@@ -30,8 +29,9 @@ export const speciesConfig: Record<Species, SpeciesConfig> = {
     singular: "dog",
     icon: Dog,
     shopPetType: "dogs",
-    image: "/images/petzucutedog.jpeg",
-    imageAlt: "A happy golden retriever cared for through PetZu",
+    // Zuzu's photo (petzucutedog.jpeg) appears only on /about, per the client.
+    image: "https://images.unsplash.com/photo-1610112747663-45172b603dde?auto=format&fit=crop&w=900&q=80",
+    imageAlt: "A brown short-coated dog standing on grass",
     heroCopy:
       "Food, vet care, grooming and training advice for dogs of every breed and age, plus a community of dog parents who get it.",
     breeds: [
