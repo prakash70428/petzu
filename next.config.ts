@@ -61,6 +61,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
   },
 
+  // The standalone pricing page was folded into a note on /services
+  // (there are no tiers to compare), so old links land there instead.
+  async redirects() {
+    return [{ source: "/pricing", destination: "/services", permanent: true }];
+  },
+
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

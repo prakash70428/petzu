@@ -8,7 +8,6 @@ export const routes = {
   community: "/community",
   about: "/about",
   contact: "/contact",
-  pricing: "/pricing",
   careers: "/careers",
   privacy: "/privacy",
   terms: "/terms",

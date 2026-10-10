@@ -25,6 +25,8 @@ export const siteConfig = {
   description:
     "The PetZu World is a modern platform for pet lovers: discover products, care guides, and a community built around your pets.",
   url: "https://thepetzu.com",
+  /** Strip shown under the navbar (see AnnouncementBar). Empty = hidden. */
+  announcement: process.env.NEXT_PUBLIC_ANNOUNCEMENT?.trim() ?? "",
   locale: "en_US",
   keywords: [
     "PetZu",
@@ -45,7 +47,6 @@ export const primaryNav: NavItem[] = [
   { label: "Shop", href: "/shop" },
   { label: "Community", href: "/community" },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
 ];
 
 /**
@@ -102,7 +103,6 @@ export const megaNav: MegaNavItem[] = [
   },
   { label: "Community", href: "/community" },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
 ];
 
 export const footerNav: NavSection[] = [
@@ -110,7 +110,6 @@ export const footerNav: NavSection[] = [
     title: "Product",
     items: [
       { label: "Shop", href: "/shop" },
-      { label: "Pricing", href: "/pricing" },
       { label: "Community", href: "/community" },
     ],
   },

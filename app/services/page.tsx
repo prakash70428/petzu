@@ -47,6 +47,12 @@ export default function ServicesHubPage() {
           From expert advice and veterinary care to grooming, trusted products
           and holidays: everything your pet needs, in one place.
         </p>
+        <p className="mt-4 inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-xl bg-secondary px-4 py-2 text-body-sm text-foreground">
+          <span className="font-medium">Pay per booking, not per month.</span>
+          <span className="text-muted-foreground">
+            No subscription tier: each provider sets their price and you see it before you book.
+          </span>
+        </p>
       </div>
 
       <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

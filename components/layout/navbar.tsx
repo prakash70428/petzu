@@ -11,6 +11,7 @@ import { MiniCart } from "@/features/cart/components";
 import { WishlistNavLink } from "@/features/wishlist/components";
 import { useScrollPosition } from "@/hooks/use-scroll-position";
 import { cn } from "@/utils/cn";
+import { AnnouncementBar } from "./announcement-bar";
 import { Container } from "./container";
 import { Logo } from "./logo";
 import { MegaMenu } from "./mega-menu";
@@ -59,6 +60,8 @@ export function Navbar() {
           </Button>
         </div>
       </Container>
+
+      <AnnouncementBar />
 
       <AnimatePresence>
         {open && (
