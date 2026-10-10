@@ -40,6 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     entry("/community", 0.6, "weekly"),
     entry("/about", 0.5, "monthly"),
     entry("/contact", 0.4, "monthly"),
+    entry("/partners", 0.4, "monthly"),
     entry("/careers", 0.3, "monthly"),
     entry("/privacy", 0.2, "yearly"),
     entry("/terms", 0.2, "yearly"),

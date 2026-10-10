@@ -1,8 +1,8 @@
 "use client";
 
-import { Mail, MapPin, MessageCircle } from "lucide-react";
+import { Handshake, Mail, MessageCircle } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-import { z } from "zod";
 import { Section } from "@/components/layout/section";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -10,18 +10,17 @@ import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "@/hooks/use-form";
+import { siteConfig } from "@/constants/site";
+import { generalEnquirySchema } from "@/features/enquiries/schema";
+import { submitEnquiry } from "@/features/enquiries/submit";
 import { toast } from "@/hooks/use-toast";
 
-const contactSchema = z.object({
-  name: z.string().min(2, "Enter your name"),
-  email: z.string().min(1, "Email is required").email("Enter a valid email address"),
-  message: z.string().min(10, "Tell us a bit more (at least 10 characters)"),
-});
+const contactSchema = generalEnquirySchema.omit({ kind: true });
 
+/** Only real, working contact routes: the email shows once it's configured. */
 const contactPoints = [
-  { icon: Mail, label: "Email", value: "hello@thepetzu.world" },
-  { icon: MessageCircle, label: "Support", value: "Live chat, 8am–8pm daily" },
-  { icon: MapPin, label: "HQ", value: "Portland, OR" },
+  ...(siteConfig.contactEmail ? [{ icon: Mail, label: "Email", value: siteConfig.contactEmail }] : []),
+  { icon: MessageCircle, label: "Chat", value: "The PetZu assistant (bottom right) answers any time." },
 ];
 
 export default function ContactPage() {
@@ -30,10 +29,19 @@ export default function ContactPage() {
   const { values, errors, setField, handleSubmit, isSubmitting } = useForm({
     schema: contactSchema,
     initialValues: { name: "", email: "", message: "" },
-    onSubmit: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      setSent(true);
-      toast({ title: "Message sent", description: "We'll get back to you within a business day." });
+    onSubmit: async (data) => {
+      // Previously this only waited and showed "sent": no message ever reached the team.
+      try {
+        await submitEnquiry({ kind: "GENERAL", ...data });
+        setSent(true);
+        toast({ title: "Message sent", description: "We'll get back to you soon." });
+      } catch {
+        toast({
+          title: "Couldn't send your message",
+          description: "Please try again in a moment.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -60,7 +68,7 @@ export default function ContactPage() {
             <Mail className="size-8 text-primary" aria-hidden />
             <h2 className="text-heading-4 font-semibold text-foreground">Message sent</h2>
             <p className="max-w-sm text-body-sm text-muted-foreground">
-              Thanks for reaching out. We typically reply within one business day.
+              Thanks for reaching out. Our team will reply to the email you gave us.
             </p>
             <Button variant="outline" onClick={() => setSent(false)}>
               Send another message
@@ -113,6 +121,17 @@ export default function ContactPage() {
               </div>
             </div>
           ))}
+          <div className="flex items-start gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Handshake className="size-4" aria-hidden />
+            </div>
+            <div>
+              <p className="text-body-sm font-medium text-foreground">Are you a business?</p>
+              <Link href="/partners" className="text-caption text-primary hover:underline">
+                Partner with PetZu
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </Section>

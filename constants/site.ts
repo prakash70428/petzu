@@ -29,8 +29,12 @@ export const siteConfig = {
   name: "The PetZu World",
   shortName: "PetZu",
   description:
-    "The PetZu World is a modern platform for pet lovers: discover products, care guides, and a community built around your pets.",
+    "PetZu is a site for all things pet: trusted products, vets and groomers you can book, care guides and a community of pet parents.",
   url: "https://thepetzu.com",
+  /** Public inbox for customers; shown on /contact only when set. */
+  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() ?? "",
+  /** Inbox for business and partnership enquiries; shown on /partners only when set. */
+  businessEmail: process.env.NEXT_PUBLIC_BUSINESS_EMAIL?.trim() ?? "",
   /** Strip shown under the navbar (see AnnouncementBar). Empty = hidden. */
   announcement: process.env.NEXT_PUBLIC_ANNOUNCEMENT?.trim() ?? "",
   locale: "en_US",
@@ -126,18 +130,21 @@ export const megaNav: MegaNavItem[] = [
 
 export const footerNav: NavSection[] = [
   {
-    title: "Product",
+    // Order per client: community first, then services, then shop.
+    title: "Explore",
     items: [
-      { label: "Shop", href: "/shop" },
       { label: "Community", href: "/community" },
+      { label: "Services", href: "/services" },
+      { label: "Shop", href: "/shop" },
     ],
   },
   {
     title: "Company",
     items: [
-      { label: "About", href: "/about" },
-      { label: "Careers", href: "/careers" },
+      { label: "Our story", href: "/about" },
       { label: "Contact", href: "/contact" },
+      { label: "Careers", href: "/careers" },
+      { label: "Partner with us", href: "/partners" },
     ],
   },
   {

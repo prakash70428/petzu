@@ -39,7 +39,7 @@ Site map:
 - The Last Journey (end-of-life care and support): /services/the-last-journey
 - Care guides: /guides, Blog: /blog, FAQ: /faq
 - Community: /community
-- About: /about, Contact the team: /contact
+- Our story (about PetZu): /about, Contact the team: /contact, Businesses wanting to partner (vets, groomers, pharmacies): /partners
 - Privacy policy: /privacy, Terms: /terms
 - Sign in: /sign-in, Create an account: /sign-up
 - After signing in, the dashboard at /dashboard has: saved pets (/dashboard/pets), orders (/dashboard/orders), appointments (/dashboard/appointments), notifications (/dashboard/notifications), feedback (/dashboard/feedback), profile (/dashboard/profile) and settings (/dashboard/settings), including data export and account deletion.

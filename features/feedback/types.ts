@@ -1,4 +1,11 @@
-export type FeedbackType = "FEEDBACK" | "COMPLAINT";
+export type FeedbackType = "FEEDBACK" | "COMPLAINT" | "ENQUIRY" | "PARTNERSHIP";
+
+export const feedbackTypeLabels: Record<FeedbackType, string> = {
+  FEEDBACK: "Feedback",
+  COMPLAINT: "Complaint",
+  ENQUIRY: "Enquiry",
+  PARTNERSHIP: "Partnership",
+};
 export type FeedbackStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
 
 export interface FeedbackItem {

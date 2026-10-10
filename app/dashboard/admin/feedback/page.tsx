@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { feedbackStatuses, statusBadgeVariant, statusLabel } from "@/features/feedback/constants";
 import { useFeedbackTriage } from "@/features/feedback/hooks";
-import type { FeedbackStatus } from "@/features/feedback/types";
+import { type FeedbackStatus, type FeedbackType, feedbackTypeLabels } from "@/features/feedback/types";
 import { PageHeader } from "@/features/dashboard/components";
 import { formatRelativeTime } from "@/features/dashboard/utils";
 
@@ -52,7 +52,7 @@ export default function FeedbackAdminPage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="font-medium text-foreground">{item.subject}</p>
                   <Badge variant={item.type === "COMPLAINT" ? "destructive" : "secondary"}>
-                    {item.type === "COMPLAINT" ? "Complaint" : "Feedback"}
+                    {feedbackTypeLabels[item.type as FeedbackType] ?? item.type}
                   </Badge>
                 </div>
                 <p className="mt-1 text-body-sm text-muted-foreground">{item.body}</p>

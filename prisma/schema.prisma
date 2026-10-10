@@ -277,6 +277,10 @@ model Feedback {
 enum FeedbackType {
   FEEDBACK
   COMPLAINT
+  /// Contact-page message (app/api/enquiries).
+  ENQUIRY
+  /// Business partner request from /partners (app/api/enquiries).
+  PARTNERSHIP
 }
 
 enum FeedbackStatus {
