@@ -7,13 +7,22 @@ export interface ChatTurn {
   content: string;
 }
 
+/** Shown when the model declines a message (stop_reason "refusal") even after the fallback model. */
+export const CHATBOT_REFUSAL_MESSAGE =
+  "Sorry, I can't help with that one here. For anything else about your pet or PetZu, just ask, or reach the team through /contact.";
+
+/**
+ * Models that accept the server-side `fallbacks: "default"` refusal rescue.
+ * `ANTHROPIC_CHAT_MODEL` can point anywhere, so only send the parameter when
+ * the configured model is known to accept it.
+ */
+const FALLBACK_MODELS = new Set(["claude-opus-5-5", "claude-opus-5", "claude-fable-5-1", "claude-sonnet-5-5"]);
+
 /**
  * Shared by the web chat widget (streams `onDelta` chunks to the browser)
- * and the WhatsApp webhook (only needs the final string) — both grounding
- * in the knowledge base and falling back to the same "not configured"
- * message when no `ANTHROPIC_API_KEY` is set belong in one place, not
- * duplicated between `app/api/chat/route.ts` and
- * `app/api/whatsapp/webhook/route.ts`.
+ * and the WhatsApp webhook (only needs the final string). Both ground the
+ * model in the site guide + knowledge base and fall back to the same
+ * "not configured" message when no `ANTHROPIC_API_KEY` is set.
  */
 export async function generateReply(
   userMessage: string,
@@ -28,17 +37,21 @@ export async function generateReply(
   }
 
   const knowledgeMatches = await searchKnowledge(userMessage);
-  const system = buildSystemPrompt(knowledgeMatches);
+  const useFallbacks = FALLBACK_MODELS.has(CHAT_MODEL);
   let fullText = "";
 
-  const stream = anthropic.messages.stream({
+  const stream = anthropic.beta.messages.stream({
     model: CHAT_MODEL,
-    max_tokens: 1024,
-    system,
+    // Room for adaptive thinking plus a chat-sized answer.
+    max_tokens: 4096,
+    // Support chat is latency-sensitive and rarely needs deep reasoning.
+    output_config: { effort: "low" },
+    system: buildSystemPrompt(knowledgeMatches),
     messages: priorMessages.map((turn) => ({
       role: turn.role === "ASSISTANT" ? ("assistant" as const) : ("user" as const),
       content: turn.content,
     })),
+    ...(useFallbacks ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const } : {}),
   });
 
   stream.on("text", (delta) => {
@@ -46,6 +59,10 @@ export async function generateReply(
     onDelta?.(delta);
   });
 
-  await stream.finalMessage();
+  const final = await stream.finalMessage();
+  if (final.stop_reason === "refusal" && !fullText.trim()) {
+    onDelta?.(CHATBOT_REFUSAL_MESSAGE);
+    return CHATBOT_REFUSAL_MESSAGE;
+  }
   return fullText;
 }

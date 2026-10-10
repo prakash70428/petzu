@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageCircle, PawPrint, Send, X } from "lucide-react";
+import { Maximize2, MessageCircle, Minimize2, PawPrint, Send, X } from "lucide-react";
 import Link from "next/link";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/utils/cn";
 import { setChatGuest, useChatGuest } from "../guest-store";
 import { type ChatIdentity, useChat } from "../hooks";
+import { splitMessageLinks } from "../utils";
 
 function ChatBubble({ role, content }: { role: "USER" | "ASSISTANT" | "SYSTEM"; content: string }) {
   const isUser = role === "USER";
@@ -17,17 +18,42 @@ function ChatBubble({ role, content }: { role: "USER" | "ASSISTANT" | "SYSTEM"; 
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
-          "max-w-[85%] rounded-2xl px-3.5 py-2 text-body-sm",
+          "max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2 text-body-sm",
           isUser ? "bg-primary text-primary-foreground" : "bg-muted text-foreground",
         )}
       >
-        {content}
+        {isUser
+          ? content
+          : splitMessageLinks(content).map((part, index) =>
+              part.type === "text" ? (
+                part.value
+              ) : part.type === "internal" ? (
+                <Link key={index} href={part.value} className="font-medium text-primary underline underline-offset-2">
+                  {part.value}
+                </Link>
+              ) : (
+                <a
+                  key={index}
+                  href={part.value}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-primary underline underline-offset-2"
+                >
+                  {part.value}
+                </a>
+              ),
+            )}
       </div>
     </div>
   );
 }
 
-function ChatPanel({ identity }: { identity: ChatIdentity }) {
+/**
+ * Sizes itself: compact before the first message, then taller and wider
+ * once a conversation is going (client feedback: the box felt too small to
+ * actually chat in), and larger again when the visitor expands it.
+ */
+function ChatPanel({ identity, expanded }: { identity: ChatIdentity; expanded: boolean }) {
   const { messages, loading, sending, sendMessage } = useChat(identity);
   const [draft, setDraft] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -43,9 +69,22 @@ function ChatPanel({ identity }: { identity: ChatIdentity }) {
     setDraft("");
   }
 
+  const chatting = messages.length > 0;
+
   return (
-    <>
-      <div ref={scrollRef} className="flex h-72 flex-col gap-2 overflow-y-auto p-4">
+    <div
+      className={cn(
+        "flex max-w-[calc(100vw-2.5rem)] flex-col transition-[width] duration-200 ease-premium",
+        expanded ? "w-[36rem]" : chatting ? "w-[26rem]" : "w-80",
+      )}
+    >
+      <div
+        ref={scrollRef}
+        className={cn(
+          "flex flex-col gap-2 overflow-y-auto p-4 transition-[height] duration-200 ease-premium",
+          expanded ? "h-[min(36rem,65vh)]" : chatting ? "h-[min(26rem,55vh)]" : "h-72",
+        )}
+      >
         {loading ? (
           <p className="text-caption text-muted-foreground">Loading...</p>
         ) : messages.length === 0 ? (
@@ -69,7 +108,15 @@ function ChatPanel({ identity }: { identity: ChatIdentity }) {
           <Send className="size-4" />
         </Button>
       </form>
-    </>
+      {chatting && (
+        <p className="px-4 pb-2.5 text-center text-caption text-muted-foreground">
+          Still stuck?{" "}
+          <Link href="/contact" className="font-medium text-primary hover:underline">
+            Contact the PetZu team
+          </Link>
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -163,6 +210,7 @@ export function ChatWidget() {
   const { isAuthenticated, user } = useSession();
   const guest = useChatGuest();
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   if (!mounted) return null;
 
@@ -176,23 +224,45 @@ export function ChatWidget() {
   return (
     <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
       {open && (
-        <Card className="w-80 overflow-hidden p-0 shadow-xl">
+        <Card className="overflow-hidden p-0 shadow-xl">
           <div className="flex items-center justify-between border-b bg-gradient-brand px-4 py-3 text-primary-foreground">
             <div className="flex items-center gap-2">
               <PawPrint className="size-4" aria-hidden />
               <span className="text-body-sm font-medium">PetZu Assistant</span>
             </div>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label="Close chat"
-              className="rounded-md p-1 hover:bg-white/10"
-            >
-              <X className="size-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              {identity && (
+                <button
+                  type="button"
+                  onClick={() => setExpanded((prev) => !prev)}
+                  aria-label={expanded ? "Shrink chat" : "Expand chat"}
+                  className="hidden rounded-md p-1 hover:bg-white/10 sm:block"
+                >
+                  {expanded ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close chat"
+                className="rounded-md p-1 hover:bg-white/10"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
           </div>
-          {identity ? <ChatPanel key={identity.email} identity={identity} /> : <GuestStartForm />}
-          {!isAuthenticated && <MemberLinks />}
+          {identity ? (
+            <ChatPanel key={identity.email} identity={identity} expanded={expanded} />
+          ) : (
+            <div className="w-80 max-w-[calc(100vw-2.5rem)]">
+              <GuestStartForm />
+            </div>
+          )}
+          {!isAuthenticated && (
+            <div className={identity ? undefined : "w-80 max-w-[calc(100vw-2.5rem)]"}>
+              <MemberLinks />
+            </div>
+          )}
         </Card>
       )}
       <Button

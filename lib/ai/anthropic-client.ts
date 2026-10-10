@@ -19,7 +19,7 @@ export function getAnthropicClient(): Anthropic | null {
 }
 
 /** Overridable via env so a cheaper/newer model can be swapped without a code change. */
-export const CHAT_MODEL = process.env.ANTHROPIC_CHAT_MODEL ?? "claude-sonnet-5";
+export const CHAT_MODEL = process.env.ANTHROPIC_CHAT_MODEL ?? "claude-opus-5-5";
 
 /** Shared between the web chat widget (app/api/chat) and the WhatsApp webhook (app/api/whatsapp/webhook) — both fall back to this when `getAnthropicClient()` returns null. */
 export const CHATBOT_NOT_CONFIGURED_MESSAGE =
