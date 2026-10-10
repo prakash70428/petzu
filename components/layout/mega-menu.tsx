@@ -78,10 +78,10 @@ export function MegaMenu({ items }: { items: MegaNavItem[] }) {
                 exit={{ opacity: 0, y: 8 }}
                 transition={{ duration: 0.18, ease: "easeOut" }}
                 onMouseEnter={() => open(index)}
-                className="glass-strong absolute left-0 top-full z-50 mt-2 w-[38rem] rounded-2xl p-6 shadow-2xl"
+                className="glass-strong absolute left-0 top-full z-50 mt-2 w-[42rem] rounded-2xl p-6 shadow-2xl"
               >
-                <div className="grid grid-cols-3 gap-6">
-                  <div className="col-span-2 grid grid-cols-2 gap-6">
+                <div className="flex gap-6">
+                  <div className="grid flex-1 auto-cols-fr grid-flow-col gap-6">
                     {item.megaMenu.map((column) => (
                       <div key={column.title} className="flex flex-col gap-3">
                         <p className="text-caption font-semibold uppercase tracking-wide text-muted-foreground">
@@ -110,7 +110,7 @@ export function MegaMenu({ items }: { items: MegaNavItem[] }) {
                   {item.featured && (
                     <Link
                       href={item.featured.href}
-                      className="group flex flex-col justify-between rounded-xl bg-gradient-brand p-4 text-primary-foreground transition-transform duration-200 ease-premium hover:-translate-y-0.5"
+                      className="group flex w-44 shrink-0 flex-col justify-between rounded-xl bg-gradient-brand p-4 text-primary-foreground transition-transform duration-200 ease-premium hover:-translate-y-0.5"
                     >
                       <div>
                         <p className="text-body-sm font-semibold">{item.featured.label}</p>

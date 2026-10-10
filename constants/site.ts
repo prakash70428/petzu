@@ -1,11 +1,17 @@
 import {
+  Bath,
   Bird,
   BookOpen,
   Cat,
   Dog,
+  Flower2,
   Gamepad2,
   GraduationCap,
   Home as HomeIcon,
+  LayoutGrid,
+  Palmtree,
+  PartyPopper,
+  PawPrint,
   Rabbit,
   ShieldCheck,
   Sofa,
@@ -87,14 +93,27 @@ export const megaNav: MegaNavItem[] = [
         title: "Care services",
         links: [
           { label: "Vet booking", href: "/services/vet-booking", icon: Stethoscope },
-          { label: "Grooming", href: "/services/grooming", icon: Sofa },
+          { label: "Grooming & spa", href: "/services/grooming", icon: Bath },
           { label: "Training", href: "/services/training", icon: GraduationCap },
           { label: "Pet sitting", href: "/services/sitting", icon: HomeIcon },
+          { label: "Pet insurance", href: "/services/insurance", icon: ShieldCheck },
+        ],
+      },
+      {
+        // Every service page must be reachable from the menu, not only from
+        // a homepage card (client feedback: The Last Journey was click-only).
+        title: "Life moments",
+        links: [
+          { label: "Pet adoption", href: "/services/adoption", icon: PawPrint },
+          { label: "Pet holidays", href: "/services/holidays", icon: Palmtree },
+          { label: "Pet celebrations", href: "/services/celebrations", icon: PartyPopper },
+          { label: "The Last Journey", href: "/services/the-last-journey", icon: Flower2 },
         ],
       },
       {
         title: "Resources",
         links: [
+          { label: "All services", href: "/services", icon: LayoutGrid },
           { label: "Care guides", href: "/guides", icon: BookOpen },
           { label: "Community", href: "/community", icon: Users },
         ],
