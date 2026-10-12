@@ -37,7 +37,7 @@ export function sortProviders(items: Provider[], sort: SortOption): Provider[] {
     case "rating":
       return sorted.sort((a, b) => b.rating - a.rating);
     case "distance":
-      return sorted.sort((a, b) => a.location.distanceMiles - b.location.distanceMiles);
+      return sorted.sort((a, b) => a.location.distanceKm - b.location.distanceKm);
     case "price-asc":
       return sorted.sort((a, b) => minPrice(a) - minPrice(b));
     case "recommended":

@@ -1,6 +1,7 @@
 import { Section } from "@/components/layout/section";
 import { Badge } from "@/components/ui/badge";
 import { ServiceStages } from "./service-stages";
+import { StagePicks } from "./stage-picks";
 
 export function Services() {
   return (
@@ -14,6 +15,8 @@ export function Services() {
           From the day they come home to the day you say goodbye.
         </p>
       </div>
+
+      <StagePicks />
 
       <ServiceStages className="mt-14" />
     </Section>

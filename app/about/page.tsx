@@ -18,8 +18,8 @@ const values = [
     description: "Every product and provider on PetZu is reviewed before it reaches you. No pay-to-rank shelf space.",
   },
   {
-    title: "Care that shows up",
-    description: "Same-day vet visits, because pet emergencies don't wait and neither do we.",
+    title: "A community first",
+    description: "The best answer to \"is this vet any good?\" usually comes from another pet parent, so the community sits at the centre of PetZu.",
   },
   {
     title: "Built with pet parents",

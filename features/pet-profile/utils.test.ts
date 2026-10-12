@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { speciesConfig, speciesList } from "./constants";
-import { formatPetAge, possessive, todayIso } from "./utils";
+import { estimatedBirthday, formatPetAge, lifeStageLabel, lifeStageOf, possessive, todayIso } from "./utils";
 
 const today = new Date(2026, 9, 9); // 9 Oct 2026
 
@@ -50,5 +50,45 @@ describe("speciesConfig", () => {
       expect(speciesConfig[species].breeds.length).toBeGreaterThan(0);
       expect(speciesConfig[species].image).toBeTruthy();
     }
+  });
+});
+
+describe("lifeStageOf", () => {
+  it("works the stage out from the birthday, per animal", () => {
+    expect(lifeStageOf({ species: "dogs", birthday: "2026-07-01" }, today)).toBe("baby");
+    expect(lifeStageOf({ species: "dogs", birthday: "2025-10-01" }, today)).toBe("teen");
+    expect(lifeStageOf({ species: "dogs", birthday: "2021-10-01" }, today)).toBe("adult");
+    expect(lifeStageOf({ species: "dogs", birthday: "2016-10-01" }, today)).toBe("senior");
+    // Cats stay middle-aged longer than dogs.
+    expect(lifeStageOf({ species: "cats", birthday: "2017-10-01" }, today)).toBe("adult");
+  });
+
+  it("moves on by itself as the years pass", () => {
+    const pet = { species: "dogs" as const, birthday: "2026-01-01" };
+    expect(lifeStageOf(pet, today)).toBe("teen");
+    expect(lifeStageOf(pet, new Date(2028, 6, 1))).toBe("adult");
+  });
+
+  it("only reports the last journey when the owner set it, and nothing without a birthday", () => {
+    expect(lifeStageOf({ species: "cats", lastJourney: true }, today)).toBe("last-journey");
+    expect(lifeStageOf({ species: "cats" }, today)).toBeNull();
+  });
+});
+
+describe("estimatedBirthday", () => {
+  it("lands inside the stage the owner picked", () => {
+    for (const species of speciesList) {
+      for (const stage of ["baby", "teen", "adult", "senior"] as const) {
+        expect(lifeStageOf({ species, birthday: estimatedBirthday(species, stage, today) }, today)).toBe(stage);
+      }
+    }
+  });
+});
+
+describe("lifeStageLabel", () => {
+  it("uses the animal's own word for babies", () => {
+    expect(lifeStageLabel("baby", "dogs")).toBe("Puppy");
+    expect(lifeStageLabel("baby", "cats")).toBe("Kitten");
+    expect(lifeStageLabel("adult", "fish")).toBe("Middle age");
   });
 });

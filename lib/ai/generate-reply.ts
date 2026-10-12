@@ -1,5 +1,6 @@
-import { CHAT_MODEL, CHATBOT_NOT_CONFIGURED_MESSAGE, getAnthropicClient } from "./anthropic-client";
+import { CHAT_MODEL, getAnthropicClient } from "./anthropic-client";
 import { searchKnowledge } from "./knowledge-retrieval";
+import { offlineReply } from "./offline-reply";
 import { buildSystemPrompt } from "./system-prompt";
 
 export interface ChatTurn {
@@ -21,8 +22,9 @@ const FALLBACK_MODELS = new Set(["claude-opus-5-5", "claude-opus-5", "claude-fab
 /**
  * Shared by the web chat widget (streams `onDelta` chunks to the browser)
  * and the WhatsApp webhook (only needs the final string). Both ground the
- * model in the site guide + knowledge base and fall back to the same
- * "not configured" message when no `ANTHROPIC_API_KEY` is set.
+ * model in the site guide + knowledge base. Without an `ANTHROPIC_API_KEY`,
+ * or if the API fails before any text arrives, they answer from
+ * `offlineReply()`, which points to the right page instead of a dead end.
  */
 export async function generateReply(
   userMessage: string,
@@ -31,12 +33,15 @@ export async function generateReply(
 ): Promise<string> {
   const anthropic = getAnthropicClient();
 
-  if (!anthropic) {
-    onDelta?.(CHATBOT_NOT_CONFIGURED_MESSAGE);
-    return CHATBOT_NOT_CONFIGURED_MESSAGE;
-  }
+  const fallback = () => {
+    const text = offlineReply(userMessage);
+    onDelta?.(text);
+    return text;
+  };
 
-  const knowledgeMatches = await searchKnowledge(userMessage);
+  if (!anthropic) return fallback();
+
+  const knowledgeMatches = await searchKnowledge(userMessage).catch(() => []);
   const useFallbacks = FALLBACK_MODELS.has(CHAT_MODEL);
   let fullText = "";
 
@@ -59,7 +64,15 @@ export async function generateReply(
     onDelta?.(delta);
   });
 
-  const final = await stream.finalMessage();
+  let final;
+  try {
+    final = await stream.finalMessage();
+  } catch (error) {
+    // Mid-answer failures keep what was already streamed; before that, answer offline.
+    if (fullText.trim()) throw error;
+    console.error("Chat model unavailable, answering offline:", error);
+    return fallback();
+  }
   if (final.stop_reason === "refusal" && !fullText.trim()) {
     onDelta?.(CHATBOT_REFUSAL_MESSAGE);
     return CHATBOT_REFUSAL_MESSAGE;

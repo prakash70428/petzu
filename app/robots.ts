@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       // `robots: noindex` in its layout metadata — belt and braces,
       // because robots.txt only asks crawlers not to *crawl*, while the
       // meta tag prevents indexing if a URL is discovered some other way.
-      disallow: ["/dashboard/", "/checkout/", "/cart", "/verify", "/forgot-password"],
+      disallow: ["/dashboard/", "/health", "/verify", "/forgot-password"],
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
   };

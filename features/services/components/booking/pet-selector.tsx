@@ -12,7 +12,8 @@ export interface PetSelectorProps {
   pets: Pet[];
   selectedPetId: string | null;
   onSelect: (petId: string) => void;
-  onAddPet: (pet: Pet) => void;
+  /** Saves a new pet by name and returns its id. */
+  onAddPet: (name: string) => string;
 }
 
 export function PetSelector({ pets, selectedPetId, onSelect, onAddPet }: PetSelectorProps) {
@@ -22,15 +23,7 @@ export function PetSelector({ pets, selectedPetId, onSelect, onAddPet }: PetSele
   function handleAdd() {
     const trimmed = name.trim();
     if (!trimmed) return;
-    const pet: Pet = {
-      id: `pet-${Date.now()}`,
-      name: trimmed,
-      species: "Dog",
-      breed: "Mixed breed",
-      initials: trimmed.slice(0, 2).toUpperCase(),
-    };
-    onAddPet(pet);
-    onSelect(pet.id);
+    onSelect(onAddPet(trimmed));
     setName("");
     setAdding(false);
   }

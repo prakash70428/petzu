@@ -1,22 +1,20 @@
 "use client";
 
-import { RotateCcw, ShieldCheck, Truck } from "lucide-react";
+import { PackageCheck, RotateCcw, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { QuantityStepper } from "@/components/ui/quantity-stepper";
-import { Rating } from "@/components/ui/rating";
 import { cn } from "@/utils/cn";
 import { productIcons } from "../constants";
 import type { Product } from "../types";
 import { formatPrice } from "../utils";
-import { AddToCartButton } from "./add-to-cart-button";
+import { BuyOnAmazonButton } from "./buy-on-amazon-button";
 import { WishlistButton } from "./wishlist-button";
 
 const trustBadges = [
-  { icon: Truck, label: "Free shipping ₹999+" },
-  { icon: RotateCcw, label: "30-day returns" },
-  { icon: ShieldCheck, label: "Vet-approved" },
+  { icon: ShieldCheck, label: "Picked by PetZu" },
+  { icon: PackageCheck, label: "Delivered by Amazon" },
+  { icon: RotateCcw, label: "Amazon returns" },
 ];
 
 /**
@@ -27,7 +25,6 @@ const trustBadges = [
 export function ProductDetail({ product }: { product: Product }) {
   const Icon = productIcons[product.iconKey];
   const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0]?.label);
-  const [quantity, setQuantity] = useState(1);
 
   const activeVariant = product.variants?.find((variant) => variant.label === selectedVariant);
   const showcaseGradient = activeVariant?.swatchClassName ?? "from-primary/20 via-primary/5 to-transparent";
@@ -73,8 +70,6 @@ export function ProductDetail({ product }: { product: Product }) {
           <h1 className="mt-1 text-heading-1 font-semibold text-foreground">{product.name}</h1>
         </div>
 
-        <Rating value={product.rating} showValue reviewCount={product.reviewCount} size="md" />
-
         <div className="flex items-center gap-3">
           <span className="text-heading-2 font-semibold text-foreground">{formatPrice(product.price)}</span>
           {product.originalPrice && (
@@ -93,19 +88,11 @@ export function ProductDetail({ product }: { product: Product }) {
           </p>
         )}
 
-        <div className="mt-2 flex items-center gap-3">
-          <QuantityStepper value={quantity} onChange={setQuantity} />
-          <AddToCartButton
-            productSlug={product.slug}
-            productName={product.name}
-            quantity={quantity}
-            selectedVariant={selectedVariant}
-            disabled={!product.inStock}
-            size="lg"
-            className="flex-1"
-          >
-            {product.inStock ? "Add to cart" : "Out of stock"}
-          </AddToCartButton>
+        <div className="mt-2 flex flex-col gap-2">
+          <BuyOnAmazonButton product={product} size="lg" variant="gradient" className="w-full sm:w-auto sm:self-start" />
+          <p className="text-caption text-muted-foreground">
+            Price shown is a guide. Amazon sets the final price and handles delivery.
+          </p>
         </div>
 
         <WishlistButton productSlug={product.slug} productName={product.name} variant="inline" />

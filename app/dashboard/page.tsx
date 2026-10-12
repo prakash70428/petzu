@@ -1,31 +1,35 @@
 "use client";
 
-import { ArrowUpRight, CalendarClock, Bell, Dog, Package } from "lucide-react";
+import { ArrowUpRight, CalendarClock, Dog, FileText, Pill } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useSession } from "@/features/auth/store";
 import { PageHeader } from "@/features/dashboard/components";
-import {
-  mockAppointments,
-  mockNotifications,
-  mockOrders,
-  mockPets,
-} from "@/features/dashboard/constants";
-import { appointmentStatusVariant, formatDate, formatRelativeTime, getUnreadCount } from "@/features/dashboard/utils";
+import { formatDate } from "@/features/dashboard/utils";
+import { useHealthState } from "@/features/health/store";
+import { DOSE_LABELS, formatTime, todaysDoses } from "@/features/health/utils";
+import { usePetProfileState } from "@/features/pet-profile/store";
 
+/** Everything here is the owner's own data (pet profiles and health records), never sample content. */
 export default function DashboardPage() {
   const session = useSession();
+  const profile = usePetProfileState();
+  const health = useHealthState();
   const firstName = session.user?.name.split(" ")[0] ?? "there";
+  const now = new Date();
 
-  const upcoming = mockAppointments.filter((appointment) => appointment.status === "Upcoming");
-  const unreadCount = getUnreadCount(mockNotifications);
+  const upcoming = health.appointments
+    .filter((appointment) => new Date(appointment.startsAt) > now)
+    .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  const doses = todaysDoses(health.medicines, now);
+  const petName = (id: string) => profile.pets.find((pet) => pet.id === id)?.name ?? "Your pet";
 
   const stats = [
-    { label: "Saved pets", value: mockPets.length, href: "/dashboard/pets", icon: Dog },
-    { label: "Orders", value: mockOrders.length, href: "/dashboard/orders", icon: Package },
-    { label: "Upcoming visits", value: upcoming.length, href: "/dashboard/appointments", icon: CalendarClock },
-    { label: "Unread alerts", value: unreadCount, href: "/dashboard/notifications", icon: Bell },
+    { label: "Saved pets", value: profile.pets.length, href: "/dashboard/pets", icon: Dog },
+    { label: "Upcoming visits", value: upcoming.length, href: "/health", icon: CalendarClock },
+    { label: "Doses today", value: doses.length, href: "/health", icon: Pill },
+    { label: "Health records", value: health.records.length, href: "/health", icon: FileText },
   ];
 
   return (
@@ -54,23 +58,31 @@ export default function DashboardPage() {
         <Card className="p-card-lg">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-foreground">Upcoming appointments</h2>
-            <Link href="/dashboard/appointments" className="text-caption font-medium text-primary hover:underline">
+            <Link href="/health" className="text-caption font-medium text-primary hover:underline">
               View all
             </Link>
           </div>
           <div className="mt-4 flex flex-col gap-3">
             {upcoming.length === 0 ? (
-              <p className="py-6 text-center text-body-sm text-muted-foreground">No upcoming appointments.</p>
+              <p className="py-6 text-center text-body-sm text-muted-foreground">
+                No upcoming appointments.{" "}
+                <Link href="/services/vet-booking" className="font-medium text-primary hover:underline">
+                  Find a vet
+                </Link>
+              </p>
             ) : (
-              upcoming.map((appointment) => (
+              upcoming.slice(0, 4).map((appointment) => (
                 <div key={appointment.id} className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
                   <div className="min-w-0">
-                    <p className="truncate text-body-sm font-medium text-foreground">{appointment.service}</p>
+                    <p className="truncate text-body-sm font-medium text-foreground">
+                      {appointment.petName}: {appointment.service}
+                    </p>
                     <p className="truncate text-caption text-muted-foreground">
-                      {appointment.providerName} · {formatDate(appointment.date)} at {appointment.time}
+                      {appointment.providerName} · {formatDate(appointment.startsAt)} at{" "}
+                      {formatTime(new Date(appointment.startsAt))}
                     </p>
                   </div>
-                  <Badge variant={appointmentStatusVariant[appointment.status]}>{appointment.status}</Badge>
+                  <Badge variant="info">Upcoming</Badge>
                 </div>
               ))
             )}
@@ -79,24 +91,24 @@ export default function DashboardPage() {
 
         <Card className="p-card-lg">
           <div className="flex items-center justify-between">
-            <h2 className="font-semibold text-foreground">Recent activity</h2>
-            <Link href="/dashboard/notifications" className="text-caption font-medium text-primary hover:underline">
-              View all
+            <h2 className="font-semibold text-foreground">Medicines today</h2>
+            <Link href="/health" className="text-caption font-medium text-primary hover:underline">
+              Manage
             </Link>
           </div>
           <div className="mt-4 flex flex-col gap-3">
-            {mockNotifications.slice(0, 3).map((notification) => (
-              <div key={notification.id} className="flex items-start gap-3 rounded-lg border border-border p-3">
-                <span
-                  className={`mt-1.5 size-2 shrink-0 rounded-full ${notification.read ? "bg-muted" : "bg-primary"}`}
-                  aria-hidden
-                />
-                <div className="min-w-0">
-                  <p className="truncate text-body-sm font-medium text-foreground">{notification.title}</p>
-                  <p className="text-caption text-muted-foreground">{formatRelativeTime(notification.createdAt)}</p>
+            {doses.length === 0 ? (
+              <p className="py-6 text-center text-body-sm text-muted-foreground">Nothing due today.</p>
+            ) : (
+              doses.map(({ medicine, time }) => (
+                <div key={`${medicine.id}-${time}`} className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
+                  <p className="min-w-0 truncate text-body-sm font-medium text-foreground">
+                    {petName(medicine.petId)}: {medicine.name}
+                  </p>
+                  <span className="shrink-0 text-caption text-muted-foreground">{DOSE_LABELS[time]}</span>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </Card>
       </div>

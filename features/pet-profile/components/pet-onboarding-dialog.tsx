@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,11 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { OTHER_BREED, speciesConfig, speciesList } from "../constants";
 import { addPet } from "../store";
-import type { Species } from "../types";
-import { formatPetAge, todayIso } from "../utils";
+import type { FamilyMember, LifeStage, Species } from "../types";
+import { estimatedBirthday, formatPetAge, lifeStageLabel, lifeStageOf, todayIso } from "../utils";
+
+const STAGES: LifeStage[] = ["baby", "teen", "adult", "senior", "last-journey"];
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export interface PetOnboardingDialogProps {
   open: boolean;
@@ -22,16 +25,21 @@ export interface PetOnboardingDialogProps {
 }
 
 /**
- * Two short steps (which animal, then name/breed/birthday) instead of one
- * long form: picking the animal first lets the second step show that
- * animal's breed list, and gets a first-time visitor to a personalised
- * homepage in two clicks if they skip the optional fields.
+ * Short steps instead of one long form: which animal, then name, breed and
+ * birthday (or, if nobody knows it, a life stage), then optionally who else
+ * in the family looks after them. Picking the animal first lets the second
+ * step show that animal's breed list; everything but the name is optional.
  */
 export function PetOnboardingDialog({ open, onOpenChange, firstVisit = false, onSkip }: PetOnboardingDialogProps) {
   const [species, setSpecies] = useState<Species | null>(null);
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
   const [birthday, setBirthday] = useState("");
+  const [stage, setStage] = useState<LifeStage | null>(null);
+  const [step, setStep] = useState<"details" | "family">("details");
+  const [family, setFamily] = useState<FamilyMember[]>([]);
+  const [memberName, setMemberName] = useState("");
+  const [memberEmail, setMemberEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   function reset() {
@@ -39,6 +47,11 @@ export function PetOnboardingDialog({ open, onOpenChange, firstVisit = false, on
     setName("");
     setBreed("");
     setBirthday("");
+    setStage(null);
+    setStep("details");
+    setFamily([]);
+    setMemberName("");
+    setMemberEmail("");
     setError(null);
   }
 
@@ -50,19 +63,45 @@ export function PetOnboardingDialog({ open, onOpenChange, firstVisit = false, on
     onOpenChange(next);
   }
 
-  function handleSave() {
-    if (!species) return;
+  function handleNext() {
     if (!name.trim()) {
       setError("Give your pet a name");
       return;
     }
-    addPet({ name, species, breed: breed || OTHER_BREED, birthday: birthday || undefined });
+    setError(null);
+    setStep("family");
+  }
+
+  function addMember() {
+    if (memberName.trim().length < 2 || !EMAIL.test(memberEmail.trim())) {
+      setError("Add their name and a valid email");
+      return;
+    }
+    setFamily((prev) => [...prev, { name: memberName.trim(), email: memberEmail.trim() }]);
+    setMemberName("");
+    setMemberEmail("");
+    setError(null);
+  }
+
+  function handleSave() {
+    if (!species) return;
+    const estimate = !birthday && stage && stage !== "last-journey" ? stage : null;
+    addPet({
+      name,
+      species,
+      breed: breed || OTHER_BREED,
+      birthday: birthday || (estimate ? estimatedBirthday(species, estimate) : undefined),
+      birthdayEstimated: Boolean(estimate),
+      lastJourney: stage === "last-journey",
+      family,
+    });
     reset();
     onOpenChange(false);
   }
 
-  const config = species ? speciesConfig[species] : null;
+  const config = species ? { key: species, ...speciesConfig[species] } : null;
   const age = formatPetAge(birthday);
+  const birthdayStage = species && birthday ? lifeStageOf({ species, birthday }) : null;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -105,6 +144,72 @@ export function PetOnboardingDialog({ open, onOpenChange, firstVisit = false, on
             </DialogFooter>
           )}
         </>
+      ) : step === "family" ? (
+        <>
+          <DialogHeader>
+            <DialogTitle>Who else looks after {name.trim()}?</DialogTitle>
+            <DialogDescription>
+              Optional. Add family members who share {name.trim()}&apos;s care, like a partner or parent.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-6 flex flex-col gap-4">
+            {family.length > 0 && (
+              <ul className="flex flex-col gap-2">
+                {family.map((member) => (
+                  <li
+                    key={member.email}
+                    className="flex items-center justify-between rounded-xl border border-border px-3 py-2 text-body-sm"
+                  >
+                    <span>
+                      <span className="font-medium text-foreground">{member.name}</span>{" "}
+                      <span className="text-muted-foreground">{member.email}</span>
+                    </span>
+                    <button
+                      type="button"
+                      aria-label={`Remove ${member.name}`}
+                      onClick={() => setFamily((prev) => prev.filter((m) => m.email !== member.email))}
+                      className="rounded p-1 text-muted-foreground hover:text-destructive"
+                    >
+                      <X className="size-4" aria-hidden />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Input
+                aria-label="Family member's name"
+                placeholder="Name"
+                value={memberName}
+                onChange={(event) => setMemberName(event.target.value)}
+              />
+              <Input
+                aria-label="Family member's email"
+                type="email"
+                placeholder="Email"
+                value={memberEmail}
+                onChange={(event) => setMemberEmail(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") addMember();
+                }}
+              />
+            </div>
+            {error && <p className="text-caption text-destructive">{error}</p>}
+            <Button variant="outline" size="sm" onClick={addMember} className="self-start">
+              <Plus className="size-4" aria-hidden />
+              Add family member
+            </Button>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setStep("details")}>
+              <ArrowLeft className="size-4" aria-hidden />
+              Back
+            </Button>
+            <Button variant="gradient" onClick={handleSave}>
+              {family.length > 0 ? `Save ${name.trim()}` : "Skip and save"}
+            </Button>
+          </DialogFooter>
+        </>
       ) : (
         <>
           <DialogHeader>
@@ -123,7 +228,7 @@ export function PetOnboardingDialog({ open, onOpenChange, firstVisit = false, on
                   setError(null);
                 }}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter") handleSave();
+                  if (event.key === "Enter") handleNext();
                 }}
                 variant={error ? "error" : "default"}
                 placeholder="e.g. Bruno"
@@ -153,17 +258,45 @@ export function PetOnboardingDialog({ open, onOpenChange, firstVisit = false, on
                 type="date"
                 max={todayIso()}
                 value={birthday}
-                onChange={(event) => setBirthday(event.target.value)}
+                onChange={(event) => {
+                  setBirthday(event.target.value);
+                  if (stage !== "last-journey") setStage(null);
+                }}
               />
             </FormField>
+            <fieldset className="flex flex-col gap-2">
+              <legend className="text-body-sm font-medium text-foreground">Life stage</legend>
+              <p className="text-caption text-muted-foreground">
+                {birthdayStage
+                  ? `From the birthday: ${lifeStageLabel(birthdayStage, config.key)}. It updates by itself every year.`
+                  : "No birthday? Pick the closest stage and we'll keep it up to date."}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {STAGES.map((option) => {
+                  const pressed = stage === option || (!stage && birthdayStage === option);
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      aria-pressed={pressed}
+                      onClick={() => setStage(stage === option ? null : option)}
+                      disabled={Boolean(birthday) && option !== "last-journey"}
+                      className="rounded-full border border-border px-3 py-1.5 text-body-sm text-foreground transition-colors hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+                    >
+                      {lifeStageLabel(option, config.key)}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setSpecies(null)}>
               <ArrowLeft className="size-4" aria-hidden />
               Back
             </Button>
-            <Button variant="gradient" onClick={handleSave}>
-              {name.trim() ? `Save ${name.trim()}` : "Save pet"}
+            <Button variant="gradient" onClick={handleNext}>
+              Next
             </Button>
           </DialogFooter>
         </>

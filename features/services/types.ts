@@ -22,8 +22,9 @@ export interface Provider {
   yearsExperience: number;
   location: {
     city: string;
-    state: string;
-    distanceMiles: number;
+    /** Neighbourhood within the city, e.g. "Bandra West". */
+    area: string;
+    distanceKm: number;
   };
   languages: string[];
   acceptsNewPatients: boolean;
@@ -34,7 +35,7 @@ export interface Provider {
 export interface Pet {
   id: string;
   name: string;
-  species: "Dog" | "Cat" | "Bird" | "Small pet";
+  species: "Dog" | "Cat" | "Bird" | "Fish";
   breed: string;
   initials: string;
 }

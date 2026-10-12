@@ -47,6 +47,8 @@ export interface Product {
   /** Lower = more "featured" — powers the default (Featured) sort order. */
   rank: number;
   variants?: ProductVariant[];
+  /** The exact Amazon listing, once the client supplies it. Until then `amazonUrl()` falls back to an Amazon search. */
+  amazonUrl?: string;
 }
 
 export interface FilterState {

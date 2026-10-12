@@ -4,14 +4,39 @@ import { AnimatePresence, m } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { mockPets } from "../../constants";
+import { useSession } from "@/features/auth/store";
+import { setChatGuest, useChatGuest } from "@/features/chatbot/guest-store";
+import { generalEnquirySchema } from "@/features/enquiries/schema";
+import { submitEnquiry } from "@/features/enquiries/submit";
+import { addAppointment } from "@/features/health/store";
+import type { AppointmentKind } from "@/features/health/types";
+import { addPet, usePetProfileState } from "@/features/pet-profile/store";
+import type { PetProfile } from "@/features/pet-profile/types";
 import type { Pet, Provider, ProviderService } from "../../types";
-import { BookingConfirmation } from "./booking-confirmation";
+import { applyTimeToDate, formatDateLong, generateBookingReference } from "../../utils";
+import { BookingConfirmation, type BookingContact } from "./booking-confirmation";
 import { BookingStepper } from "./booking-stepper";
 import { BookingSummary } from "./booking-summary";
 import { Calendar } from "./calendar";
 import { PetSelector } from "./pet-selector";
 import { TimeSlotPicker } from "./time-slot-picker";
+
+const SPECIES_LABEL: Record<PetProfile["species"], Pet["species"]> = {
+  dogs: "Dog",
+  cats: "Cat",
+  birds: "Bird",
+  fish: "Fish",
+};
+
+function toBookingPet(pet: PetProfile): Pet {
+  return {
+    id: pet.id,
+    name: pet.name,
+    species: SPECIES_LABEL[pet.species],
+    breed: pet.breed,
+    initials: pet.name.slice(0, 2).toUpperCase(),
+  };
+}
 
 export interface BookingFlowProps {
   provider: Provider;
@@ -22,18 +47,29 @@ export interface BookingFlowProps {
  * Owns every piece of booking state locally (lifted, not a global store —
  * see SERVICES.md §5 for why that's the right call for a single, one-shot
  * flow) and hands it down to each step as plain props + callbacks.
+ *
+ * Pets are the owner's saved pet profiles. Confirming sends the request to
+ * the PetZu team (who confirm it with the provider by email) and saves the
+ * appointment to the pet's health records, which drives its reminders.
  */
 export function BookingFlow({ provider, service }: BookingFlowProps) {
   const router = useRouter();
+  const profile = usePetProfileState();
+  const session = useSession();
+  const guest = useChatGuest();
   const [step, setStep] = useState(0);
   const [direction, setDirection] = useState(1);
-  const [pets, setPets] = useState<Pet[]>(mockPets);
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
+  const [contactInput, setContactInput] = useState<BookingContact>({ name: "", email: "" });
+  const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const knownContact = session.user ?? guest;
+  const contact = knownContact ? { name: knownContact.name, email: knownContact.email } : contactInput;
+  const pets = profile.pets.map(toBookingPet);
   const selectedPet = pets.find((pet) => pet.id === selectedPetId) ?? null;
 
   function goTo(next: number) {
@@ -41,22 +77,59 @@ export function BookingFlow({ provider, service }: BookingFlowProps) {
     setStep(next);
   }
 
-  function handleConfirm() {
+  async function handleConfirm() {
     if (!selectedPet || !selectedDate || !selectedTime) return;
+    const reference = generateBookingReference();
+    const request = generalEnquirySchema.safeParse({
+      kind: "GENERAL",
+      name: contact.name,
+      email: contact.email,
+      message: [
+        `Booking request ${reference}`,
+        `${service.name} with ${provider.name} (${provider.clinicName})`,
+        `${formatDateLong(selectedDate)} at ${selectedTime}`,
+        `Pet: ${selectedPet.name} (${selectedPet.species}, ${selectedPet.breed})`,
+        notes.trim() && `Notes: ${notes.trim()}`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    });
+    if (!request.success) {
+      setError(request.error.issues[0]?.message ?? "Add your name and email");
+      return;
+    }
+
+    setError(null);
     setSubmitting(true);
-    setTimeout(() => {
-      // `pet` carries the *name*, not an id — pets added mid-flow are
-      // ephemeral local state with no backend to persist or re-fetch them
-      // by id from on the success page, so the display value travels
-      // directly through the URL instead.
-      const params = new URLSearchParams({
-        service: service.id,
-        pet: selectedPet.name,
-        date: selectedDate.toISOString(),
-        time: selectedTime,
-      });
-      router.push(`/services/providers/${provider.slug}/book/success?${params.toString()}`);
-    }, 900);
+    try {
+      await submitEnquiry(request.data);
+    } catch {
+      setError("We couldn't send your booking request. Please try again in a moment.");
+      setSubmitting(false);
+      return;
+    }
+    if (!knownContact) setChatGuest({ name: contact.name.trim(), email: contact.email.trim() });
+
+    addAppointment({
+      petId: selectedPet.id,
+      petName: selectedPet.name,
+      kind: provider.type as AppointmentKind,
+      providerName: provider.name,
+      service: service.name,
+      startsAt: applyTimeToDate(selectedDate, selectedTime).toISOString(),
+      notes: notes.trim(),
+      reference,
+    });
+
+    const params = new URLSearchParams({
+      service: service.id,
+      pet: selectedPet.name,
+      date: selectedDate.toISOString(),
+      time: selectedTime,
+      ref: reference,
+      email: contact.email.trim(),
+    });
+    router.push(`/services/providers/${provider.slug}/book/success?${params.toString()}`);
   }
 
   const canContinueFromPet = selectedPetId !== null;
@@ -81,7 +154,9 @@ export function BookingFlow({ provider, service }: BookingFlowProps) {
                   pets={pets}
                   selectedPetId={selectedPetId}
                   onSelect={setSelectedPetId}
-                  onAddPet={(pet) => setPets((prev) => [...prev, pet])}
+                  onAddPet={(name) =>
+                    addPet({ name, species: profile.browsingSpecies, breed: "Mixed / not sure" }).id
+                  }
                 />
               )}
 
@@ -119,6 +194,10 @@ export function BookingFlow({ provider, service }: BookingFlowProps) {
                   time={selectedTime}
                   notes={notes}
                   onNotesChange={setNotes}
+                  contact={contact}
+                  onContactChange={setContactInput}
+                  contactKnown={Boolean(knownContact)}
+                  error={error}
                   submitting={submitting}
                   onConfirm={handleConfirm}
                 />

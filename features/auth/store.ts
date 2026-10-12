@@ -7,8 +7,8 @@ const STORAGE_KEY = "petzu:session";
 const EMPTY_SESSION: Session = { isAuthenticated: false, user: null };
 
 /**
- * Same module-store + localStorage pattern as features/cart/store.ts and
- * features/wishlist/store.ts — there's no backend, so a persisted client
+ * Same module-store + localStorage pattern as features/wishlist/store.ts and
+ * features/pet-profile/store.ts — there's no backend, so a persisted client
  * session is the closest honest equivalent. "Login" never checks a
  * password against anything real; it just sets this session.
  */

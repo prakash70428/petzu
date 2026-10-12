@@ -72,3 +72,8 @@ export function getRelatedProducts(product: Product, limit = 4): Product[] {
 
 /** Re-exported from shared `utils/currency` so existing call sites keep working. */
 export { formatPrice } from "@/utils/currency";
+
+/** Where "Buy on Amazon" goes: the product's own listing, or an Amazon.in search for it until one is set. */
+export function amazonUrl(product: Pick<Product, "name" | "amazonUrl">): string {
+  return product.amazonUrl ?? `https://www.amazon.in/s?k=${encodeURIComponent(product.name)}`;
+}

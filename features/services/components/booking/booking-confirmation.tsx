@@ -1,9 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form-field";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { Pet, Provider, ProviderService } from "../../types";
 import { formatDateLong, formatPrice } from "../../utils";
+
+export interface BookingContact {
+  name: string;
+  email: string;
+}
 
 export interface BookingConfirmationProps {
   provider: Provider;
@@ -13,6 +20,11 @@ export interface BookingConfirmationProps {
   time: string;
   notes: string;
   onNotesChange: (notes: string) => void;
+  contact: BookingContact;
+  onContactChange: (contact: BookingContact) => void;
+  /** Hide the contact fields when we already know who's booking (signed in or chatted before). */
+  contactKnown: boolean;
+  error: string | null;
   submitting: boolean;
   onConfirm: () => void;
 }
@@ -25,6 +37,10 @@ export function BookingConfirmation({
   time,
   notes,
   onNotesChange,
+  contact,
+  onContactChange,
+  contactKnown,
+  error,
   submitting,
   onConfirm,
 }: BookingConfirmationProps) {
@@ -49,20 +65,43 @@ export function BookingConfirmation({
 
       <div className="flex flex-col gap-2">
         <label htmlFor="notes" className="text-body-sm font-medium text-foreground">
-          Notes for {provider.name.split(" ")[0]}{" "}
-          <span className="font-normal text-muted-foreground">(optional)</span>
+          Notes for {provider.name} <span className="font-normal text-muted-foreground">(optional)</span>
         </label>
         <Textarea
           id="notes"
           value={notes}
           onChange={(event) => onNotesChange(event.target.value)}
-          placeholder="Anything they should know before the appointment?"
+          placeholder="Symptoms, recent changes, questions you want to ask"
           rows={3}
         />
       </div>
 
+      {!contactKnown && (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField label="Your name" htmlFor="booking-name">
+            <Input
+              id="booking-name"
+              autoComplete="name"
+              value={contact.name}
+              onChange={(event) => onContactChange({ ...contact, name: event.target.value })}
+            />
+          </FormField>
+          <FormField label="Email" htmlFor="booking-email" helperText="We'll confirm the booking here.">
+            <Input
+              id="booking-email"
+              type="email"
+              autoComplete="email"
+              value={contact.email}
+              onChange={(event) => onContactChange({ ...contact, email: event.target.value })}
+            />
+          </FormField>
+        </div>
+      )}
+
+      {error && <p className="text-body-sm text-destructive">{error}</p>}
+
       <Button size="lg" variant="gradient" onClick={onConfirm} disabled={submitting} className="w-full sm:w-auto">
-        {submitting ? "Confirming..." : "Confirm booking"}
+        {submitting ? "Sending..." : "Request booking"}
       </Button>
     </div>
   );

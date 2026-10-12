@@ -50,7 +50,7 @@ export function VetBooking() {
                 <div>
                   <p className="font-semibold text-foreground">Dr Anoop Goyal</p>
                   <p className="text-caption text-muted-foreground">
-                    Small animal vet · 4.9★
+                    Small animal vet
                   </p>
                 </div>
               </div>

@@ -68,6 +68,14 @@ const nextConfig: NextConfig = {
       { source: "/pricing", destination: "/services", permanent: true },
       // PetZu runs no delivery service; the old page now points at the shop.
       { source: "/services/delivery", destination: "/shop", permanent: true },
+      // Products are bought on Amazon now (client point 6), so there is no
+      // cart or checkout. Not permanent, in case PetZu sells directly later.
+      { source: "/cart", destination: "/shop", permanent: false },
+      { source: "/checkout/:path*", destination: "/shop", permanent: false },
+      // Appointments and reminders live in the health records hub now.
+      { source: "/dashboard/appointments", destination: "/health", permanent: true },
+      { source: "/dashboard/notifications", destination: "/health", permanent: true },
+      { source: "/dashboard/orders", destination: "/health", permanent: true },
     ];
   },
 

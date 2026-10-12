@@ -1,7 +1,7 @@
 import { getOrCreateCustomer } from "@/lib/customer";
 import { recordInteraction } from "@/lib/crm/activity";
 import { fail, ok } from "@/lib/api-response";
-import { generateReply } from "@/lib/ai/generate-reply";
+import { generateReply, type ChatTurn } from "@/lib/ai/generate-reply";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
@@ -32,14 +32,19 @@ export async function GET(request: Request) {
     return fail("A valid email query param is required");
   }
 
-  const customer = await getOrCreateCustomer(parsedEmail.data);
-  const conversation = await prisma.chatConversation.findFirst({
-    where: { customerId: customer.id, channel: "WEB" },
-    orderBy: { startedAt: "desc" },
-    include: { messages: { orderBy: { createdAt: "asc" } } },
-  });
-
-  return ok(conversation ? { conversationId: conversation.id, messages: conversation.messages } : null);
+  try {
+    const customer = await getOrCreateCustomer(parsedEmail.data);
+    const conversation = await prisma.chatConversation.findFirst({
+      where: { customerId: customer.id, channel: "WEB" },
+      orderBy: { startedAt: "desc" },
+      include: { messages: { orderBy: { createdAt: "asc" } } },
+    });
+    return ok(conversation ? { conversationId: conversation.id, messages: conversation.messages } : null);
+  } catch (error) {
+    // No history is better than a broken widget.
+    console.error("Chat history unavailable:", error);
+    return ok(null);
+  }
 }
 
 export async function POST(request: Request) {
@@ -51,55 +56,69 @@ export async function POST(request: Request) {
   }
 
   const { email, name, message, conversationId } = parsed.data;
-  const existing = await getOrCreateCustomer(email);
-  // The email is unverified (guests type it into the widget), so a name is
-  // only ever filled in, never overwritten: typing someone else's email
-  // must not rename their customer record.
-  const customer =
-    name && !existing.name
-      ? await prisma.customer.update({ where: { id: existing.id }, data: { name } })
-      : existing;
 
-  const conversation = conversationId
-    ? await prisma.chatConversation.findFirst({ where: { id: conversationId, customerId: customer.id } })
-    : null;
+  // Saving the chat is best-effort: if the database is down, the person
+  // still gets an answer (without history) instead of a silent failure.
+  let saved: { customerId: string; conversationId: string } | null = null;
+  let priorMessages: ChatTurn[] = [{ role: "USER", content: message }];
+  try {
+    const existing = await getOrCreateCustomer(email);
+    // The email is unverified (guests type it into the widget), so a name is
+    // only ever filled in, never overwritten: typing someone else's email
+    // must not rename their customer record.
+    const customer =
+      name && !existing.name
+        ? await prisma.customer.update({ where: { id: existing.id }, data: { name } })
+        : existing;
 
-  const activeConversation =
-    conversation ??
-    (await prisma.chatConversation.create({ data: { customerId: customer.id, channel: "WEB" } }));
+    const conversation = conversationId
+      ? await prisma.chatConversation.findFirst({ where: { id: conversationId, customerId: customer.id } })
+      : null;
 
-  await prisma.chatMessage.create({
-    data: { conversationId: activeConversation.id, role: "USER", content: message },
-  });
-  await recordInteraction(customer.id, "CHAT_MESSAGE", `Customer: ${message.slice(0, 120)}`, {
-    role: "user",
-    conversationId: activeConversation.id,
-  });
+    const activeConversation =
+      conversation ??
+      (await prisma.chatConversation.create({ data: { customerId: customer.id, channel: "WEB" } }));
 
-  const priorMessages = await prisma.chatMessage.findMany({
-    where: { conversationId: activeConversation.id, role: { in: ["USER", "ASSISTANT"] } },
-    orderBy: { createdAt: "asc" },
-    take: MAX_HISTORY_MESSAGES,
-  });
+    await prisma.chatMessage.create({
+      data: { conversationId: activeConversation.id, role: "USER", content: message },
+    });
+    await recordInteraction(customer.id, "CHAT_MESSAGE", `Customer: ${message.slice(0, 120)}`, {
+      role: "user",
+      conversationId: activeConversation.id,
+    });
+
+    const history = await prisma.chatMessage.findMany({
+      where: { conversationId: activeConversation.id, role: { in: ["USER", "ASSISTANT"] } },
+      orderBy: { createdAt: "asc" },
+      take: MAX_HISTORY_MESSAGES,
+    });
+    priorMessages = history.map((m) => ({ role: m.role as ChatTurn["role"], content: m.content }));
+    saved = { customerId: customer.id, conversationId: activeConversation.id };
+  } catch (error) {
+    console.error("Chat history unavailable, answering without it:", error);
+  }
 
   const stream = new ReadableStream({
     async start(controller) {
-      controller.enqueue(encodeEvent({ type: "init", conversationId: activeConversation.id }));
+      if (saved) controller.enqueue(encodeEvent({ type: "init", conversationId: saved.conversationId }));
 
       try {
-        const fullText = await generateReply(
-          message,
-          priorMessages.map((m) => ({ role: m.role as "USER" | "ASSISTANT", content: m.content })),
-          (delta) => controller.enqueue(encodeEvent({ type: "delta", text: delta })),
+        const fullText = await generateReply(message, priorMessages, (delta) =>
+          controller.enqueue(encodeEvent({ type: "delta", text: delta })),
         );
 
-        await prisma.chatMessage.create({
-          data: { conversationId: activeConversation.id, role: "ASSISTANT", content: fullText },
-        });
-        await recordInteraction(customer.id, "CHAT_MESSAGE", `Assistant: ${fullText.slice(0, 120)}`, {
-          role: "assistant",
-          conversationId: activeConversation.id,
-        });
+        if (saved) {
+          const { customerId, conversationId: savedConversationId } = saved;
+          await prisma.chatMessage
+            .create({ data: { conversationId: savedConversationId, role: "ASSISTANT", content: fullText } })
+            .then(() =>
+              recordInteraction(customerId, "CHAT_MESSAGE", `Assistant: ${fullText.slice(0, 120)}`, {
+                role: "assistant",
+                conversationId: savedConversationId,
+              }),
+            )
+            .catch((error) => console.error("Saving the assistant reply failed:", error));
+        }
 
         controller.enqueue(encodeEvent({ type: "done" }));
       } catch (error) {

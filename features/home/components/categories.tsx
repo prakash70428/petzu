@@ -1,45 +1,48 @@
 import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Section } from "@/components/layout/section";
 import { RevealGroup, RevealItem } from "@/components/motion/reveal";
-import { Badge } from "@/components/ui/badge";
-import { categories } from "../constants";
+import { speciesConfig, speciesList } from "@/features/pet-profile/constants";
 
+/**
+ * Round photos of the four animals PetZu covers instead of a row of
+ * icon-in-a-box cards (client feedback: the rectangular blocks read as AI).
+ * No product counts: there was nothing behind the old "3,200+" numbers.
+ */
 export function Categories() {
   return (
-    <Section className="bg-secondary/40">
+    <Section>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <Badge variant="outline">Categories</Badge>
-          <h2 className="mt-4 font-display text-display-lg text-foreground">
-            Shop by pet
-          </h2>
-        </div>
+        <h2 className="font-display text-display-lg text-foreground">Shop by pet</h2>
         <Link
           href="/shop"
           className="inline-flex items-center gap-1 text-body-sm font-medium text-primary transition-colors hover:underline"
         >
-          Browse all categories
+          See everything
           <ArrowUpRight className="size-4" aria-hidden />
         </Link>
       </div>
 
-      <RevealGroup className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
-        {categories.map((category) => {
-          const Icon = category.icon;
+      <RevealGroup className="mt-10 grid grid-cols-2 gap-8 sm:grid-cols-4">
+        {speciesList.map((species) => {
+          const config = speciesConfig[species];
           return (
-            <RevealItem key={category.label}>
+            <RevealItem key={species}>
               <Link
-                href={category.href}
-                className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 text-center shadow-sm transition-all duration-200 ease-premium hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
+                href={`/shop?pet=${config.shopPetType}`}
+                className="group flex flex-col items-center gap-4 rounded-full text-center outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <div className="flex size-14 items-center justify-center rounded-full bg-gradient-brand text-primary-foreground shadow-md transition-transform duration-200 ease-premium group-hover:scale-110">
-                  <Icon className="size-7" aria-hidden />
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">{category.label}</p>
-                  <p className="text-caption text-muted-foreground">{category.count}</p>
-                </div>
+                <span className="relative aspect-square w-full max-w-44 overflow-hidden rounded-full ring-4 ring-transparent transition-all duration-300 ease-premium group-hover:ring-primary/40">
+                  <Image
+                    src={config.image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 640px) 11rem, 40vw"
+                    className="object-cover transition-transform duration-500 ease-premium group-hover:scale-105"
+                  />
+                </span>
+                <span className="font-display text-heading-3 text-foreground">{config.label}</span>
               </Link>
             </RevealItem>
           );

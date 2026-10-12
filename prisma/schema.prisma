@@ -39,6 +39,8 @@ model Customer {
   customerTags      CustomerTag[]
   messageLogs       MessageLog[]
   feedback          Feedback[]
+  communityPosts    CommunityPost[]
+  communityReplies  CommunityReply[]
 
   @@map("customers")
 }
@@ -74,6 +76,7 @@ enum InteractionType {
   FEEDBACK_SUBMITTED
   COMPLAINT_FILED
   NOTE_ADDED
+  COMMUNITY_POST
 }
 
 /// One row per (customer, channel, purpose) combination. Absence of a row
@@ -288,4 +291,44 @@ enum FeedbackStatus {
   IN_PROGRESS
   RESOLVED
   CLOSED
+}
+
+/// A question asked on /community. Anyone can ask with just a name and
+/// email (client feedback: "better data collection with lower effort"), so
+/// posts go live straight away and staff hide anything off-topic instead
+/// of pre-approving everything. `authorName` is a snapshot so a later name
+/// change on the customer never rewrites who asked.
+model CommunityPost {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  customerId String          @db.ObjectId
+  customer   Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  authorName String
+  /// "dogs" | "cats" | "birds" | "fish", matching features/pet-profile.
+  species    String
+  /// One of features/community/constants.ts `communityTopics`.
+  topic      String
+  title      String
+  body       String
+  hidden     Boolean         @default(false)
+  createdAt  DateTime        @default(now())
+
+  replies CommunityReply[]
+
+  @@index([hidden, species, createdAt])
+  @@map("community_posts")
+}
+
+model CommunityReply {
+  id         String        @id @default(auto()) @map("_id") @db.ObjectId
+  postId     String        @db.ObjectId
+  post       CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  customerId String        @db.ObjectId
+  customer   Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  authorName String
+  body       String
+  hidden     Boolean       @default(false)
+  createdAt  DateTime      @default(now())
+
+  @@index([postId, createdAt])
+  @@map("community_replies")
 }

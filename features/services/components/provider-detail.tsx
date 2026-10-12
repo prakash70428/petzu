@@ -1,11 +1,10 @@
-import { BadgeCheck, Globe2, MapPin } from "lucide-react";
+import { Globe2, MapPin } from "lucide-react";
 import Link from "next/link";
 import { availabilityCopy } from "../constants";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Rating } from "@/components/ui/rating";
 import type { Provider } from "../types";
 import { formatPrice } from "../utils";
 
@@ -22,20 +21,16 @@ export function ProviderDetail({ provider }: { provider: Provider }) {
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-heading-1 font-semibold text-foreground">{provider.name}</h1>
-              {provider.verified && (
-                <BadgeCheck className="size-5 text-info" aria-label="Verified provider" />
-              )}
             </div>
             <p className="mt-1 text-body-lg text-muted-foreground">{provider.title}</p>
             <p className="text-body-sm text-muted-foreground">{provider.clinicName}</p>
 
             <div className="mt-3 flex flex-wrap items-center gap-4">
-              <Rating value={provider.rating} showValue reviewCount={provider.reviewCount} size="md" />
               <span className="flex items-center gap-1 text-caption text-muted-foreground">
                 <MapPin className="size-3.5" aria-hidden />
-                {provider.location.distanceMiles === 0
-                  ? "Comes to you"
-                  : `${provider.location.city}, ${provider.location.state} · ${provider.location.distanceMiles} mi`}
+                {provider.location.distanceKm === 0
+                  ? `Comes to you · ${provider.location.area}`
+                  : `${provider.location.area}, ${provider.location.city}`}
               </span>
               <span className="flex items-center gap-1 text-caption text-muted-foreground">
                 <Globe2 className="size-3.5" aria-hidden />

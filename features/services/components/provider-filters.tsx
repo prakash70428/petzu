@@ -3,8 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Rating } from "@/components/ui/rating";
-import { cn } from "@/utils/cn";
 import { EMPTY_FILTERS, type FilterState } from "../types";
 
 export interface ProviderFiltersProps {
@@ -51,26 +49,6 @@ export function ProviderFilters({ availableSpecialties, filters, onChange, avail
             </Label>
           </div>
         ))}
-      </div>
-
-      <div className="flex flex-col gap-3 border-b border-border pb-6">
-        <h3 className="text-body-sm font-semibold text-foreground">Rating</h3>
-        <div className="flex flex-col gap-2">
-          {[4, 3].map((min) => (
-            <button
-              key={min}
-              type="button"
-              onClick={() => onChange({ ...filters, minRating: filters.minRating === min ? null : min })}
-              className={cn(
-                "-m-1 flex items-center gap-2 rounded-md p-1 transition-colors",
-                filters.minRating === min ? "text-foreground" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <Rating value={min} />
-              <span className="text-body-sm">&amp; up</span>
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="flex items-center gap-2.5">

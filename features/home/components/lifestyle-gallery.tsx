@@ -7,7 +7,7 @@ import { lifestyleGallery } from "../constants";
 
 /**
  * A short editorial band of real product-in-use photography, sitting between
- * the value-prop sections and the testimonials. Real homes, real pets — the
+ * the value-prop sections and the blog. Real homes, real pets: the
  * counterpoint to the icon-and-gradient treatment everywhere else.
  */
 export function LifestyleGallery() {
@@ -19,8 +19,8 @@ export function LifestyleGallery() {
           Made for the way you actually live with your pet
         </h2>
         <p className="mt-4 text-body-lg text-muted-foreground">
-          Not staged pack shots: the products PetZu stocks, in the homes and
-          hands of the pet parents who use them.
+          Not staged pack shots: the kind of products we pick, in the homes
+          of the pet parents who use them.
         </p>
       </div>
 

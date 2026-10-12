@@ -69,27 +69,33 @@ export function useChat({ email, name, loadHistory }: ChatIdentity) {
       setSending(true);
 
       const assistantId = localId("assistant");
-      let assistantStarted = false;
 
       try {
         await streamChatReply({ email, name, message: trimmed, conversationId }, (event) => {
           if (event.type === "init") {
             setConversationId(event.conversationId);
           } else if (event.type === "delta") {
-            setMessages((prev) => {
-              if (!assistantStarted) {
-                assistantStarted = true;
-                return [
-                  ...prev,
-                  { id: assistantId, role: "ASSISTANT", content: event.text, createdAt: new Date().toISOString() },
-                ];
-              }
-              return prev.map((m) => (m.id === assistantId ? { ...m, content: m.content + event.text } : m));
-            });
+            // Pure updater: React may run it twice (StrictMode), so decide
+            // "first chunk or not" from `prev`, never from an outside flag.
+            setMessages((prev) =>
+              prev.some((m) => m.id === assistantId)
+                ? prev.map((m) => (m.id === assistantId ? { ...m, content: m.content + event.text } : m))
+                : [...prev, { id: assistantId, role: "ASSISTANT", content: event.text, createdAt: new Date().toISOString() }],
+            );
           } else if (event.type === "error") {
             toast({ title: event.message, variant: "destructive" });
           }
         });
+      } catch {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: assistantId,
+            role: "ASSISTANT",
+            content: "Sorry, I couldn't reply just now. Please try again in a moment, or reach the team at /contact.",
+            createdAt: new Date().toISOString(),
+          },
+        ]);
       } finally {
         setSending(false);
       }

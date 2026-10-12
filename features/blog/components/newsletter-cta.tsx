@@ -6,6 +6,7 @@ import { Magnetic } from "@/components/motion/magnetic";
 import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { subscribeToNewsletter } from "@/features/consent/services/consent-service";
 import { toast } from "@/hooks/use-toast";
 
 /**
@@ -16,15 +17,22 @@ import { toast } from "@/hooks/use-toast";
 export function NewsletterCta() {
   const [email, setEmail] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!email) return;
-    toast({
-      title: "You're subscribed!",
-      description: "New articles will land in your inbox weekly.",
-      variant: "success",
-    });
-    setEmail("");
+    // Previously this only showed "subscribed": no address was ever saved.
+    setSubmitting(true);
+    try {
+      await subscribeToNewsletter(email.trim(), "blog-newsletter");
+      toast({ title: "You're subscribed!", description: "New articles will land in your inbox.", variant: "success" });
+      setEmail("");
+    } catch {
+      toast({ title: "Couldn't subscribe you", description: "Please try again in a moment.", variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -46,8 +54,8 @@ export function NewsletterCta() {
           aria-label="Email address"
         />
         <Magnetic strength={0.3}>
-          <Button type="submit" size="lg" variant="gradient" className="group w-full sm:w-auto">
-            Subscribe
+          <Button type="submit" size="lg" variant="gradient" disabled={submitting} className="group w-full sm:w-auto">
+            {submitting ? "Subscribing..." : "Subscribe"}
             <Send className="size-4 transition-transform duration-200 ease-premium group-hover:-translate-y-0.5 group-hover:translate-x-1" />
           </Button>
         </Magnetic>

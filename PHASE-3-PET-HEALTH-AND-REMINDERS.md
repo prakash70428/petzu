@@ -1,8 +1,19 @@
 # Phase 3: Pet health records, medicines and reminders (design)
 
-Status: **proposed, not built.** Covers the "Note" and "IMP" parts of client
-feedback point 13. The chat part of point 13 and the promotions/service
-sender split already shipped (see git log).
+Status: **v1 built on-device; server version proposed.** Covers the "Note"
+and "IMP" parts of client feedback point 13. The chat part of point 13 and
+the promotions/service sender split already shipped (see git log).
+
+What v1 (`features/health`, `/health`) does today, with no backend: per-pet
+medicines with morning/afternoon/evening/night reminders, pre-visit notes,
+prescriptions, lab reports and scans (files kept in IndexedDB on the device),
+appointments (bookings made on PetZu are added automatically), a day-before
+appointment reminder, a post-visit "add the prescription" nudge and the
+3-weekly grooming nudge. Reminders show as browser notifications and on-page
+toasts while PetZu is open (`RemindersRunner`), with the rules unit-tested in
+`features/health/utils.test.ts`. Everything below is what moving this to the
+server (SMS, WhatsApp and email reminders, sharing with family and partner
+vets, reading prescriptions automatically) still needs.
 
 ---
 

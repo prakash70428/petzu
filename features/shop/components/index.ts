@@ -1,4 +1,4 @@
-export * from "./add-to-cart-button";
+export * from "./buy-on-amazon-button";
 export * from "./filters-panel";
 export * from "./product-card";
 export * from "./product-detail";

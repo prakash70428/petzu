@@ -203,7 +203,7 @@ export const articles: Article[] = [
       { type: "paragraph", text: "When you search for a vet on PetZu, the results aren't sorted by distance alone, or by rating alone: they're ranked by a weighted score that tries to approximate what actually matters to you. Here's a simplified version of how it works." },
       { type: "heading", level: 2, text: "The scoring inputs" },
       { type: "paragraph", text: "Four signals feed the score: rating, review volume (a 5.0 from 3 reviews shouldn't outrank a 4.8 from 800), distance, and whether the provider is currently accepting new patients. Each gets normalized to a 0–1 range before weighting." },
-      { type: "code", language: "typescript", filename: "score-provider.ts", code: "interface ScoringInput {\n  rating: number; // 0-5\n  reviewCount: number;\n  distanceMiles: number;\n  acceptingNewPatients: boolean;\n}\n\nfunction scoreProvider(input: ScoringInput): number {\n  const ratingScore = input.rating / 5;\n  const volumeConfidence = Math.min(input.reviewCount / 200, 1);\n  const distanceScore = 1 - Math.min(input.distanceMiles / 25, 1);\n  const availabilityBoost = input.acceptingNewPatients ? 1 : 0.4;\n\n  return (\n    ratingScore * 0.4 +\n    volumeConfidence * 0.2 +\n    distanceScore * 0.25 +\n    availabilityBoost * 0.15\n  );\n}" },
+      { type: "code", language: "typescript", filename: "score-provider.ts", code: "interface ScoringInput {\n  rating: number; // 0-5\n  reviewCount: number;\n  distanceKm: number;\n  acceptingNewPatients: boolean;\n}\n\nfunction scoreProvider(input: ScoringInput): number {\n  const ratingScore = input.rating / 5;\n  const volumeConfidence = Math.min(input.reviewCount / 200, 1);\n  const distanceScore = 1 - Math.min(input.distanceKm / 25, 1);\n  const availabilityBoost = input.acceptingNewPatients ? 1 : 0.4;\n\n  return (\n    ratingScore * 0.4 +\n    volumeConfidence * 0.2 +\n    distanceScore * 0.25 +\n    availabilityBoost * 0.15\n  );\n}" },
       { type: "heading", level: 2, text: "Why review volume gets its own weight" },
       { type: "paragraph", text: "A perfect rating with almost no reviews is a weaker signal than a slightly lower rating with hundreds: the `volumeConfidence` term prevents a brand-new, unreviewed profile from ever accidentally outranking an established, trusted one on rating alone." },
       { type: "heading", level: 2, text: "What this doesn't do (yet)" },
@@ -237,25 +237,24 @@ export const faqCategories: FaqCategory[] = [
   {
     title: "General",
     items: [
-      { question: "What is The PetZu World?", answer: "PetZu is a platform for pet parents: shop vetted products, book vets and groomers, and read care guides, all in one place." },
-      { question: "Is PetZu available in my city?", answer: "PetZu currently operates in 85+ cities, with same-day delivery in most of them. Enter your ZIP code at checkout to confirm coverage in your area." },
-      { question: "Do I need an account to browse?", answer: "No, you can browse products, providers, and articles without an account. You'll need one to check out or book an appointment." },
+      { question: "What is The PetZu World?", answer: "PetZu is a site for all things pet: find and book vets and groomers, ask other pet parents in the community, keep your pet's health records, and find products we've picked (bought on Amazon)." },
+      { question: "Is PetZu available in my city?", answer: "The community, care guides, health records and the vet map work anywhere in India. Bookable partner vets, groomers and sitters start in Mumbai and grow city by city." },
+      { question: "Do I need an account?", answer: "No. You can browse, chat with the assistant and ask the community with just your name and email. An account is only needed to book an appointment." },
     ],
   },
   {
-    title: "Orders & shipping",
+    title: "Products",
     items: [
-      { question: "How fast is delivery?", answer: "Most orders arrive within 2–5 business days. Same-day delivery is available in 85+ cities for orders placed before 2pm local time." },
-      { question: "What's your return policy?", answer: "Unopened products can be returned within 30 days for a full refund. Opened food and treats are handled case-by-case for safety reasons: contact support." },
-      { question: "Can I change my order after placing it?", answer: "Orders can be modified within 30 minutes of placing them. After that, they've usually already entered fulfillment: contact support and we'll do what we can." },
+      { question: "Does PetZu sell or deliver products?", answer: "No. We pick products we'd use for our own pets, and \"Buy on Amazon\" takes you to Amazon, which handles the price, delivery and returns." },
+      { question: "How do you choose products?", answer: "We look for clear ingredients and labelling, sensible prices and products pet parents in the community actually recommend. We don't take payment to list a product." },
     ],
   },
   {
     title: "Vet booking",
     items: [
-      { question: "Are the vets on PetZu licensed?", answer: "Yes, every vet on the platform is licensed and verified before their profile goes live, and re-verified periodically." },
-      { question: "Can I book a same-day appointment?", answer: "Many providers offer same-day video consults; in-clinic availability depends on the individual provider's calendar, shown on their profile." },
-      { question: "What if I need to cancel or reschedule?", answer: "You can reschedule or cancel from your booking confirmation up to 4 hours before the appointment without a fee." },
+      { question: "How do I find a vet near me?", answer: "Open Vet booking and tap \"Near me\", or type your area or PIN code, to see vet clinics around you on the map. You can also request a visit with a PetZu partner vet there." },
+      { question: "How does booking work?", answer: "Pick a time and send the request. The PetZu team confirms it with the vet and emails you, and the appointment is saved in your pet's health records with a reminder the day before." },
+      { question: "What if I need to cancel or reschedule?", answer: "Reply to your booking confirmation email or message us through the Contact page with your booking reference, and we'll sort it out with the vet." },
     ],
   },
   {

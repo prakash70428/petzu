@@ -4,8 +4,6 @@ import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Rating } from "@/components/ui/rating";
-import { cn } from "@/utils/cn";
 import { petTypeLabels, priceBuckets, productCategories } from "../constants";
 import { EMPTY_FILTERS, type FilterState, type PetType } from "../types";
 
@@ -114,36 +112,6 @@ export function FiltersPanel({ filters, onChange }: FiltersPanelProps) {
           />
         ))}
       </FilterSection>
-
-      <FilterSection title="Rating">
-        <div className="flex flex-col gap-2">
-          {[4, 3].map((min) => (
-            <button
-              key={min}
-              type="button"
-              onClick={() => onChange({ ...filters, minRating: filters.minRating === min ? null : min })}
-              className={cn(
-                "-m-1 flex items-center gap-2 rounded-md p-1 transition-colors",
-                filters.minRating === min ? "text-foreground" : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <Rating value={min} />
-              <span className="text-body-sm">&amp; up</span>
-            </button>
-          ))}
-        </div>
-      </FilterSection>
-
-      <div className="flex items-center gap-2.5">
-        <Checkbox
-          id="in-stock"
-          checked={filters.inStockOnly}
-          onCheckedChange={(checked) => onChange({ ...filters, inStockOnly: checked === true })}
-        />
-        <Label htmlFor="in-stock" className="cursor-pointer font-normal text-muted-foreground">
-          In stock only
-        </Label>
-      </div>
     </div>
   );
 }

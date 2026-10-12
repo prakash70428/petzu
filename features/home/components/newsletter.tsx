@@ -7,20 +7,28 @@ import { Magnetic } from "@/components/motion/magnetic";
 import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { subscribeToNewsletter } from "@/features/consent/services/consent-service";
 import { toast } from "@/hooks/use-toast";
 
 export function Newsletter() {
   const [email, setEmail] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const [submitting, setSubmitting] = useState(false);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!email) return;
-    toast({
-      title: "You're subscribed!",
-      description: "Watch your inbox for care tips and offers.",
-      variant: "success",
-    });
-    setEmail("");
+    // Previously this only showed "subscribed": no address was ever saved.
+    setSubmitting(true);
+    try {
+      await subscribeToNewsletter(email.trim(), "homepage-newsletter");
+      toast({ title: "You're subscribed!", description: "Care tips for your pet will land in your inbox.", variant: "success" });
+      setEmail("");
+    } catch {
+      toast({ title: "Couldn't subscribe you", description: "Please try again in a moment.", variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -34,8 +42,8 @@ export function Newsletter() {
           Stay ahead of your pet&apos;s needs
         </h2>
         <p className="mx-auto mt-4 max-w-md text-body-lg text-muted-foreground">
-          Weekly care tips, product recommendations, and first access to
-          sales. No spam, ever.
+          Care tips for your pet&apos;s age and breed, the best questions from
+          the community, and new PetZu picks. No spam, ever.
         </p>
         <form
           onSubmit={handleSubmit}
@@ -56,9 +64,10 @@ export function Newsletter() {
               type="submit"
               size="lg"
               variant="gradient"
+              disabled={submitting}
               className="group w-full sm:w-auto"
             >
-              Subscribe
+              {submitting ? "Subscribing..." : "Subscribe"}
               <Send className="size-4 transition-transform duration-200 ease-premium group-hover:-translate-y-0.5 group-hover:translate-x-1" />
             </Button>
           </Magnetic>

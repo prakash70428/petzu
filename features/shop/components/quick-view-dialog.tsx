@@ -4,12 +4,11 @@ import { Eye } from "lucide-react";
 import Link from "next/link";
 import { useState, type MouseEvent } from "react";
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Rating } from "@/components/ui/rating";
 import { cn } from "@/utils/cn";
 import { productIcons } from "../constants";
 import type { Product } from "../types";
 import { formatPrice } from "../utils";
-import { AddToCartButton } from "./add-to-cart-button";
+import { BuyOnAmazonButton } from "./buy-on-amazon-button";
 import { WishlistButton } from "./wishlist-button";
 
 /**
@@ -54,7 +53,6 @@ export function QuickViewTrigger({ product }: { product: Product }) {
           </div>
 
           <div className="flex flex-col gap-3">
-            <Rating value={product.rating} showValue reviewCount={product.reviewCount} />
             <div className="flex items-baseline gap-2">
               <span className="text-heading-3 font-semibold text-foreground">
                 {formatPrice(product.price)}
@@ -68,14 +66,7 @@ export function QuickViewTrigger({ product }: { product: Product }) {
             <p className="text-body-sm text-muted-foreground">{product.description}</p>
 
             <div className="mt-auto flex flex-col gap-3 pt-2">
-              <AddToCartButton
-                productSlug={product.slug}
-                productName={product.name}
-                disabled={!product.inStock}
-                className="w-full"
-              >
-                {product.inStock ? "Add to cart" : "Out of stock"}
-              </AddToCartButton>
+              <BuyOnAmazonButton product={product} className="w-full" />
               <div className="flex items-center justify-between">
                 <WishlistButton productSlug={product.slug} productName={product.name} variant="inline" />
                 <Link

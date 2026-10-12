@@ -7,7 +7,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { megaNav } from "@/constants/site";
 import { AccountMenu } from "@/features/auth/components";
-import { MiniCart } from "@/features/cart/components";
 import { WishlistNavLink } from "@/features/wishlist/components";
 import { useScrollPosition } from "@/hooks/use-scroll-position";
 import { cn } from "@/utils/cn";
@@ -40,14 +39,12 @@ export function Navbar() {
         <div className="hidden items-center gap-1 md:flex">
           <NavSearch />
           <WishlistNavLink />
-          <MiniCart />
           <ThemeToggle />
           <AccountMenu />
         </div>
 
         <div className="flex items-center gap-1 md:hidden">
           <WishlistNavLink />
-          <MiniCart />
           <ThemeToggle />
           <Button
             variant="ghost"
@@ -88,7 +85,7 @@ export function Navbar() {
                 <AccountMenu />
               </div>
               <Button asChild className="w-full">
-                <Link href="/shop">Shop now</Link>
+                <Link href="/community">Ask the community</Link>
               </Button>
             </Container>
           </m.nav>

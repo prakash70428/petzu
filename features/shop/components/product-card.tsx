@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { Rating } from "@/components/ui/rating";
 import { cn } from "@/utils/cn";
 import { productIcons } from "../constants";
 import type { Product } from "../types";
 import { formatPrice } from "../utils";
-import { AddToCartButton } from "./add-to-cart-button";
+import { BuyOnAmazonButton } from "./buy-on-amazon-button";
 import { QuickViewTrigger } from "./quick-view-dialog";
 import { WishlistButton } from "./wishlist-button";
 
@@ -27,7 +26,7 @@ export interface ProductCardProps {
  * The one reusable card behind every product surface — listing, category,
  * search, related products, and the wishlist page all render this same
  * component. A single full-cover `Link` sits *behind* the interactive
- * controls (wishlist heart, quick view, add-to-cart) via z-index layering,
+ * controls (wishlist heart, quick view, Buy on Amazon) via z-index layering,
  * so clicking anywhere on the card navigates except those specific
  * buttons — the standard ecommerce "clickable card with escape-hatch
  * controls" pattern, without nesting `<button>` inside `<a>`.
@@ -46,16 +45,11 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           tileGradients[index % tileGradients.length],
         )}
       >
-        {!product.inStock ? (
-          <Badge variant="secondary" className="absolute left-3 top-3 z-20">
-            Out of stock
+        {/* Stock is Amazon's to show now, so no "Out of stock" badge here. */}
+        {product.badge && (
+          <Badge variant="primary" className="absolute left-3 top-3 z-20">
+            {product.badge}
           </Badge>
-        ) : (
-          product.badge && (
-            <Badge variant="primary" className="absolute left-3 top-3 z-20">
-              {product.badge}
-            </Badge>
-          )
         )}
 
         <div className="absolute right-3 top-3 z-20">
@@ -74,7 +68,6 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       <div className="relative z-0 flex flex-1 flex-col gap-2 p-card">
         <p className="text-caption text-muted-foreground">{product.category}</p>
         <h3 className="line-clamp-2 text-body-sm font-semibold text-foreground">{product.name}</h3>
-        <Rating value={product.rating} reviewCount={product.reviewCount} />
         <div className="flex items-baseline gap-2 pt-1">
           <span className="text-heading-4 font-semibold text-foreground">
             {formatPrice(product.price)}
@@ -88,15 +81,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
       </div>
 
       <div className="relative z-20 px-card pb-card">
-        <AddToCartButton
-          productSlug={product.slug}
-          productName={product.name}
-          disabled={!product.inStock}
-          size="sm"
-          className="w-full"
-        >
-          {product.inStock ? "Add to cart" : "Out of stock"}
-        </AddToCartButton>
+        <BuyOnAmazonButton product={product} size="sm" className="w-full" />
       </div>
     </Card>
   );

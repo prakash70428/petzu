@@ -1,10 +1,6 @@
 import {
   Bath,
-  Bird,
-  Bone,
-  Cat,
   Clock,
-  Dog,
   Flower2,
   GraduationCap,
   Home as HomeIcon,
@@ -12,12 +8,12 @@ import {
   Palmtree,
   PartyPopper,
   PawPrint,
-  Rabbit,
   ShieldCheck,
   ShoppingBag,
   Stethoscope,
   Users,
 } from "lucide-react";
+import type { LifeStage } from "@/features/pet-profile/types";
 
 /**
  * All homepage copy and content lives here, separate from the section
@@ -107,7 +103,7 @@ export const services: ServiceItem[] = [
   {
     icon: HomeIcon,
     title: "Pet Sitting",
-    description: "Trusted, verified sitters and walkers to care for your pet when you're away.",
+    description: "Sitters and walkers to look after your pet when you're away.",
     href: "/services/sitting",
     stage: "life",
   },
@@ -148,80 +144,40 @@ export const lifestyleGallery: GalleryItem[] = [
   },
 ];
 
-export interface CategoryItem {
-  icon: LucideIcon;
-  label: string;
-  count: string;
-  href: string;
-}
-
-export const categories: CategoryItem[] = [
-  { icon: Dog, label: "Dogs", count: "3,200+ products", href: "/shop?pet=dogs" },
-  { icon: Cat, label: "Cats", count: "2,600+ products", href: "/shop?pet=cats" },
-  { icon: Bird, label: "Birds", count: "740+ products", href: "/shop?pet=birds" },
-  { icon: Rabbit, label: "Small pets", count: "510+ products", href: "/shop?pet=small-pets" },
-  { icon: Bone, label: "Aquatics", count: "390+ products", href: "/shop?pet=aquatics" },
-];
-
-export interface Product {
-  name: string;
-  category: string;
-  price: number;
-  originalPrice?: number;
-  rating: number;
-  reviewCount: number;
-  badge?: string;
-  /** Lifestyle photo in /public/images. */
+/** Lifestyle photo for a shop product; name, price and buy link come from the shop catalogue by `slug`. */
+export interface FeaturedPick {
+  slug: string;
+  /** Client lifestyle photo in /public/images. */
   image: string;
   imageAlt: string;
 }
 
-export const featuredProducts: Product[] = [
+export const featuredProducts: FeaturedPick[] = [
   {
-    name: "Orthopedic Memory Foam Bed",
-    category: "Beds & furniture",
-    price: 89,
-    originalPrice: 119,
-    rating: 4.8,
-    reviewCount: 1204,
-    badge: "PetZu Pick",
+    slug: "orthopedic-memory-foam-bed",
     image: "/images/img1.jpeg",
     imageAlt: "A golden retriever resting on an orthopedic memory foam bed at home",
   },
   {
-    name: "Grain-Free Salmon Recipe",
-    category: "Food & treats",
-    price: 54,
-    rating: 4.9,
-    reviewCount: 2310,
-    badge: "Vet recommended",
+    slug: "grain-free-salmon-recipe",
     image: "/images/img7.jpeg",
     imageAlt: "A golden retriever eating from a bowl of grain-free food by the fireplace",
   },
   {
-    name: "Interactive Puzzle Feeder",
-    category: "Toys & enrichment",
-    price: 28,
-    rating: 4.7,
-    reviewCount: 856,
+    slug: "interactive-puzzle-feeder",
     image: "/images/img5.jpeg",
     imageAlt: "A golden retriever playing with an enrichment toy on a bolster bed",
   },
   {
-    name: "Adjustable Step-In Harness",
-    category: "Gear & accessories",
-    price: 32,
-    rating: 4.6,
-    reviewCount: 512,
-    badge: "New",
+    slug: "adjustable-step-in-harness",
     image: "/images/img4.jpeg",
     imageAlt: "A golden retriever on a rug with a walking lead and everyday gear",
   },
 ];
 
 export const vetBookingFeatures: string[] = [
-  "Same-day appointments, 7 days a week",
-  "Trusted, verified veterinarians",
+  "Vet clinics near you, on a live map",
+  "Specialties from vaccinations to surgery",
   "Video or in-clinic consultations",
   "Your pet's health records, all in one place",
 ];
@@ -235,93 +191,18 @@ export interface WhyPetzuItem {
 export const whyPetzu: WhyPetzuItem[] = [
   {
     icon: ShieldCheck,
-    title: "Vetted & verified",
-    description: "Every product, vet and sitter is screened before it reaches you.",
+    title: "Chosen with care",
+    description: "We pick every product and partner ourselves, the way we'd choose for our own pets.",
   },
   {
     icon: Clock,
-    title: "Real people on support",
-    description: "Real humans (and a few very good dogs) on call around the clock.",
+    title: "Answers any time",
+    description: "Our assistant replies straight away, day or night, and passes you to the team when it can't help.",
   },
   {
     icon: Users,
-    title: "A real community",
-    description: "Pet parents swapping honest advice every day.",
-  },
-];
-
-export interface Testimonial {
-  name: string;
-  role: string;
-  quote: string;
-  rating: number;
-  initials: string;
-}
-
-export const testimonials: Testimonial[] = [
-  {
-    name: "Sarah M.",
-    role: "Dog mom to Biscuit",
-    quote:
-      "The vet booking feature alone is worth it. Had a same-day video call when Biscuit wasn't eating. Turned out to be nothing serious, but the peace of mind was everything.",
-    rating: 5,
-    initials: "SM",
-  },
-  {
-    name: "James R.",
-    role: "Cat dad to Luna & Mochi",
-    quote:
-      "The food recommendations actually match what my vet suggested, and the care guides answered questions I didn't know to ask.",
-    rating: 5,
-    initials: "JR",
-  },
-  {
-    name: "Priya K.",
-    role: "Rescue volunteer",
-    quote:
-      "We've rehomed a dozen dogs through the community boards. The whole platform feels like it's actually built by people who love animals.",
-    rating: 5,
-    initials: "PK",
-  },
-  {
-    name: "Diego F.",
-    role: "First-time pet parent",
-    quote:
-      "As someone who had no idea what I was doing with a new puppy, the training program and care guides made the first month so much less overwhelming.",
-    rating: 4,
-    initials: "DF",
-  },
-];
-
-export interface CommunityPost {
-  author: string;
-  initials: string;
-  content: string;
-  likes: number;
-  tag: string;
-}
-
-export const communityPosts: CommunityPost[] = [
-  {
-    author: "Maya T.",
-    initials: "MT",
-    content: "Finally found a harness that doesn't rub Kiwi's chest raw. Linked it below for anyone else with a wriggly whippet 🐕",
-    likes: 214,
-    tag: "Gear",
-  },
-  {
-    author: "Owen L.",
-    initials: "OL",
-    content: "PSA: booked a same-day vet call at 11pm when my cat wouldn't stop pacing. Turned out fine, but the response time was unreal.",
-    likes: 189,
-    tag: "Vet care",
-  },
-  {
-    author: "Renee A.",
-    initials: "RA",
-    content: "Three months into raw feeding and the difference in her coat is wild. Happy to share the transition plan if anyone's curious.",
-    likes: 342,
-    tag: "Nutrition",
+    title: "A community first",
+    description: "Ask other pet parents which vet, food or groomer actually worked for them.",
   },
 ];
 
@@ -356,3 +237,31 @@ export const blogPosts: BlogPost[] = [
     date: "Jul 14",
   },
 ];
+
+/**
+ * What to put first for a pet at each life stage (client feedback point 15:
+ * "it will personalise the website for you and update yearly"). Values are
+ * `services[].href`s, in order; "/health" is the health records hub.
+ */
+export const servicesByLifeStage: Record<LifeStage, { hrefs: string[]; why: string }> = {
+  baby: {
+    hrefs: ["/services/vet-booking", "/services/training", "/shop", "/health"],
+    why: "First vaccinations, house training and the basics for a new arrival.",
+  },
+  teen: {
+    hrefs: ["/services/training", "/services/grooming", "/services/sitting", "/services/vet-booking"],
+    why: "Lots of energy, a growing coat and a routine that's still settling.",
+  },
+  adult: {
+    hrefs: ["/services/vet-booking", "/services/grooming", "/services/holidays", "/services/insurance"],
+    why: "Yearly check-ups, regular grooming and trips you can take together.",
+  },
+  senior: {
+    hrefs: ["/services/vet-booking", "/health", "/services/insurance", "/services/sitting"],
+    why: "More frequent vet visits, medicines on time and gentler care.",
+  },
+  "last-journey": {
+    hrefs: ["/services/the-last-journey", "/services/vet-booking", "/health", "/community"],
+    why: "Comfort, a vet who can come to you, and people who understand.",
+  },
+};

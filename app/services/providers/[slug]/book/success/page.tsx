@@ -7,24 +7,24 @@ import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { scaleIn } from "@/constants/animations";
 import { buildMetadata } from "@/constants/seo";
-import { AddToCalendarButton, BookingReference } from "@/features/services/components/booking";
+import { AddToCalendarButton } from "@/features/services/components/booking";
 import { providers } from "@/features/services/constants";
 import { formatDateLong, getProviderBySlug } from "@/features/services/utils";
 
 interface SuccessPageProps {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ service?: string; pet?: string; date?: string; time?: string }>;
+  searchParams: Promise<{ service?: string; pet?: string; date?: string; time?: string; ref?: string; email?: string }>;
 }
 
 export function generateStaticParams() {
   return providers.map((provider) => ({ slug: provider.slug }));
 }
 
-export const metadata: Metadata = buildMetadata({ title: "Appointment confirmed", path: "/services" });
+export const metadata: Metadata = buildMetadata({ title: "Booking request sent", path: "/services" });
 
 export default async function BookingSuccessPage({ params, searchParams }: SuccessPageProps) {
   const { slug } = await params;
-  const { service: serviceId, pet, date, time } = await searchParams;
+  const { service: serviceId, pet, date, time, ref, email } = await searchParams;
   const provider = getProviderBySlug(slug);
   if (!provider) notFound();
 
@@ -41,14 +41,17 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
           </div>
         </Reveal>
 
-        <h1 className="mt-6 font-display text-display-lg text-foreground">Appointment confirmed!</h1>
+        <h1 className="mt-6 font-display text-display-lg text-foreground">Booking request sent</h1>
         <p className="mt-3 max-w-md text-body-lg text-muted-foreground">
-          You&apos;re booked with {provider.name}. A confirmation email is on its way
-          {pet ? ` for ${pet}` : ""}.
+          We&apos;ll confirm the time with {provider.name}
+          {email ? ` and email you at ${email}` : ""}.
+          {pet ? ` It's saved in ${pet}'s health records, with a reminder the day before.` : ""}
         </p>
-        <p className="mt-2 text-body-sm text-muted-foreground">
-          Booking reference <BookingReference />
-        </p>
+        {ref && (
+          <p className="mt-2 text-body-sm text-muted-foreground">
+            Booking reference <span className="font-mono font-semibold text-foreground">{ref}</span>
+          </p>
+        )}
 
         <div className="mt-10 w-full max-w-sm rounded-2xl border border-border p-6 text-left">
           <dl className="flex flex-col gap-3 text-body-sm">
@@ -82,7 +85,7 @@ export default async function BookingSuccessPage({ params, searchParams }: Succe
             <AddToCalendarButton provider={provider} service={service} date={parsedDate} time={time} />
           )}
           <Button asChild size="lg" variant="outline">
-            <Link href={`/services/providers/${provider.slug}`}>Back to profile</Link>
+            <Link href="/health">Open health records</Link>
           </Button>
           <Button asChild size="lg" variant="ghost">
             <Link href="/">Back to home</Link>

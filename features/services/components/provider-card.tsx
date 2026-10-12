@@ -1,10 +1,9 @@
-import { BadgeCheck, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Rating } from "@/components/ui/rating";
 import type { Provider } from "../types";
 import { formatPrice } from "../utils";
 
@@ -35,16 +34,11 @@ export function ProviderCard({ provider }: ProviderCardProps) {
         <div className="flex-1">
           <div className="flex items-center gap-1.5">
             <h3 className="text-body font-semibold text-foreground">{provider.name}</h3>
-            {provider.verified && (
-              <BadgeCheck className="size-4 shrink-0 text-info" aria-label="Verified provider" />
-            )}
           </div>
           <p className="text-caption text-muted-foreground">{provider.title}</p>
           <p className="text-caption text-muted-foreground">{provider.clinicName}</p>
         </div>
       </div>
-
-      <Rating value={provider.rating} showValue reviewCount={provider.reviewCount} />
 
       <div className="flex flex-wrap gap-1.5">
         {provider.specialties.slice(0, VISIBLE_SPECIALTIES).map((specialty) => (
@@ -57,9 +51,9 @@ export function ProviderCard({ provider }: ProviderCardProps) {
 
       <div className="flex items-center gap-1.5 text-caption text-muted-foreground">
         <MapPin className="size-3.5 shrink-0" aria-hidden />
-        {provider.location.distanceMiles === 0
-          ? "Comes to you"
-          : `${provider.location.city}, ${provider.location.state} · ${provider.location.distanceMiles} mi`}
+        {provider.location.distanceKm === 0
+          ? `Comes to you · ${provider.location.area}`
+          : `${provider.location.area}, ${provider.location.city}`}
       </div>
 
       <div className="relative z-20 mt-auto flex items-center justify-between border-t border-border pt-4">

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, m, useTransform } from "framer-motion";
-import { ArrowRight, ChevronDown, Star } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -9,16 +9,13 @@ import { Container } from "@/components/layout/container";
 import { CursorGlow } from "@/components/motion/cursor-glow";
 import { FloatingBackground } from "@/components/motion/floating-background";
 import { Magnetic } from "@/components/motion/magnetic";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PetOnboardingDialog, PetSwitcher } from "@/features/pet-profile/components";
 import { OTHER_BREED, speciesConfig } from "@/features/pet-profile/constants";
 import { dismissOnboarding, usePetProfileState } from "@/features/pet-profile/store";
-import { formatPetAge, possessive } from "@/features/pet-profile/utils";
+import { formatPetAge, lifeStageLabel, lifeStageOf, possessive } from "@/features/pet-profile/utils";
 import { useMouseParallax } from "@/hooks/use-mouse-parallax";
-
-const avatarInitials = ["SM", "JR", "PK", "DF"];
 
 const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1);
 
@@ -51,7 +48,9 @@ export function Hero() {
 
   const activePet = profile.pets.find((pet) => pet.id === profile.activeId) ?? null;
   const config = speciesConfig[activePet?.species ?? profile.browsingSpecies];
-  const activePetAge = activePet ? formatPetAge(activePet.birthday) : null;
+  const activeStage = activePet ? lifeStageOf(activePet) : null;
+  // An estimated birthday gives a stage, not an age worth printing.
+  const activePetAge = activePet && !activePet.birthdayEstimated ? formatPetAge(activePet.birthday) : null;
   // Derived, not effect-driven: the first-visit prompt is simply "open" for
   // anyone with no saved pets who hasn't skipped it yet.
   const firstVisit = profile.hydrated && profile.pets.length === 0 && !profile.onboardingDismissed;
@@ -65,7 +64,7 @@ export function Hero() {
     <CursorGlow as="section" className="relative -mt-16 overflow-hidden border-b border-border pt-16">
       <FloatingBackground intensity="vivid" />
 
-      <Container className="grid min-h-[calc(100vh-4rem)] grid-cols-1 items-center gap-16 py-20 lg:grid-cols-2 lg:py-16">
+      <Container className="grid min-h-[calc(100vh-4rem)] grid-cols-1 items-center gap-8 py-8 sm:gap-16 sm:py-20 lg:grid-cols-2 lg:py-16">
         <m.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
@@ -75,10 +74,14 @@ export function Hero() {
           <Badge variant="secondary" className="glass gap-1.5">
             <span className="size-1.5 rounded-full bg-success" aria-hidden />
             {activePet
-              ? [activePet.breed === OTHER_BREED ? capitalize(config.singular) : activePet.breed, activePetAge]
+              ? [
+                  activePet.breed === OTHER_BREED ? capitalize(config.singular) : activePet.breed,
+                  activeStage && lifeStageLabel(activeStage, activePet.species),
+                  activePetAge,
+                ]
                   .filter(Boolean)
                   .join(" · ")
-              : "Vetted products · Verified vets"}
+              : "Vets near you · Community · Health records"}
           </Badge>
 
           <h1 className="font-display text-display-lg leading-[1.08] text-foreground sm:text-display-xl lg:text-display-2xl lg:leading-[1.05]">
@@ -100,39 +103,18 @@ export function Hero() {
           <div className="flex flex-col gap-4 sm:flex-row sm:gap-5">
             <Magnetic>
               <Button asChild variant="gradient" size="lg" className="group w-full sm:w-auto">
-                <Link href={`/shop?pet=${config.shopPetType}`}>
-                  Shop for {activePet ? activePet.name : config.label.toLowerCase()}
+                <Link href="/services/vet-booking">
+                  Find a vet for {activePet ? activePet.name : `your ${config.singular}`}
                   <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
               </Button>
             </Magnetic>
             <Button asChild variant="glass" size="lg" className="w-full sm:w-auto">
-              <Link href="/services/vet-booking">Book a vet visit</Link>
+              <Link href={`/community?pet=${activePet?.species ?? profile.browsingSpecies}`}>
+                Ask {config.singular} parents
+              </Link>
             </Button>
           </div>
-
-          <Link
-            href="#testimonials"
-            className="mt-2 flex items-center gap-3 rounded-lg transition-opacity hover:opacity-80"
-          >
-            <div className="flex -space-x-3">
-              {avatarInitials.map((initials) => (
-                <Avatar key={initials} size="sm" className="border-2 border-background">
-                  <AvatarFallback>{initials}</AvatarFallback>
-                </Avatar>
-              ))}
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-0.5" aria-hidden>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="size-3.5 fill-warning text-warning" />
-                ))}
-              </div>
-              <p className="text-caption text-muted-foreground">
-                Loved by pet parents everywhere
-              </p>
-            </div>
-          </Link>
         </m.div>
 
         <m.div
@@ -141,7 +123,7 @@ export function Hero() {
           initial={{ opacity: 0, scale: 1.45, filter: "blur(16px)" }}
           animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
           transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="relative order-first mx-auto flex aspect-[705/1280] w-full max-w-xs items-center justify-center sm:max-w-sm lg:order-last lg:max-w-md"
+          className="relative order-first mx-auto flex aspect-[4/3] w-full max-w-sm items-center justify-center sm:aspect-[705/1280] lg:order-last lg:max-w-md"
         >
           <m.div
             aria-hidden

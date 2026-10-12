@@ -35,7 +35,7 @@ export default function HolidaysPage() {
           },
           {
             title: "Checked, insured hosts",
-            description: "Every host is background-checked, reference-verified and covered while your pet is with them.",
+            description: "Meet the host and see where your pet will stay before you book.",
           },
         ],
       }}

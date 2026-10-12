@@ -53,8 +53,8 @@ export const productCategories: string[] = [
 
 export const priceBuckets: PriceBucket[] = [
   { label: "Under ₹500", min: 0, max: 500 },
-  { label: "₹500 – ₹1,500", min: 500, max: 1500 },
-  { label: "₹1,500 – ₹5,000", min: 1500, max: 5000 },
+  { label: "₹500 to ₹1,500", min: 500, max: 1500 },
+  { label: "₹1,500 to ₹5,000", min: 1500, max: 5000 },
   { label: "₹5,000+", min: 5000, max: null },
 ];
 
@@ -62,13 +62,12 @@ export const sortOptions: { value: SortOption; label: string }[] = [
   { value: "featured", label: "Featured" },
   { value: "price-asc", label: "Price: Low to High" },
   { value: "price-desc", label: "Price: High to Low" },
-  { value: "rating", label: "Customer Rating" },
 ];
 
 const shippingReturns: ProductDetail = {
-  title: "Shipping & returns",
+  title: "Where to buy",
   content:
-    "Free shipping on orders over ₹999. Delivered in 2–5 business days. Free returns within 30 days if it's not the right fit.",
+    "PetZu picks products but doesn't sell or ship them. \"Buy on Amazon\" takes you to Amazon, which handles the price, delivery and returns.",
 };
 
 export const products: Product[] = [

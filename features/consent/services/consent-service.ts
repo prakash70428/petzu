@@ -13,9 +13,15 @@ export function updateConsent(
   channel: ConsentChannel,
   purpose: ConsentPurpose,
   granted: boolean,
+  source: string = CONSENT_SOURCE,
 ) {
   return apiClient<{ data: ConsentRecord }>("/api/consent", {
     method: "POST",
-    body: JSON.stringify({ email, channel, purpose, granted, source: CONSENT_SOURCE }),
+    body: JSON.stringify({ email, channel, purpose, granted, source }),
   }).then((res) => res.data);
+}
+
+/** A newsletter sign-up is an explicit opt-in to marketing email, recorded like any other consent. */
+export function subscribeToNewsletter(email: string, source: string) {
+  return updateConsent(email, "EMAIL", "MARKETING", true, source);
 }

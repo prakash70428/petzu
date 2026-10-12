@@ -1,7 +1,6 @@
 export * from "./add-to-calendar-button";
 export * from "./booking-confirmation";
 export * from "./booking-flow";
-export * from "./booking-reference";
 export * from "./booking-stepper";
 export * from "./booking-summary";
 export * from "./calendar";

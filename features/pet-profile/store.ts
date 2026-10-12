@@ -83,6 +83,9 @@ export function addPet(input: NewPetInput): PetProfile {
     species: input.species,
     breed: input.breed,
     ...(input.birthday ? { birthday: input.birthday } : {}),
+    ...(input.birthday && input.birthdayEstimated ? { birthdayEstimated: true } : {}),
+    ...(input.lastJourney ? { lastJourney: true } : {}),
+    ...(input.family?.length ? { family: input.family } : {}),
   };
   update({ pets: [...state.pets, pet], activeId: pet.id, onboardingDismissed: true });
   return pet;
@@ -92,6 +95,11 @@ export function removePet(id: string) {
   hydrate();
   const pets = state.pets.filter((pet) => pet.id !== id);
   update({ pets, activeId: state.activeId === id ? (pets[0]?.id ?? null) : state.activeId });
+}
+
+export function updatePet(id: string, changes: Partial<Omit<PetProfile, "id">>) {
+  hydrate();
+  update({ pets: state.pets.map((pet) => (pet.id === id ? { ...pet, ...changes } : pet)) });
 }
 
 export function setActivePet(id: string) {

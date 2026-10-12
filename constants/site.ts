@@ -4,6 +4,7 @@ import {
   BookOpen,
   Cat,
   Dog,
+  Fish,
   Flower2,
   Gamepad2,
   GraduationCap,
@@ -12,7 +13,6 @@ import {
   Palmtree,
   PartyPopper,
   PawPrint,
-  Rabbit,
   ShieldCheck,
   Sofa,
   Stethoscope,
@@ -54,9 +54,10 @@ export const siteConfig = {
 
 export const primaryNav: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "Shop", href: "/shop" },
   { label: "Community", href: "/community" },
-  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Shop", href: "/shop" },
+  { label: "Our story", href: "/about" },
 ];
 
 /**
@@ -65,30 +66,8 @@ export const primaryNav: NavItem[] = [
  * only make sense as a hover/focus-revealed desktop affordance.
  */
 export const megaNav: MegaNavItem[] = [
-  {
-    label: "Shop",
-    href: "/shop",
-    megaMenu: [
-      {
-        title: "Shop by pet",
-        links: [
-          { label: "Dogs", href: "/shop?pet=dogs", icon: Dog },
-          { label: "Cats", href: "/shop?pet=cats", icon: Cat },
-          { label: "Birds", href: "/shop?pet=birds", icon: Bird },
-          { label: "Small pets", href: "/shop?pet=small-pets", icon: Rabbit },
-        ],
-      },
-      {
-        title: "Shop by category",
-        links: [
-          { label: "Food & treats", href: `/shop?category=${encodeURIComponent("Food & treats")}`, icon: Utensils },
-          { label: "Toys & enrichment", href: `/shop?category=${encodeURIComponent("Toys & enrichment")}`, icon: Gamepad2 },
-          { label: "Health & wellness", href: `/shop?category=${encodeURIComponent("Health & wellness")}`, icon: ShieldCheck },
-          { label: "Beds & furniture", href: `/shop?category=${encodeURIComponent("Beds & furniture")}`, icon: Sofa },
-        ],
-      },
-    ],
-  },
+  // Community first, then services, then the shop (client points 10 and 20).
+  { label: "Community", href: "/community" },
   {
     label: "Services",
     href: "/services",
@@ -124,8 +103,32 @@ export const megaNav: MegaNavItem[] = [
       },
     ],
   },
-  { label: "Community", href: "/community" },
-  { label: "About", href: "/about" },
+  {
+    label: "Shop",
+    href: "/shop",
+    megaMenu: [
+      {
+        title: "Shop by pet",
+        links: [
+          { label: "Dogs", href: "/shop?pet=dogs", icon: Dog },
+          { label: "Cats", href: "/shop?pet=cats", icon: Cat },
+          { label: "Birds", href: "/shop?pet=birds", icon: Bird },
+          { label: "Fish", href: "/shop?pet=aquatics", icon: Fish },
+        ],
+      },
+      {
+        title: "Shop by category",
+        links: [
+          { label: "Food & treats", href: `/shop?category=${encodeURIComponent("Food & treats")}`, icon: Utensils },
+          { label: "Toys & enrichment", href: `/shop?category=${encodeURIComponent("Toys & enrichment")}`, icon: Gamepad2 },
+          { label: "Health & wellness", href: `/shop?category=${encodeURIComponent("Health & wellness")}`, icon: ShieldCheck },
+          { label: "Beds & furniture", href: `/shop?category=${encodeURIComponent("Beds & furniture")}`, icon: Sofa },
+        ],
+      },
+    ],
+  },
+  { label: "Health records", href: "/health" },
+  { label: "Our story", href: "/about" },
 ];
 
 export const footerNav: NavSection[] = [
@@ -136,6 +139,8 @@ export const footerNav: NavSection[] = [
       { label: "Community", href: "/community" },
       { label: "Services", href: "/services" },
       { label: "Shop", href: "/shop" },
+      { label: "Pricing", href: "/services#pricing" },
+      { label: "Health records", href: "/health" },
     ],
   },
   {
