@@ -16,12 +16,12 @@ const sections = [
     body: "By creating an account or placing an order, you agree to these terms. You must be at least 18 to create an account or make a booking on behalf of a pet in your care.",
   },
   {
-    title: "Orders and bookings",
-    body: "Product availability, pricing, and delivery windows are shown at checkout and may change before an order is placed. Service bookings (vet, grooming, training, sitting) are made directly with independent providers listed on PetZu; PetZu facilitates the booking but the provider delivers the service.",
+    title: "Products and bookings",
+    body: "PetZu doesn't sell or deliver products. Product links take you to Amazon, where Amazon's own terms, prices, delivery and returns apply. Service bookings (vet, grooming, training, sitting) are made with independent providers listed on PetZu; PetZu facilitates the booking but the provider delivers the service."
   },
   {
     title: "Cancellations",
-    body: "Orders can be cancelled before they ship from your dashboard. Booking cancellation windows are set by each provider and shown at the time of booking.",
+    body: "To cancel or change a booking, contact us with your booking reference and we'll arrange it with the provider. Each provider's own cancellation terms apply.",
   },
   {
     title: "Account responsibilities",

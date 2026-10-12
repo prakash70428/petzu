@@ -76,3 +76,12 @@ export function updateUser(patch: Partial<User>) {
 export function useSession() {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
+
+/** False during SSR and the hydration render, before the saved session has been read. */
+export function useSessionHydrated() {
+  return useSyncExternalStore(
+    subscribe,
+    () => true,
+    () => false,
+  );
+}

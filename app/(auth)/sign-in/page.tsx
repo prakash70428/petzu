@@ -28,7 +28,7 @@ export default function SignInPage() {
   return (
     <AuthShell
       title="Welcome back"
-      subtitle="Sign in to manage your pets, orders, and appointments."
+      subtitle="Sign in to manage your pets and appointments."
       footer={
         <>
           Don&apos;t have an account?{" "}

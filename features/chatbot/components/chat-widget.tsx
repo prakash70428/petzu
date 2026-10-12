@@ -89,7 +89,7 @@ function ChatPanel({ identity, expanded }: { identity: ChatIdentity; expanded: b
           <p className="text-caption text-muted-foreground">Loading...</p>
         ) : messages.length === 0 ? (
           <p className="text-caption text-muted-foreground">
-            Ask about orders, bookings, or pet care. A PetZu assistant will help.
+            Ask about vets, bookings, your pet&apos;s health or where to find something on PetZu.
           </p>
         ) : (
           messages.map((message) => <ChatBubble key={message.id} role={message.role} content={message.content} />)

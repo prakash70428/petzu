@@ -17,7 +17,7 @@ const sections = [
   },
   {
     title: "How we use it",
-    body: "To fulfill orders and bookings, personalize recommendations, send service updates you've opted into, and improve the product. We don't sell your data to third parties.",
+    body: "To handle bookings and community posts, personalize recommendations, send service updates you've opted into, and improve the product. We don't sell your data to third parties.",
   },
   {
     title: "How we protect it",
