@@ -300,5 +300,5 @@ Sections 1 to 10 describe the original build. Since then, on client feedback:
 - **Services are grouped by a pet's life stage** (Welcome home, Health &
   care, Life together, Saying goodbye) via `ServiceStages`, shared with the
   /services hub, instead of a grid of identical cards.
-- **Zuzu's photo** (the client's dog, `petzucutedog.jpeg`) appears only on
-  /about; the hero uses stock photos per animal.
+- **Zuzu's photo** (the client's dog, `petzucutedog.jpeg`) is the dog hero
+  and onboarding image as well as on /about; other animals use stock photos.
