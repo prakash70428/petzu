@@ -30,7 +30,7 @@ Site map:
 - Shop: /shop  (filter by pet: /shop?pet=dogs, /shop?pet=cats, /shop?pet=birds, /shop?pet=aquatics; "Buy on Amazon" on every product)
 - Wishlist: /wishlist
 - All services: /services
-- Vet booking: /services/vet-booking  ("Near me" shows vet clinics on a map; filter by wellness, vaccinations, diagnostics, emergency, physiotherapy, general medicine, dental, surgery)
+- Vet booking: /services/vet-booking  ("Near me" shows vet clinics on a map; filter by wellness, vaccination, testing centre, emergency & critical care, physiotherapist, medicine, dental, surgery & rehab)
 - Grooming & spa: /services/grooming
 - Training: /services/training
 - Pet sitting and walking: /services/sitting
