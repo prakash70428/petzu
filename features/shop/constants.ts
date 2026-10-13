@@ -82,6 +82,8 @@ export const products: Product[] = [
     reviewCount: 1204,
     badge: "Bestseller",
     iconKey: "home",
+    image: "/images/img1.jpeg",
+    imageAlt: "A golden retriever resting on an orthopedic memory foam bed at home",
     description:
       "Joint-supporting memory foam with a machine-washable cover, sized for dogs who like to really sprawl out.",
     details: [
@@ -107,6 +109,8 @@ export const products: Product[] = [
     reviewCount: 2310,
     badge: "Vet recommended",
     iconKey: "utensils",
+    image: "/images/img7.jpeg",
+    imageAlt: "A golden retriever eating from a bowl of grain-free food by the fireplace",
     description:
       "Real salmon as the first ingredient, no fillers: formulated with a vet nutritionist for sensitive stomachs.",
     details: [
@@ -126,6 +130,8 @@ export const products: Product[] = [
     rating: 4.7,
     reviewCount: 856,
     iconKey: "gamepad",
+    image: "/images/img5.jpeg",
+    imageAlt: "A golden retriever playing with an enrichment toy on a bolster bed",
     description:
       "Slows down fast eaters and keeps busy minds occupied: adjustable difficulty, dishwasher-safe.",
     details: [
@@ -146,6 +152,8 @@ export const products: Product[] = [
     reviewCount: 512,
     badge: "New",
     iconKey: "shield",
+    image: "/images/img4.jpeg",
+    imageAlt: "A golden retriever on a rug with a walking lead and everyday gear",
     description:
       "No-pull, step-in design with reflective stitching: on in under 10 seconds, even with a wiggly dog.",
     details: [
@@ -167,6 +175,8 @@ export const products: Product[] = [
     reviewCount: 980,
     badge: "Bestseller",
     iconKey: "package",
+    image: "https://images.unsplash.com/photo-1727510153658-643787acb16a?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "A cat sitting inside a grey self-cleaning litter box",
     description:
       "Automatically rakes and seals waste into a sealed compartment: odor control that actually works.",
     details: [
@@ -190,6 +200,8 @@ export const products: Product[] = [
     rating: 4.8,
     reviewCount: 1420,
     iconKey: "utensils",
+    image: "https://images.unsplash.com/photo-1558993457-4bc6ec2c3734?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "An orange tabby cat eating from a steel food bowl",
     description: "Single-source protein pâté, high moisture content to support hydration and urinary health.",
     details: [
       { title: "Ingredients", content: "Chicken, chicken broth, chicken liver, taurine: no by-products or artificial preservatives." },
@@ -208,6 +220,8 @@ export const products: Product[] = [
     rating: 4.5,
     reviewCount: 340,
     iconKey: "gamepad",
+    image: "https://images.unsplash.com/photo-1638826595775-e2eae86cda8e?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "A fluffy kitten catching a feather wand toy",
     description: "A wand toy built for real chase instinct: replaceable feather attachments included.",
     details: [
       { title: "What's included", content: "1 wand, 3 replaceable feather/fabric attachments." },
@@ -226,6 +240,8 @@ export const products: Product[] = [
     rating: 4.6,
     reviewCount: 610,
     iconKey: "home",
+    image: "https://images.unsplash.com/photo-1573682127988-f67136e7f12a?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "A ginger cat asleep in a soft round pet bed",
     description: "An enclosed, burrow-style bed for cats who feel safest when they're half-hidden.",
     details: [
       { title: "Materials", content: "Soft-shell exterior, faux-fur lining, machine washable on cold, air dry." },
@@ -244,6 +260,8 @@ export const products: Product[] = [
     rating: 4.4,
     reviewCount: 210,
     iconKey: "utensils",
+    image: "https://images.unsplash.com/photo-1532598187460-98fe8826d1e2?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "A small bird taking seeds from an open hand",
     description: "A balanced seed and grain blend fortified with vitamins A, D3, and E for daily feeding.",
     details: [
       { title: "Ingredients", content: "Millet, canary grass seed, oats, sunflower seed, vitamin premix." },
@@ -263,6 +281,8 @@ export const products: Product[] = [
     reviewCount: 180,
     badge: "New",
     iconKey: "gamepad",
+    image: "https://images.unsplash.com/photo-1762849283503-9247032c7017?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "A green parrot on a perch next to hanging foraging toys",
     description: "Hide treats in the spinning wheel to encourage natural foraging behavior and reduce boredom.",
     details: [
       { title: "Care instructions", content: "Wipe clean with a damp cloth. Not dishwasher safe." },
@@ -282,6 +302,8 @@ export const products: Product[] = [
     reviewCount: 540,
     badge: "Bestseller",
     iconKey: "leaf",
+    image: "https://images.unsplash.com/photo-1604953301572-54b68dff860d?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "Two rabbits nestled in a bed of hay",
     description: "Sun-cured, second-cut timothy hay: the everyday staple for rabbits, guinea pigs, and chinchillas.",
     details: [
       { title: "What's included", content: "6 compressed bales, ~1.5 lb each, resealable bag." },
@@ -300,6 +322,8 @@ export const products: Product[] = [
     rating: 4.5,
     reviewCount: 190,
     iconKey: "gamepad",
+    image: "https://images.unsplash.com/photo-1676918555382-fcd06a483e25?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "A hamster beside a wooden house and a pine cone chew",
     description: "All-natural wood tunnel and chew set that supports dental health while satisfying the urge to gnaw.",
     details: [
       { title: "Materials", content: "Untreated apple wood: safe for chewing, no glues or dyes." },
@@ -318,6 +342,8 @@ export const products: Product[] = [
     rating: 4.7,
     reviewCount: 260,
     iconKey: "home",
+    image: "https://images.unsplash.com/photo-1612267168669-679c961c5b31?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "Three guinea pigs resting on soft pink fleece",
     description: "A snug fleece hideaway for burrowing, sleeping, and feeling safe in an open cage or hutch.",
     details: [
       { title: "Materials", content: "Anti-pill fleece exterior and lining, machine washable." },
@@ -336,6 +362,8 @@ export const products: Product[] = [
     rating: 4.6,
     reviewCount: 330,
     iconKey: "droplet",
+    image: "https://images.unsplash.com/photo-1579967327980-2a4117da0e4a?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "A planted aquarium lit by an LED light bar",
     description: "Full-spectrum LED lighting with adjustable brightness and a built-in day/night timer.",
     details: [
       { title: "What's included", content: "Light unit, extendable mounting brackets, power adapter." },
@@ -355,6 +383,8 @@ export const products: Product[] = [
     reviewCount: 470,
     badge: "Vet recommended",
     iconKey: "syringe",
+    image: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "A goldfish swimming in clear water",
     description: "Instantly neutralizes chlorine, chloramine, and heavy metals to make tap water safe for fish.",
     details: [
       { title: "Directions", content: "Add 1 capful per 10 gallons during water changes or new tank setup." },
@@ -373,6 +403,8 @@ export const products: Product[] = [
     rating: 4.4,
     reviewCount: 150,
     iconKey: "leaf",
+    image: "https://images.unsplash.com/photo-1691387824643-227cc84127cf?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "A freshly planted aquarium with rocks and green plants",
     description: "Three low-maintenance live plant species plus root tabs: an easy way to start a planted tank.",
     details: [
       { title: "What's included", content: "3 potted live plants (anubias, java fern, amazon sword), 5 root tabs." },

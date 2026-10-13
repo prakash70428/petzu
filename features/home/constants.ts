@@ -144,37 +144,6 @@ export const lifestyleGallery: GalleryItem[] = [
   },
 ];
 
-/** Lifestyle photo for a shop product; name, price and buy link come from the shop catalogue by `slug`. */
-export interface FeaturedPick {
-  slug: string;
-  /** Client lifestyle photo in /public/images. */
-  image: string;
-  imageAlt: string;
-}
-
-export const featuredProducts: FeaturedPick[] = [
-  {
-    slug: "orthopedic-memory-foam-bed",
-    image: "/images/img1.jpeg",
-    imageAlt: "A golden retriever resting on an orthopedic memory foam bed at home",
-  },
-  {
-    slug: "grain-free-salmon-recipe",
-    image: "/images/img7.jpeg",
-    imageAlt: "A golden retriever eating from a bowl of grain-free food by the fireplace",
-  },
-  {
-    slug: "interactive-puzzle-feeder",
-    image: "/images/img5.jpeg",
-    imageAlt: "A golden retriever playing with an enrichment toy on a bolster bed",
-  },
-  {
-    slug: "adjustable-step-in-harness",
-    image: "/images/img4.jpeg",
-    imageAlt: "A golden retriever on a rug with a walking lead and everyday gear",
-  },
-];
-
 export const vetBookingFeatures: string[] = [
   "Vet clinics near you, on a live map",
   "Specialties from vaccinations to surgery",

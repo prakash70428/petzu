@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -41,7 +42,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
       <div
         className={cn(
-          "relative z-0 flex aspect-square items-center justify-center bg-gradient-to-br",
+          "relative z-0 flex aspect-square items-center justify-center overflow-hidden bg-gradient-to-br",
           tileGradients[index % tileGradients.length],
         )}
       >
@@ -56,11 +57,21 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           <WishlistButton productSlug={product.slug} productName={product.name} />
         </div>
 
-        <Icon
-          className="size-16 text-foreground/70 transition-transform duration-300 ease-premium group-hover:scale-110"
-          strokeWidth={1.25}
-          aria-hidden
-        />
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.imageAlt ?? product.name}
+            fill
+            sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 92vw"
+            className="object-cover transition-transform duration-300 ease-premium group-hover:scale-105"
+          />
+        ) : (
+          <Icon
+            className="size-16 text-foreground/70 transition-transform duration-300 ease-premium group-hover:scale-110"
+            strokeWidth={1.25}
+            aria-hidden
+          />
+        )}
 
         <QuickViewTrigger product={product} />
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Eye } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, type MouseEvent } from "react";
 import { Dialog, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -46,10 +47,14 @@ export function QuickViewTrigger({ product }: { product: Product }) {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <div
             className={cn(
-              "flex aspect-square items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 via-primary/5 to-transparent",
+              "relative flex aspect-square items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-primary/20 via-primary/5 to-transparent",
             )}
           >
-            <Icon className="size-20 text-foreground/70" strokeWidth={1.25} aria-hidden />
+            {product.image ? (
+              <Image src={product.image} alt={product.imageAlt ?? product.name} fill sizes="20rem" className="object-cover" />
+            ) : (
+              <Icon className="size-20 text-foreground/70" strokeWidth={1.25} aria-hidden />
+            )}
           </div>
 
           <div className="flex flex-col gap-3">

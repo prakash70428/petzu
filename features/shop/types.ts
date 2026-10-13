@@ -41,6 +41,13 @@ export interface Product {
   reviewCount: number;
   badge?: string;
   iconKey: IconKey;
+  /**
+   * Product photo: the client's own photography in /public/images, or an
+   * Unsplash photo (free licence) until real product shots are supplied.
+   * Without one, cards fall back to the icon tile.
+   */
+  image?: string;
+  imageAlt?: string;
   description: string;
   details: ProductDetail[];
   inStock: boolean;

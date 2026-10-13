@@ -1,6 +1,7 @@
 "use client";
 
 import { PackageCheck, RotateCcw, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
@@ -18,9 +19,9 @@ const trustBadges = [
 ];
 
 /**
- * No product photography exists, so a "variant" here changes the showcase
- * tile's gradient tint rather than swapping in a fake alternate photo —
- * honest about what it is (a color choice), not pretending to be a gallery.
+ * One photo per product (see `Product.image`), so a "variant" only changes
+ * the tile's tint behind it, not the photo: honest about what it is (a
+ * colour choice), not pretending to be a gallery.
  */
 export function ProductDetail({ product }: { product: Product }) {
   const Icon = productIcons[product.iconKey];
@@ -34,11 +35,22 @@ export function ProductDetail({ product }: { product: Product }) {
       <div className="flex flex-col gap-4">
         <div
           className={cn(
-            "flex aspect-square items-center justify-center rounded-3xl bg-gradient-to-br shadow-sm",
+            "relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br shadow-sm",
             showcaseGradient,
           )}
         >
-          <Icon className="size-32 text-foreground/70" strokeWidth={1} aria-hidden />
+          {product.image ? (
+            <Image
+              src={product.image}
+              alt={product.imageAlt ?? product.name}
+              fill
+              priority
+              sizes="(min-width: 1024px) 40vw, 92vw"
+              className="object-cover"
+            />
+          ) : (
+            <Icon className="size-32 text-foreground/70" strokeWidth={1} aria-hidden />
+          )}
         </div>
 
         {product.variants && product.variants.length > 0 && (
