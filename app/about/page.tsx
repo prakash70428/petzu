@@ -42,7 +42,7 @@ export default function AboutPage() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="mt-6 grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-16">
+      <div className="mt-6 grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_24rem] lg:gap-16">
         <div className="max-w-2xl">
           <h1 className="font-display text-display-lg text-foreground">Named after Zuzu</h1>
           <p className="mt-6 text-body-lg leading-relaxed text-foreground/85">
@@ -60,17 +60,17 @@ export default function AboutPage() {
           </Button>
         </div>
 
-        <figure className="mx-auto w-full max-w-xs">
-          <div className="relative aspect-[705/1280] overflow-hidden rounded-[2rem] shadow-lg">
+        <figure className="mx-auto w-full max-w-sm lg:max-w-none">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-lg">
             <Image
               src="/images/petzucutedog.jpeg"
               alt="Zuzu, the golden retriever PetZu is named after"
               fill
-              sizes="(min-width: 1024px) 20rem, 90vw"
-              className="object-cover"
+              sizes="(min-width: 1024px) 24rem, 90vw"
+              className="object-cover object-[50%_35%]"
             />
           </div>
-          <figcaption className="mt-3 text-center text-body-sm text-muted-foreground">Zuzu</figcaption>
+          <figcaption className="mt-4 text-center font-display text-heading-4 text-foreground">Zuzu</figcaption>
         </figure>
       </div>
 
