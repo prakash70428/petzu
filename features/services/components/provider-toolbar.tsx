@@ -104,7 +104,7 @@ export function ProviderToolbar({
         )}
 
         <Select value={sort} onValueChange={(next) => onSortChange(next as SortOption)}>
-          <SelectTrigger className="w-[11rem]">
+          <SelectTrigger className="w-[11rem]" aria-label="Sort providers">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

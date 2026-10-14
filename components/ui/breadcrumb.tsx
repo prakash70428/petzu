@@ -49,16 +49,17 @@ export function BreadcrumbPage({ className, ...props }: HTMLAttributes<HTMLSpanE
 
 export function BreadcrumbSeparator({ children }: { children?: ReactNode }) {
   return (
-    <span role="presentation" className="text-muted-foreground/60">
+    // An <li>, not a bare <span>: an <ol> may only contain list items.
+    <li role="presentation" aria-hidden className="text-muted-foreground/60">
       {children ?? <ChevronRight className="size-3.5" />}
-    </span>
+    </li>
   );
 }
 
 export function BreadcrumbEllipsis() {
   return (
-    <span role="presentation" aria-hidden className="flex size-6 items-center justify-center">
+    <li role="presentation" aria-hidden className="flex size-6 items-center justify-center">
       <MoreHorizontal className="size-3.5" />
-    </span>
+    </li>
   );
 }

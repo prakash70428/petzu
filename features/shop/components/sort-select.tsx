@@ -13,7 +13,7 @@ export function SortSelect({
 }) {
   return (
     <Select value={value} onValueChange={(next) => onChange(next as SortOption)}>
-      <SelectTrigger className="w-[11rem]">
+      <SelectTrigger className="w-[11rem]" aria-label="Sort products">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

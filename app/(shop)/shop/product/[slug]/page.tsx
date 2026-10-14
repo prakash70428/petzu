@@ -54,7 +54,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/shop/${product.petType}`}>
+            <BreadcrumbLink href={`/shop?pet=${product.petType}`}>
               {petTypeLabels[product.petType]}
             </BreadcrumbLink>
           </BreadcrumbItem>

@@ -42,7 +42,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
       <div
         className={cn(
-          "relative z-0 flex aspect-square items-center justify-center overflow-hidden bg-gradient-to-br",
+          "relative flex aspect-square items-center justify-center overflow-hidden bg-gradient-to-br",
           tileGradients[index % tileGradients.length],
         )}
       >
