@@ -685,7 +685,7 @@ function WeightPanel({ pet }: { pet: PetProfile }) {
                 )}
               </p>
               {entries.length > 1 && (
-                <svg viewBox="0 0 100 40" role="img" aria-label={`Weight trend for ${pet.name}`} className="mt-3 h-24 w-full">
+                <svg viewBox="0 0 100 40" preserveAspectRatio="none" role="img" aria-label={`Weight trend for ${pet.name}`} className="mt-3 h-24 w-full">
                   <polyline points={points} fill="none" stroke="currentColor" strokeWidth="1.5" className="text-primary" vectorEffect="non-scaling-stroke" />
                 </svg>
               )}
