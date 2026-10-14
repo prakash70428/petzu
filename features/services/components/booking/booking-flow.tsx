@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/features/auth/store";
 import { setChatGuest, useChatGuest } from "@/features/chatbot/guest-store";
-import { generalEnquirySchema } from "@/features/enquiries/schema";
+import { bookingEnquirySchema } from "@/features/enquiries/schema";
 import { submitEnquiry } from "@/features/enquiries/submit";
 import { addAppointment } from "@/features/health/store";
 import type { AppointmentKind } from "@/features/health/types";
@@ -80,12 +80,15 @@ export function BookingFlow({ provider, service }: BookingFlowProps) {
   async function handleConfirm() {
     if (!selectedPet || !selectedDate || !selectedTime) return;
     const reference = generateBookingReference();
-    const request = generalEnquirySchema.safeParse({
-      kind: "GENERAL",
+    const request = bookingEnquirySchema.safeParse({
+      kind: "BOOKING",
       name: contact.name,
       email: contact.email,
+      reference,
+      provider: provider.name,
+      service: service.name,
+      when: `${formatDateLong(selectedDate)}, ${selectedTime}`,
       message: [
-        `Booking request ${reference}`,
         `${service.name} with ${provider.name} (${provider.clinicName})`,
         `${formatDateLong(selectedDate)} at ${selectedTime}`,
         `Pet: ${selectedPet.name} (${selectedPet.species}, ${selectedPet.breed})`,

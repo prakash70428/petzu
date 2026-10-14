@@ -30,7 +30,7 @@ export default function CustomersAdminPage() {
           <p className="text-body-sm text-muted-foreground">No customers found.</p>
         ) : (
           customers.map((customer) => (
-            <Link key={customer.id} href={`/dashboard/admin/customers/${customer.id}`}>
+            <Link key={customer.id} href={`/admin/customers/${customer.id}`}>
               <Card className="flex items-center justify-between p-card transition-colors hover:bg-accent/40">
                 <div>
                   <p className="font-medium text-foreground">{customer.name ?? customer.email}</p>

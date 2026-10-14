@@ -1,20 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useSession } from "@/features/auth/store";
+import { useStaffGate } from "@/hooks/use-staff-gate";
 import { toast } from "@/hooks/use-toast";
 import { createArticle, deleteArticle, fetchArticles, updateArticle } from "./services/knowledge-service";
 import type { KnowledgeArticle, KnowledgeArticleDraft } from "./types";
 
 /**
  * Drives the knowledge-base admin page's article list and CRUD mutations.
- * Staff access itself is gated one layer up, by `app/dashboard/admin/layout.tsx`
+ * Staff access itself is gated one layer up, by `app/admin/layout.tsx`
  * (via `useStaffGate()`) — every mutation this hook triggers is still
  * re-checked server-side regardless (see `lib/auth/is-staff.ts`).
  */
 export function useKnowledgeAdmin() {
-  const { user } = useSession();
-  const email = user?.email;
+  const email = useStaffGate().email;
 
   const [articles, setArticles] = useState<KnowledgeArticle[]>([]);
   // Starts true; only ever flipped from the .then/.catch/.finally callbacks

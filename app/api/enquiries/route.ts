@@ -1,6 +1,8 @@
+import { after } from "next/server";
 import { enquiryBody, enquirySchema, enquirySubject } from "@/features/enquiries/schema";
 import { fail, ok } from "@/lib/api-response";
 import { sendMessage } from "@/lib/comms/dispatcher";
+import { excerpt, notifyTeam } from "@/lib/comms/team-alert";
 import { recordInteraction } from "@/lib/crm/activity";
 import { getOrCreateCustomer } from "@/lib/customer";
 import { prisma } from "@/lib/prisma";
@@ -10,7 +12,7 @@ export const runtime = "nodejs";
 /**
  * Contact-page and /partners submissions. Stored as Feedback rows
  * (type ENQUIRY or PARTNERSHIP) so they land in the existing staff triage
- * queue at /dashboard/admin/feedback instead of a new inbox nobody watches.
+ * queue at /admin/feedback instead of a new inbox nobody watches.
  *
  * `website` is a honeypot: the field is hidden from people, so anything in
  * it came from a bot. We answer 201 so the bot learns nothing, and store
@@ -45,6 +47,17 @@ export async function POST(request: Request) {
   });
 
   await recordInteraction(customer.id, "FEEDBACK_SUBMITTED", subject, { feedbackId: feedback.id, kind: enquiry.kind });
+
+  // Tell the team on WhatsApp / email after the response is sent.
+  after(() =>
+    notifyTeam({
+      kind: enquiry.kind === "BOOKING" ? "booking" : enquiry.kind === "PARTNERSHIP" ? "partner" : "enquiry",
+      title: subject,
+      from: `${enquiry.name} <${enquiry.email}>`,
+      excerpt: enquiry.kind === "GENERAL" ? excerpt(enquiry.message) : undefined,
+      path: "/admin/feedback",
+    }),
+  );
 
   try {
     await sendMessage({

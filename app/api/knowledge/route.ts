@@ -1,5 +1,5 @@
 import { fail, ok } from "@/lib/api-response";
-import { isStaff } from "@/lib/auth/is-staff";
+import { staffSession } from "@/lib/auth/admin-session";
 import { searchKnowledge } from "@/lib/ai/knowledge-retrieval";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
     return fail(parsed.error.issues[0]?.message ?? "Invalid request body");
   }
 
-  if (!isStaff(parsed.data.staffEmail)) {
+  if (!staffSession(request)) {
     return fail("Not authorized", 403);
   }
 

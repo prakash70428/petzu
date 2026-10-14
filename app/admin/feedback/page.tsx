@@ -21,7 +21,7 @@ export default function FeedbackAdminPage() {
 
   return (
     <>
-      <PageHeader title="Feedback & complaints" description="Triage what customers have submitted." />
+      <PageHeader title="Enquiries & bookings" description="Booking requests, contact and partner enquiries, feedback and complaints. Mark each one as you handle it." />
 
       <div className="mb-4 flex flex-wrap gap-1.5">
         {filterOptions.map((option) => (

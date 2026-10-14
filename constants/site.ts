@@ -35,6 +35,8 @@ export const siteConfig = {
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() ?? "",
   /** Inbox for business and partnership enquiries; shown on /partners only when set. */
   businessEmail: process.env.NEXT_PUBLIC_BUSINESS_EMAIL?.trim() ?? "",
+  /** PetZu's WhatsApp number (digits, with country code). Shows "WhatsApp us" links when set. */
+  whatsappNumber: (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").replace(/\D/g, ""),
   /** Strip shown under the navbar (see AnnouncementBar). Empty = hidden. */
   announcement: process.env.NEXT_PUBLIC_ANNOUNCEMENT?.trim() ?? "",
   locale: "en_US",

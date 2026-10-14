@@ -76,6 +76,9 @@ const nextConfig: NextConfig = {
       { source: "/dashboard/appointments", destination: "/health", permanent: true },
       { source: "/dashboard/notifications", destination: "/health", permanent: true },
       { source: "/dashboard/orders", destination: "/health", permanent: true },
+      // The admin area has its own sign-in now, outside the customer dashboard.
+      { source: "/dashboard/admin", destination: "/admin", permanent: true },
+      { source: "/dashboard/admin/:path*", destination: "/admin/:path*", permanent: true },
     ];
   },
 

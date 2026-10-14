@@ -1,5 +1,5 @@
-import { getOrCreateCustomer } from "@/lib/customer";
 import { fail } from "@/lib/api-response";
+import { staffSession } from "@/lib/auth/admin-session";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
@@ -19,6 +19,9 @@ export const runtime = "nodejs";
  * staff wrote about you" and "what you did."
  */
 export async function GET(request: Request) {
+  // Staff only: an unverified browser can't prove whose data it is asking for.
+  if (!staffSession(request)) return fail("Not authorized", 403);
+
   const email = new URL(request.url).searchParams.get("email");
   const parsedEmail = z.string().email().safeParse(email);
 
@@ -26,7 +29,8 @@ export async function GET(request: Request) {
     return fail("A valid email query param is required");
   }
 
-  const customer = await getOrCreateCustomer(parsedEmail.data);
+  const customer = await prisma.customer.findUnique({ where: { email: parsedEmail.data } });
+  if (!customer) return fail("No customer with that email", 404);
 
   const [consents, interactions, chatConversations, messageLogs, feedback] = await Promise.all([
     prisma.consent.findMany({

@@ -1,8 +1,10 @@
 import { getOrCreateCustomer } from "@/lib/customer";
 import { recordInteraction } from "@/lib/crm/activity";
 import { fail, ok } from "@/lib/api-response";
-import { isStaff } from "@/lib/auth/is-staff";
+import { staffSession } from "@/lib/auth/admin-session";
+import { after } from "next/server";
 import { sendMessage } from "@/lib/comms/dispatcher";
+import { excerpt, notifyTeam } from "@/lib/comms/team-alert";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { FeedbackStatus, FeedbackType } from "@prisma/client";
@@ -29,7 +31,7 @@ export async function GET(request: Request) {
   const status = params.get("status");
 
   if (staffEmail) {
-    if (!isStaff(staffEmail)) {
+    if (!staffSession(request)) {
       return fail("Not authorized", 403);
     }
 
@@ -85,6 +87,16 @@ export async function POST(request: Request) {
     type === "COMPLAINT" ? "COMPLAINT_FILED" : "FEEDBACK_SUBMITTED",
     `${type === "COMPLAINT" ? "Complaint" : "Feedback"}: ${subject}`,
     { feedbackId: feedback.id, type, rating },
+  );
+
+  after(() =>
+    notifyTeam({
+      kind: type === "COMPLAINT" ? "complaint" : "feedback",
+      title: subject,
+      from: email,
+      excerpt: excerpt(feedbackBody),
+      path: "/admin/feedback",
+    }),
   );
 
   try {

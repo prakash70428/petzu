@@ -1,44 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSession } from "@/features/auth/store";
-import { checkIsStaff } from "@/services/staff-client";
+import { useSyncExternalStore } from "react";
+import { fetchStaffStatus, type StaffStatus } from "@/services/staff-client";
 
 /**
- * Gates any `/dashboard/admin/**` page: resolves whether the current
- * session's email is on the `ADMIN_EMAILS` allowlist. This is a UX gate
- * only — every staff-only mutation route re-checks `isStaff()` server-side
- * regardless of what this hook returns, so a client that lies about this
- * result still can't write anything (see `lib/auth/is-staff.ts`).
+ * The admin session, shared by every admin page. The real check happens on
+ * the server (each staff route verifies the signed cookie); this only
+ * decides what to render. One request per page load, cached in the module.
  */
-export function useStaffGate() {
-  const { user } = useSession();
-  const email = user?.email;
+interface GateState extends StaffStatus {
+  loading: boolean;
+}
 
-  // Starts true; only ever flipped from a .then/.catch/.finally callback,
-  // never a bare effect-body call — see features/consent/hooks.ts for why.
-  const [loading, setLoading] = useState(true);
-  const [isStaff, setIsStaff] = useState(false);
+let state: GateState = { isStaff: false, email: null, loading: true };
+let started = false;
+const listeners = new Set<() => void>();
 
-  useEffect(() => {
-    if (!email) return;
-    let cancelled = false;
+function set(next: GateState) {
+  state = next;
+  listeners.forEach((listener) => listener());
+}
 
-    checkIsStaff(email)
-      .then((result) => {
-        if (!cancelled) setIsStaff(result);
-      })
-      .catch(() => {
-        if (!cancelled) setIsStaff(false);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+export function refreshStaffGate() {
+  set({ ...state, loading: true });
+  return fetchStaffStatus()
+    .then((status) => set({ ...status, loading: false }))
+    .catch(() => set({ isStaff: false, email: null, loading: false }));
+}
 
-    return () => {
-      cancelled = true;
-    };
-  }, [email]);
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  if (!started) {
+    started = true;
+    void refreshStaffGate();
+  }
+  return () => listeners.delete(listener);
+}
 
-  return { isStaff, loading };
+const SERVER_STATE: GateState = { isStaff: false, email: null, loading: true };
+
+export function useStaffGate(): GateState {
+  return useSyncExternalStore(
+    subscribe,
+    () => state,
+    () => SERVER_STATE,
+  );
 }

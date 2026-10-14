@@ -1,5 +1,7 @@
+import { after } from "next/server";
 import { isCommunitySpecies, newPostSchema, type CommunityPostView } from "@/features/community/schema";
 import { fail, ok } from "@/lib/api-response";
+import { notifyTeam } from "@/lib/comms/team-alert";
 import { recordInteraction } from "@/lib/crm/activity";
 import { getOrCreateCustomer } from "@/lib/customer";
 import { prisma } from "@/lib/prisma";
@@ -70,6 +72,7 @@ export async function POST(request: Request) {
       data: { customerId: customer.id, authorName: name, species, topic, title, body: body ?? "" },
     });
     await recordInteraction(customer.id, "COMMUNITY_POST", `Asked: ${title.slice(0, 120)}`, { postId: post.id });
+    after(() => notifyTeam({ kind: "community", title, from: `${name} <${email}>`, path: "/admin/community" }));
 
     return ok({ id: post.id }, 201);
   } catch (error) {

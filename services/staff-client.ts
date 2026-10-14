@@ -1,14 +1,27 @@
 import { apiClient } from "./api-client";
 
-/**
- * Wraps `GET /api/staff` — see `lib/auth/is-staff.ts` for what this actually
- * checks and its trust limitation. Lives at the top level (not inside
- * `features/knowledge-base/`, where it started in Phase 2) because Phase 4's
- * CRM needs the exact same check — per ARCHITECTURE.md's rule, code two or
- * more features depend on belongs in a top-level folder, not one feature's.
- */
-export function checkIsStaff(email: string) {
-  return apiClient<{ data: { isStaff: boolean } }>(`/api/staff?email=${encodeURIComponent(email)}`).then(
-    (res) => res.data.isStaff,
-  );
+export interface StaffStatus {
+  isStaff: boolean;
+  email: string | null;
+}
+
+/** The signed-in admin, read from the HttpOnly session cookie (see lib/auth/admin-session.ts). */
+export function fetchStaffStatus() {
+  return apiClient<{ data: StaffStatus }>("/api/admin/session").then((res) => res.data);
+}
+
+export function signInAdmin(email: string, password: string) {
+  return fetch("/api/admin/session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  }).then(async (res) => {
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.error ?? "Sign-in failed");
+    return body.data as StaffStatus;
+  });
+}
+
+export function signOutAdmin() {
+  return fetch("/api/admin/session", { method: "DELETE" });
 }

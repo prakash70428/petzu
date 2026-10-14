@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono, Fredoka } from "next/font/google";
+import { Analytics } from "@/components/analytics";
 import { AppProviders } from "@/components/providers";
 import { Navbar, Footer, SkipLink } from "@/components/layout";
 import { baseMetadata } from "@/constants/seo";
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </main>
           <Footer />
         </AppProviders>
+        <Analytics />
       </body>
     </html>
   );

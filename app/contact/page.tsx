@@ -14,6 +14,7 @@ import { siteConfig } from "@/constants/site";
 import { generalEnquirySchema } from "@/features/enquiries/schema";
 import { submitEnquiry } from "@/features/enquiries/submit";
 import { toast } from "@/hooks/use-toast";
+import { whatsappLink } from "@/utils/whatsapp";
 
 const contactSchema = generalEnquirySchema.omit({ kind: true });
 
@@ -22,6 +23,8 @@ const contactPoints = [
   ...(siteConfig.contactEmail ? [{ icon: Mail, label: "Email", value: siteConfig.contactEmail }] : []),
   { icon: MessageCircle, label: "Chat", value: "The PetZu assistant (bottom right) answers any time." },
 ];
+
+const whatsapp = whatsappLink("Hi PetZu, I have a question:");
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
@@ -121,6 +124,17 @@ export default function ContactPage() {
               </div>
             </div>
           ))}
+          {whatsapp && (
+            <a
+              href={whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 rounded-xl bg-[#1f8f4e] px-4 py-3 text-body-sm font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              <MessageCircle className="size-4" aria-hidden />
+              Message us on WhatsApp
+            </a>
+          )}
           <div className="flex items-start gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
               <Handshake className="size-4" aria-hidden />

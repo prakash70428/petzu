@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { useSession } from "@/features/auth/store";
 import { useMounted } from "@/hooks/use-mounted";
 import { cn } from "@/utils/cn";
+import { whatsappLink } from "@/utils/whatsapp";
 import { setChatGuest, useChatGuest } from "../guest-store";
 import { type ChatIdentity, useChat } from "../hooks";
 import { splitMessageLinks } from "../utils";
@@ -114,6 +115,19 @@ function ChatPanel({ identity, expanded }: { identity: ChatIdentity; expanded: b
           <Link href="/contact" className="font-medium text-primary hover:underline">
             Contact the PetZu team
           </Link>
+          {whatsappLink() && (
+            <>
+              {" "}or{" "}
+              <a
+                href={whatsappLink("Hi PetZu, I need help with:")!}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-primary hover:underline"
+              >
+                WhatsApp us
+              </a>
+            </>
+          )}
         </p>
       )}
     </div>

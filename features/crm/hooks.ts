@@ -1,15 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useSession } from "@/features/auth/store";
+import { useStaffGate } from "@/hooks/use-staff-gate";
 import { toast } from "@/hooks/use-toast";
 import { addNote, addTag, fetchCustomerDetail, fetchCustomers, removeTag } from "./services/crm-service";
 import type { CustomerDetail, CustomerSummary } from "./types";
 
 /** Staff customer list, refetched whenever `query` changes (simple client-driven search-as-you-type). */
 export function useCustomerList(query: string) {
-  const { user } = useSession();
-  const staffEmail = user?.email;
+  const staffEmail = useStaffGate().email;
 
   const [customers, setCustomers] = useState<CustomerSummary[]>([]);
   // Starts true; only ever flipped from a .then/.catch/.finally callback,
@@ -41,8 +40,7 @@ export function useCustomerList(query: string) {
 
 /** Single customer's full CRM record: profile, tags, notes, consents, and the Interaction timeline. */
 export function useCustomerDetail(customerId: string) {
-  const { user } = useSession();
-  const staffEmail = user?.email;
+  const staffEmail = useStaffGate().email;
 
   const [customer, setCustomer] = useState<CustomerDetail | null>(null);
   const [loading, setLoading] = useState(true);

@@ -1,5 +1,5 @@
 import { fail, ok } from "@/lib/api-response";
-import { isStaff } from "@/lib/auth/is-staff";
+import { staffSession } from "@/lib/auth/admin-session";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
@@ -13,9 +13,8 @@ export const runtime = "nodejs";
  */
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const staffEmail = new URL(request.url).searchParams.get("staffEmail") ?? "";
 
-  if (!isStaff(staffEmail)) {
+  if (!staffSession(request)) {
     return fail("Not authorized", 403);
   }
 

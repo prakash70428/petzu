@@ -86,6 +86,7 @@ export function addPet(input: NewPetInput): PetProfile {
     ...(input.birthday && input.birthdayEstimated ? { birthdayEstimated: true } : {}),
     ...(input.lastJourney ? { lastJourney: true } : {}),
     ...(input.family?.length ? { family: input.family } : {}),
+    ...(input.gender ? { gender: input.gender } : {}),
   };
   update({ pets: [...state.pets, pet], activeId: pet.id, onboardingDismissed: true });
   return pet;

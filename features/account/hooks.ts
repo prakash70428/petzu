@@ -3,41 +3,34 @@
 import { useCallback, useState } from "react";
 import { useSession } from "@/features/auth/store";
 import { toast } from "@/hooks/use-toast";
-import { deleteMyAccount, exportMyData } from "./services/account-service";
+import { requestMyData, type DataRequestKind } from "./services/account-service";
 
-/** Drives the settings page's "Export my data" and "Delete account" actions. */
+/** Drives the settings page's "request my data" and "request deletion" actions. */
 export function useAccountActions() {
   const { user } = useSession();
-  const email = user?.email;
+  const [pending, setPending] = useState<DataRequestKind | null>(null);
 
-  const [exporting, setExporting] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const request = useCallback(
+    async (kind: DataRequestKind) => {
+      if (!user?.email) return false;
+      setPending(kind);
+      try {
+        await requestMyData(kind, user.name || user.email, user.email);
+        toast({
+          title: kind === "export" ? "Request sent" : "Deletion requested",
+          description: `We'll email ${user.email} to confirm it's you, then ${kind === "export" ? "send your data" : "delete your account"} within 30 days.`,
+          variant: "success",
+        });
+        return true;
+      } catch {
+        toast({ title: "Couldn't send your request", description: "Please try again.", variant: "destructive" });
+        return false;
+      } finally {
+        setPending(null);
+      }
+    },
+    [user],
+  );
 
-  const exportData = useCallback(async () => {
-    if (!email) return;
-    setExporting(true);
-    try {
-      await exportMyData(email);
-    } catch {
-      toast({ title: "Couldn't export your data", description: "Please try again.", variant: "destructive" });
-    } finally {
-      setExporting(false);
-    }
-  }, [email]);
-
-  const deleteAccount = useCallback(async () => {
-    if (!email) return false;
-    setDeleting(true);
-    try {
-      await deleteMyAccount(email);
-      return true;
-    } catch {
-      toast({ title: "Couldn't delete your account", description: "Please try again.", variant: "destructive" });
-      return false;
-    } finally {
-      setDeleting(false);
-    }
-  }, [email]);
-
-  return { exporting, exportData, deleting, deleteAccount };
+  return { pending, request };
 }

@@ -26,7 +26,12 @@ export interface PetProfile {
   /** Owner marked the pet as in their last journey; overrides the age-based stage. */
   lastJourney?: boolean;
   family?: FamilyMember[];
+  gender?: PetGender;
+  /** IndexedDB key of the pet's photo (features/health/files.ts), kept on this device. */
+  photoId?: string;
 }
+
+export type PetGender = "male" | "female";
 
 export interface PetProfileState {
   pets: PetProfile[];
@@ -48,4 +53,5 @@ export interface NewPetInput {
   birthdayEstimated?: boolean;
   lastJourney?: boolean;
   family?: FamilyMember[];
+  gender?: PetGender;
 }

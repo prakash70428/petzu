@@ -1,5 +1,5 @@
 import { fail, ok } from "@/lib/api-response";
-import { isStaff } from "@/lib/auth/is-staff";
+import { staffSession } from "@/lib/auth/admin-session";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
@@ -23,7 +23,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return fail(parsed.error.issues[0]?.message ?? "Invalid request body");
   }
 
-  if (!isStaff(parsed.data.staffEmail)) {
+  if (!staffSession(request)) {
     return fail("Not authorized", 403);
   }
 
@@ -42,7 +42,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     return fail(parsed.error.issues[0]?.message ?? "Invalid request body");
   }
 
-  if (!isStaff(parsed.data.staffEmail)) {
+  if (!staffSession(request)) {
     return fail("Not authorized", 403);
   }
 

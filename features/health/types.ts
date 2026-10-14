@@ -14,7 +14,7 @@ export interface Medicine {
   endDate?: string;
 }
 
-export type RecordKind = "pre-visit" | "prescription" | "lab" | "scan" | "other";
+export type RecordKind = "pre-visit" | "vaccination" | "prescription" | "lab" | "scan" | "other";
 
 /**
  * Anything the owner wants to keep: notes for the vet before a visit,
@@ -51,10 +51,20 @@ export interface Appointment {
   reference?: string;
 }
 
+/** One weigh-in (proposal: "weight tracker"). */
+export interface WeightEntry {
+  id: string;
+  petId: string;
+  /** YYYY-MM-DD */
+  date: string;
+  kg: number;
+}
+
 export interface HealthState {
   medicines: Medicine[];
   records: HealthRecord[];
   appointments: Appointment[];
+  weights: WeightEntry[];
   /** Reminder keys already shown, so each fires once. */
   sentReminders: string[];
 }

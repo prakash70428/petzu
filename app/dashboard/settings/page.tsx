@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,6 @@ import { Dialog, DialogDescription, DialogFooter, DialogHeader, DialogTitle } fr
 import { FormField } from "@/components/ui/form-field";
 import { PasswordInput } from "@/features/auth/components";
 import { passwordChangeSchema } from "@/features/auth/schemas";
-import { logout } from "@/features/auth/store";
 import { useAccountActions } from "@/features/account/hooks";
 import { useConsent } from "@/features/consent/hooks";
 import { PageHeader } from "@/features/dashboard/components";
@@ -18,7 +16,6 @@ import { useForm } from "@/hooks/use-form";
 import { toast } from "@/hooks/use-toast";
 
 export default function SettingsPage() {
-  const router = useRouter();
   const consent = useConsent();
   const account = useAccountActions();
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -33,13 +30,8 @@ export default function SettingsPage() {
   });
 
   async function handleDeleteAccount() {
-    const succeeded = await account.deleteAccount();
-    if (!succeeded) return;
-
-    setDeleteOpen(false);
-    logout();
-    toast({ title: "Account deleted", description: "Your PetZu account and its data have been removed.", variant: "default" });
-    router.push("/");
+    const succeeded = await account.request("delete");
+    if (succeeded) setDeleteOpen(false);
   }
 
   return (
@@ -143,22 +135,22 @@ export default function SettingsPage() {
         <Card className="p-card-lg">
           <h2 className="font-semibold text-foreground">Your data</h2>
           <p className="mt-1 text-caption text-muted-foreground">
-            Download a copy of your profile, consent settings, chat history, messages we&apos;ve sent you, and
-            feedback you&apos;ve submitted.
+            Get a copy of your profile, consent settings, chat history, messages we&apos;ve sent you, and feedback
+            you&apos;ve submitted. We&apos;ll confirm by email that it&apos;s you, then send it.
           </p>
-          <Button variant="outline" className="mt-4" onClick={account.exportData} disabled={account.exporting}>
-            {account.exporting ? "Preparing export..." : "Export my data"}
+          <Button variant="outline" className="mt-4" onClick={() => account.request("export")} disabled={account.pending !== null}>
+            {account.pending === "export" ? "Sending request..." : "Request my data"}
           </Button>
         </Card>
 
         <Card className="border-destructive/30 p-card-lg">
           <h2 className="font-semibold text-foreground">Danger zone</h2>
           <Alert variant="destructive" title="Delete account" className="mt-4">
-            This permanently deletes your PetZu account: profile, consent settings, chat history, message history,
-            and feedback. This can&apos;t be undone.
+            We&apos;ll permanently delete your PetZu account: profile, consent settings, chat history, message
+            history and feedback, after confirming by email that it&apos;s you. This can&apos;t be undone.
           </Alert>
           <Button variant="destructive" className="mt-4" onClick={() => setDeleteOpen(true)}>
-            Delete account
+            Request account deletion
           </Button>
         </Card>
       </div>
@@ -167,16 +159,16 @@ export default function SettingsPage() {
         <DialogHeader>
           <DialogTitle>Delete your account?</DialogTitle>
           <DialogDescription>
-            This permanently deletes your account and everything linked to it. This can&apos;t be undone, so consider
-            exporting your data first.
+            We&apos;ll email you to confirm, then permanently delete your account and everything linked to it. This
+            can&apos;t be undone, so consider requesting your data first.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setDeleteOpen(false)} disabled={account.deleting}>
+          <Button variant="outline" onClick={() => setDeleteOpen(false)} disabled={account.pending !== null}>
             Cancel
           </Button>
-          <Button variant="destructive" onClick={handleDeleteAccount} disabled={account.deleting}>
-            {account.deleting ? "Deleting..." : "Yes, delete it"}
+          <Button variant="destructive" onClick={handleDeleteAccount} disabled={account.pending !== null}>
+            {account.pending === "delete" ? "Sending..." : "Yes, request deletion"}
           </Button>
         </DialogFooter>
       </Dialog>

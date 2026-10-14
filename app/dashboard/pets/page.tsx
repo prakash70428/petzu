@@ -1,7 +1,7 @@
 "use client";
 
-import { Dog, Plus, Trash2, UserPlus, X } from "lucide-react";
-import { useState } from "react";
+import { Camera, Dog, Plus, Trash2, UserPlus, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label";
 import { PageHeader } from "@/features/dashboard/components";
 import { PetOnboardingDialog } from "@/features/pet-profile/components";
 import { OTHER_BREED, speciesConfig } from "@/features/pet-profile/constants";
+import { deleteFile, loadFile, MAX_FILE_BYTES, saveFile } from "@/features/health/files";
 import { removePet, updatePet, usePetProfileState } from "@/features/pet-profile/store";
-import type { PetProfile } from "@/features/pet-profile/types";
+import type { PetGender, PetProfile } from "@/features/pet-profile/types";
 import { formatPetAge, lifeStageLabel, lifeStageOf } from "@/features/pet-profile/utils";
 import { toast } from "@/hooks/use-toast";
 
@@ -68,6 +69,40 @@ function PetCard({ pet }: { pet: PetProfile }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!pet.photoId) return;
+    let url: string | null = null;
+    let cancelled = false;
+    loadFile(pet.photoId)
+      .then((blob) => {
+        if (cancelled || !blob) return;
+        url = URL.createObjectURL(blob);
+        setPhotoUrl(url);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [pet.photoId]);
+
+  async function choosePhoto(file: File | undefined) {
+    if (!file) return;
+    if (!file.type.startsWith("image/") || file.size > MAX_FILE_BYTES) {
+      toast({ title: "Choose a photo under 10 MB", variant: "destructive" });
+      return;
+    }
+    const id = `pet-photo-${pet.id}-${Date.now().toString(36)}`;
+    try {
+      await saveFile(id, file);
+      if (pet.photoId) await deleteFile(pet.photoId).catch(() => {});
+      updatePet(pet.id, { photoId: id });
+    } catch {
+      toast({ title: "Couldn't save the photo on this device", variant: "destructive" });
+    }
+  }
 
   function addMember() {
     if (name.trim().length < 2 || !EMAIL.test(email.trim())) {
@@ -87,7 +122,17 @@ function PetCard({ pet }: { pet: PetProfile }) {
   return (
     <Card className="flex flex-col gap-4 p-card-lg">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+        <label className="relative flex size-16 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-2xl bg-muted text-muted-foreground hover:ring-2 hover:ring-primary/40">
+          {photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- a local blob URL, not an optimisable remote image
+            <img src={photoUrl} alt={`${pet.name}'s photo`} className="size-full object-cover" />
+          ) : (
+            <Camera className="size-5" aria-hidden />
+          )}
+          <span className="sr-only">{photoUrl ? `Change ${pet.name}'s photo` : `Add a photo of ${pet.name}`}</span>
+          <input type="file" accept="image/*" className="sr-only" onChange={(e) => choosePhoto(e.target.files?.[0])} />
+        </label>
+        <div className="min-w-0 flex-1">
           <p className="text-heading-4 font-semibold text-foreground">{pet.name}</p>
           <p className="text-caption text-muted-foreground">
             {pet.breed === OTHER_BREED ? config.singular : pet.breed}
@@ -99,6 +144,19 @@ function PetCard({ pet }: { pet: PetProfile }) {
               {config.label}
             </Badge>
             {stage && <Badge variant="outline">{lifeStageLabel(stage, pet.species)}</Badge>}
+          </div>
+          <div className="mt-3 flex items-center gap-2" role="group" aria-label={`${pet.name}'s gender`}>
+            {(["male", "female"] as PetGender[]).map((g) => (
+              <button
+                key={g}
+                type="button"
+                aria-pressed={pet.gender === g}
+                onClick={() => updatePet(pet.id, { gender: pet.gender === g ? undefined : g })}
+                className="rounded-full border border-border px-3 py-1 text-caption text-foreground transition-colors hover:border-primary/50 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+              >
+                {g === "male" ? "Male" : "Female"}
+              </button>
+            ))}
           </div>
         </div>
         <button

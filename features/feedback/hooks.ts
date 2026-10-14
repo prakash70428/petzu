@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useSession } from "@/features/auth/store";
+import { useStaffGate } from "@/hooks/use-staff-gate";
 import { toast } from "@/hooks/use-toast";
 import { fetchAllFeedback, fetchMyFeedback, submitFeedback, updateFeedbackStatus } from "./services/feedback-service";
 import type { FeedbackDraft, FeedbackItem, FeedbackStatus, FeedbackWithCustomer } from "./types";
@@ -68,8 +69,7 @@ export function useMyFeedback() {
 
 /** Staff-facing triage queue: everything, optionally filtered by status, with a status-change mutation. */
 export function useFeedbackTriage(statusFilter?: FeedbackStatus) {
-  const { user } = useSession();
-  const staffEmail = user?.email;
+  const staffEmail = useStaffGate().email;
 
   const [items, setItems] = useState<FeedbackWithCustomer[]>([]);
   const [loading, setLoading] = useState(true);

@@ -1,32 +1,21 @@
-import { apiClient } from "@/services/api-client";
+import { submitEnquiry } from "@/features/enquiries/submit";
+
+export type DataRequestKind = "export" | "delete";
 
 /**
- * Unlike every other service in this build, this doesn't go through
- * `apiClient()` — `GET /api/customers/export` returns a raw file
- * (`Content-Disposition: attachment`), not the `{ data }` JSON envelope
- * `apiClient()` expects. Fetches the file directly and triggers a normal
- * browser download via a temporary `<a download>` link.
+ * Customer sign-in isn't verified yet (see AUTH.md), so a browser asking for
+ * "my data" can't prove whose data it is. Instead of acting on any email,
+ * the request goes to the team, who confirm by email with the address on
+ * the account and then export or delete from the admin customer page.
  */
-export async function exportMyData(email: string): Promise<void> {
-  const response = await fetch(`/api/customers/export?email=${encodeURIComponent(email)}`);
-  if (!response.ok) throw new Error("Export failed");
-
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-
-  const filenameMatch = response.headers.get("Content-Disposition")?.match(/filename="(.+)"/);
-  const filename = filenameMatch?.[1] ?? "petzu-data-export.json";
-
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-
-  URL.revokeObjectURL(url);
-}
-
-export function deleteMyAccount(email: string) {
-  return apiClient<{ data: { deleted: boolean } }>(`/api/customers?email=${encodeURIComponent(email)}`, {
-    method: "DELETE",
-  }).then((res) => res.data);
+export function requestMyData(kind: DataRequestKind, name: string, email: string) {
+  return submitEnquiry({
+    kind: "GENERAL",
+    name,
+    email,
+    message:
+      kind === "export"
+        ? "Data request: please send me a copy of my PetZu data (profile, consents, chats, messages and feedback)."
+        : "Data request: please delete my PetZu account and all data linked to it.",
+  });
 }

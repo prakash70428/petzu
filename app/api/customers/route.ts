@@ -1,5 +1,6 @@
 import { getOrCreateCustomer } from "@/lib/customer";
 import { fail, ok } from "@/lib/api-response";
+import { staffSession } from "@/lib/auth/admin-session";
 import { prisma } from "@/lib/prisma";
 import { sendMessage } from "@/lib/comms/dispatcher";
 import { z } from "zod";
@@ -70,6 +71,9 @@ export async function POST(request: Request) {
  * deleting their own account, not an admin action.
  */
 export async function DELETE(request: Request) {
+  // Staff only, after confirming the request with the customer by email.
+  if (!staffSession(request)) return fail("Not authorized", 403);
+
   const email = new URL(request.url).searchParams.get("email");
   const parsed = z.string().email().safeParse(email);
 

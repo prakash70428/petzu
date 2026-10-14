@@ -1,13 +1,13 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { Appointment, HealthRecord, HealthState, Medicine } from "./types";
+import type { Appointment, HealthRecord, HealthState, Medicine, WeightEntry } from "./types";
 
 const STORAGE_KEY = "petzu:health";
 /** Keep the "already reminded" list from growing forever. */
 const MAX_SENT_KEYS = 500;
 
-const EMPTY: HealthState = { medicines: [], records: [], appointments: [], sentReminders: [] };
+const EMPTY: HealthState = { medicines: [], records: [], appointments: [], weights: [], sentReminders: [] };
 
 /**
  * Same module-store + localStorage pattern as features/pet-profile/store.ts.
@@ -96,6 +96,17 @@ export function updateAppointment(id: string, changes: Partial<Omit<Appointment,
 
 export function removeAppointment(id: string) {
   update({ appointments: getHealthState().appointments.filter((a) => a.id !== id) });
+}
+
+export function addWeight(input: Omit<WeightEntry, "id">): WeightEntry {
+  const entry = { ...input, id: newId("wt") };
+  const others = getHealthState().weights.filter((w) => !(w.petId === input.petId && w.date === input.date));
+  update({ weights: [...others, entry].sort((a, b) => a.date.localeCompare(b.date)) });
+  return entry;
+}
+
+export function removeWeight(id: string) {
+  update({ weights: getHealthState().weights.filter((w) => w.id !== id) });
 }
 
 export function markRemindersSent(keys: string[]) {

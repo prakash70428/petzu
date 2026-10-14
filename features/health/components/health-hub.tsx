@@ -8,6 +8,7 @@ import {
   Paperclip,
   Pill,
   Plus,
+  Scale,
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
@@ -33,9 +34,11 @@ import {
   addAppointment,
   addMedicine,
   addRecord,
+  addWeight,
   removeAppointment,
   removeMedicine,
   removeRecord,
+  removeWeight,
   updateAppointment,
   useHealthState,
 } from "../store";
@@ -44,6 +47,7 @@ import { DOSE_LABELS, formatTime, isoDate, todaysDoses } from "../utils";
 
 const RECORD_KINDS: Record<RecordKind, string> = {
   "pre-visit": "Notes for the vet",
+  vaccination: "Vaccination record",
   prescription: "Prescription",
   lab: "Blood work / lab report",
   scan: "Scan or X-ray",
@@ -123,6 +127,7 @@ export function HealthHub() {
           <TabsTrigger value="medicines">Medicines</TabsTrigger>
           <TabsTrigger value="records">Records</TabsTrigger>
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
+          <TabsTrigger value="weight">Weight</TabsTrigger>
         </TabsList>
         <TabsContent value="today" className="mt-6">
           <TodayPanel pet={pet} />
@@ -135,6 +140,9 @@ export function HealthHub() {
         </TabsContent>
         <TabsContent value="appointments" className="mt-6">
           <AppointmentsPanel pet={pet} />
+        </TabsContent>
+        <TabsContent value="weight" className="mt-6">
+          <WeightPanel pet={pet} />
         </TabsContent>
       </Tabs>
 
@@ -620,6 +628,96 @@ function AppointmentsPanel({ pet }: { pet: PetProfile }) {
         {error && <p className="text-caption text-destructive">{error}</p>}
         <Button type="submit" variant="gradient">
           Add appointment
+        </Button>
+      </form>
+    </div>
+  );
+}
+
+/** Weigh-ins over time (proposal: "weight tracker"), with a small trend line. */
+function WeightPanel({ pet }: { pet: PetProfile }) {
+  const health = useHealthState();
+  const entries = (health.weights ?? []).filter((w) => w.petId === pet.id);
+  const [date, setDate] = useState(isoDate(new Date()));
+  const [kg, setKg] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  function submit(event: FormEvent) {
+    event.preventDefault();
+    const value = Number(kg);
+    if (!Number.isFinite(value) || value <= 0 || value > 150) return setError("Enter a weight in kg, e.g. 24.5");
+    addWeight({ petId: pet.id, date, kg: Math.round(value * 10) / 10 });
+    setKg("");
+    setError(null);
+  }
+
+  const latest = entries[entries.length - 1];
+  const previous = entries[entries.length - 2];
+  const change = latest && previous ? Math.round((latest.kg - previous.kg) * 10) / 10 : null;
+
+  // Simple SVG trend: 100 x 40 viewBox, padded so the line never touches the edge.
+  const min = Math.min(...entries.map((e) => e.kg));
+  const max = Math.max(...entries.map((e) => e.kg));
+  const points = entries
+    .map((e, i) => {
+      const x = entries.length === 1 ? 50 : 4 + (i / (entries.length - 1)) * 92;
+      const y = max === min ? 20 : 36 - ((e.kg - min) / (max - min)) * 32;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+
+  return (
+    <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_22rem]">
+      <section>
+        {entries.length === 0 ? (
+          <EmptyState icon={Scale} title={`No weigh-ins for ${pet.name} yet`} description="Log a weight after each vet visit or monthly at home to spot changes early." />
+        ) : (
+          <>
+            <div className="rounded-2xl border border-border p-card">
+              <p className="text-caption text-muted-foreground">Latest</p>
+              <p className="text-heading-2 font-semibold text-foreground">
+                {latest.kg} kg{" "}
+                {change !== null && change !== 0 && (
+                  <span className="text-body-sm font-normal text-muted-foreground">
+                    ({change > 0 ? "+" : ""}
+                    {change} kg since the last weigh-in)
+                  </span>
+                )}
+              </p>
+              {entries.length > 1 && (
+                <svg viewBox="0 0 100 40" role="img" aria-label={`Weight trend for ${pet.name}`} className="mt-3 h-24 w-full">
+                  <polyline points={points} fill="none" stroke="currentColor" strokeWidth="1.5" className="text-primary" vectorEffect="non-scaling-stroke" />
+                </svg>
+              )}
+            </div>
+            <ul className="mt-4 flex flex-col divide-y divide-border rounded-2xl border border-border">
+              {[...entries].reverse().map((e) => (
+                <li key={e.id} className="flex items-center justify-between p-3 text-body-sm">
+                  <span className="text-muted-foreground">{e.date}</span>
+                  <span className="flex items-center gap-2 font-medium text-foreground">
+                    {e.kg} kg
+                    <Button size="icon" variant="ghost" aria-label={`Remove ${e.date} weigh-in`} onClick={() => removeWeight(e.id)}>
+                      <Trash2 className="size-4" aria-hidden />
+                    </Button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+
+      <form onSubmit={submit} className="flex flex-col gap-4 rounded-2xl border border-border p-card-lg">
+        <h2 className="text-heading-4 font-semibold text-foreground">Log a weight</h2>
+        <FormField label="Weight (kg)" htmlFor="wt-kg">
+          <Input id="wt-kg" inputMode="decimal" value={kg} onChange={(e) => setKg(e.target.value)} placeholder="e.g. 24.5" />
+        </FormField>
+        <FormField label="Date" htmlFor="wt-date">
+          <Input id="wt-date" type="date" value={date} max={isoDate(new Date())} onChange={(e) => setDate(e.target.value)} />
+        </FormField>
+        {error && <p className="text-caption text-destructive">{error}</p>}
+        <Button type="submit" variant="gradient">
+          Save weight
         </Button>
       </form>
     </div>

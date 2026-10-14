@@ -38,22 +38,40 @@ export const partnerEnquirySchema = z.object({
     .or(z.literal("")),
 });
 
-export const enquirySchema = z.discriminatedUnion("kind", [generalEnquirySchema, partnerEnquirySchema]);
+/**
+ * A booking request from the provider booking flow. Stored as an ENQUIRY with
+ * its own subject so the admin (and the team's WhatsApp alert) can tell
+ * bookings apart from general questions.
+ */
+export const bookingEnquirySchema = z.object({
+  kind: z.literal("BOOKING"),
+  name: contact.name,
+  email: contact.email,
+  message: z.string().trim().min(10).max(2000),
+  reference: z.string().regex(/^PZ-\d{6}$/),
+  provider: z.string().trim().min(2).max(120),
+  service: z.string().trim().min(2).max(120),
+  when: z.string().trim().min(4).max(80),
+});
+
+export const enquirySchema = z.discriminatedUnion("kind", [generalEnquirySchema, partnerEnquirySchema, bookingEnquirySchema]);
 
 export type GeneralEnquiry = z.infer<typeof generalEnquirySchema>;
 export type PartnerEnquiry = z.infer<typeof partnerEnquirySchema>;
+export type BookingEnquiry = z.infer<typeof bookingEnquirySchema>;
 export type Enquiry = z.infer<typeof enquirySchema>;
 
 /** The subject line staff see in the admin triage queue. */
 export function enquirySubject(enquiry: Enquiry): string {
-  return enquiry.kind === "PARTNERSHIP"
-    ? `Partnership: ${enquiry.business} (${enquiry.partnerType}, ${enquiry.city})`
-    : `Contact form: ${enquiry.name}`;
+  if (enquiry.kind === "PARTNERSHIP") return `Partnership: ${enquiry.business} (${enquiry.partnerType}, ${enquiry.city})`;
+  if (enquiry.kind === "BOOKING") return `Booking request ${enquiry.reference}: ${enquiry.service} with ${enquiry.provider}, ${enquiry.when}`;
+  return `Contact form: ${enquiry.name}`;
 }
 
 /** The body staff read: the message, plus any business details not in the subject. */
 export function enquiryBody(enquiry: Enquiry): string {
   if (enquiry.kind === "GENERAL") return enquiry.message;
+  if (enquiry.kind === "BOOKING") return `${enquiry.message}\n\nContact: ${enquiry.name}`;
   const details = [`Contact: ${enquiry.name}`, enquiry.phone ? `Phone: ${enquiry.phone}` : null]
     .filter(Boolean)
     .join("\n");

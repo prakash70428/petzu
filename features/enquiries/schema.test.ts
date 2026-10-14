@@ -47,3 +47,26 @@ describe("enquiry formatting", () => {
     expect(enquiryBody(partner)).toContain("Phone: +91 98765 43210");
   });
 });
+
+describe("booking enquiries", () => {
+  const booking = {
+    kind: "BOOKING" as const,
+    name: "Asha Rao",
+    email: "asha@example.test",
+    message: "Wellness exam with Dr. Meera Rao (Sunrise Animal Hospital)",
+    reference: "PZ-482913",
+    provider: "Dr. Meera Rao",
+    service: "Wellness exam",
+    when: "Saturday, October 17, 10:00 AM",
+  };
+
+  it("gets a subject the admin can tell apart from general enquiries", () => {
+    const parsed = enquirySchema.parse(booking);
+    expect(enquirySubject(parsed)).toBe("Booking request PZ-482913: Wellness exam with Dr. Meera Rao, Saturday, October 17, 10:00 AM");
+    expect(enquiryBody(parsed)).toContain("Contact: Asha Rao");
+  });
+
+  it("rejects a malformed reference", () => {
+    expect(enquirySchema.safeParse({ ...booking, reference: "PZ-1" }).success).toBe(false);
+  });
+});

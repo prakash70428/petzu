@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import { PageHeader } from "@/features/dashboard/components";
 import { useCustomerDetail } from "@/features/crm/hooks";
 import { CustomerTimeline } from "@/features/crm/components/customer-timeline";
 import { formatRelativeTime } from "@/features/dashboard/utils";
+import { toast } from "@/hooks/use-toast";
 
 const consentLabel = { EMAIL: "Email", SMS: "SMS", WHATSAPP: "WhatsApp" } as const;
 const purposeLabel = { MARKETING: "Marketing", TRANSACTIONAL: "Transactional", SUPPORT: "Support" } as const;
@@ -21,6 +22,8 @@ export default function CustomerDetailPage() {
   const { customer, loading, saving, submitNote, submitTag, deleteTag } = useCustomerDetail(id);
   const [noteDraft, setNoteDraft] = useState("");
   const [tagDraft, setTagDraft] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const router = useRouter();
 
   if (loading) return <p className="text-body-sm text-muted-foreground">Loading...</p>;
   if (!customer) return <p className="text-body-sm text-muted-foreground">Customer not found.</p>;
@@ -135,6 +138,34 @@ export default function CustomerDetailPage() {
                   </p>
                 </div>
               ))}
+            </div>
+                    </Card>
+
+          <Card className="border-destructive/30 p-card-lg">
+            <h2 className="font-semibold text-foreground">Data requests</h2>
+            <p className="mt-1 text-caption text-muted-foreground">
+              Only after confirming by email, from {customer.email}, that the request came from this person.
+            </p>
+            <div className="mt-4 flex flex-col gap-2">
+              <Button asChild variant="outline" size="sm">
+                <a href={`/api/customers/export?email=${encodeURIComponent(customer.email)}`}>Download their data (JSON)</a>
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                disabled={deleting}
+                onClick={async () => {
+                  if (!window.confirm(`Permanently delete ${customer.email} and everything linked to them? This can't be undone.`)) return;
+                  setDeleting(true);
+                  const res = await fetch(`/api/customers?email=${encodeURIComponent(customer.email)}`, { method: "DELETE" });
+                  setDeleting(false);
+                  if (!res.ok) return toast({ title: "Couldn't delete", variant: "destructive" });
+                  toast({ title: "Customer deleted", variant: "success" });
+                  router.push("/admin/customers");
+                }}
+              >
+                {deleting ? "Deleting..." : "Delete customer and all their data"}
+              </Button>
             </div>
           </Card>
         </div>
